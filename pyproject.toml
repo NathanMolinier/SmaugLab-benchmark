@@ -34,6 +34,8 @@ keywords = [
 # smbench has no __init__.py anywhere, so it is a PEP 420 namespace package.
 # poetry-core still walks the tree correctly; the CI build job and
 packages = [{ include = "smbench" }]
+# The config JSONs are package data, not code, so they need listing explicitly.
+include = [{ path = "smbench/datasets/*.json", format = ["sdist", "wheel"] }]
 
 [tool.poetry.dependencies]
 python = ">=3.10"
