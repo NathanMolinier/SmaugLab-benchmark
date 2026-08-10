@@ -1,9 +1,12 @@
 {
     "TYPE": "LABEL",
     "CONTRASTS": "CT_MR",
-    "DATASETS_PATH": "",
-    "SOURCE":"git@data.neuro.polymtl.ca:datasets/abdominal-amos22.git",
-    "COMMIT":"dfff51b6fbb46dcbe2465739fb52f1ca3e3bb767",
+    "SOURCE":[
+        "git@data.neuro.polymtl.ca:datasets/abdominal-amos22.git"
+    ],
+    "COMMIT":[
+        "dfff51b6fbb46dcbe2465739fb52f1ca3e3bb767"
+    ],
     "TRAINING": [
         {
             "IMAGE": "abdominal-amos22/sub-amos0056/anat/sub-amos0056_CT.nii.gz",
