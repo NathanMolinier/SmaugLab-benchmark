@@ -50,7 +50,8 @@ nnunetv2 = { version = "*", optional = true }
 nnunetv2 = ["nnunetv2"]
 
 [tool.poetry.scripts]
-smauglab_add_nnunettrainer = "smauglab.add_trainer:main"
+smbench_reorient_image = "smbench.utils.reorient_image:main"
+smbench_resample_image = "smbench.utils.resample_image:main"
 
 [build-system]
 requires = ["poetry-core>=1.0.0", "poetry-dynamic-versioning>=1.0.0,<2.0.0"]
