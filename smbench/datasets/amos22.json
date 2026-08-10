@@ -1,0 +1,1453 @@
+{
+    "TYPE": "LABEL",
+    "CONTRASTS": "CT_MR",
+    "DATASETS_PATH": "",
+    "SOURCE":"git@data.neuro.polymtl.ca:datasets/abdominal-amos22.git",
+    "COMMIT":"dfff51b6fbb46dcbe2465739fb52f1ca3e3bb767",
+    "TRAINING": [
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0056/anat/sub-amos0056_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0056/anat/sub-amos0056_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0032/anat/sub-amos0032_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0032/anat/sub-amos0032_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0408/anat/sub-amos0408_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0408/anat/sub-amos0408_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0064/anat/sub-amos0064_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0064/anat/sub-amos0064_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0242/anat/sub-amos0242_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0242/anat/sub-amos0242_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0316/anat/sub-amos0316_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0316/anat/sub-amos0316_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0090/anat/sub-amos0090_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0090/anat/sub-amos0090_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0006/anat/sub-amos0006_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0006/anat/sub-amos0006_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0070/anat/sub-amos0070_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0070/anat/sub-amos0070_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0307/anat/sub-amos0307_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0307/anat/sub-amos0307_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0119/anat/sub-amos0119_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0119/anat/sub-amos0119_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0029/anat/sub-amos0029_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0029/anat/sub-amos0029_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0072/anat/sub-amos0072_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0072/anat/sub-amos0072_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0321/anat/sub-amos0321_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0321/anat/sub-amos0321_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0258/anat/sub-amos0258_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0258/anat/sub-amos0258_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0134/anat/sub-amos0134_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0134/anat/sub-amos0134_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0334/anat/sub-amos0334_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0334/anat/sub-amos0334_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0118/anat/sub-amos0118_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0118/anat/sub-amos0118_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0077/anat/sub-amos0077_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0077/anat/sub-amos0077_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0180/anat/sub-amos0180_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0180/anat/sub-amos0180_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0247/anat/sub-amos0247_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0247/anat/sub-amos0247_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0297/anat/sub-amos0297_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0297/anat/sub-amos0297_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0364/anat/sub-amos0364_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0364/anat/sub-amos0364_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0233/anat/sub-amos0233_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0233/anat/sub-amos0233_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0061/anat/sub-amos0061_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0061/anat/sub-amos0061_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0040/anat/sub-amos0040_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0040/anat/sub-amos0040_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0098/anat/sub-amos0098_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0098/anat/sub-amos0098_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0191/anat/sub-amos0191_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0191/anat/sub-amos0191_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0035/anat/sub-amos0035_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0035/anat/sub-amos0035_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0128/anat/sub-amos0128_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0128/anat/sub-amos0128_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0057/anat/sub-amos0057_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0057/anat/sub-amos0057_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0033/anat/sub-amos0033_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0033/anat/sub-amos0033_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0217/anat/sub-amos0217_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0217/anat/sub-amos0217_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0204/anat/sub-amos0204_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0204/anat/sub-amos0204_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0228/anat/sub-amos0228_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0228/anat/sub-amos0228_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0025/anat/sub-amos0025_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0025/anat/sub-amos0025_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0007/anat/sub-amos0007_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0007/anat/sub-amos0007_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0016/anat/sub-amos0016_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0016/anat/sub-amos0016_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0071/anat/sub-amos0071_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0071/anat/sub-amos0071_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0177/anat/sub-amos0177_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0177/anat/sub-amos0177_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0373/anat/sub-amos0373_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0373/anat/sub-amos0373_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0249/anat/sub-amos0249_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0249/anat/sub-amos0249_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0287/anat/sub-amos0287_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0287/anat/sub-amos0287_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0387/anat/sub-amos0387_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0387/anat/sub-amos0387_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0326/anat/sub-amos0326_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0326/anat/sub-amos0326_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0346/anat/sub-amos0346_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0346/anat/sub-amos0346_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0283/anat/sub-amos0283_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0283/anat/sub-amos0283_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0066/anat/sub-amos0066_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0066/anat/sub-amos0066_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0126/anat/sub-amos0126_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0126/anat/sub-amos0126_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0302/anat/sub-amos0302_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0302/anat/sub-amos0302_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0018/anat/sub-amos0018_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0018/anat/sub-amos0018_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0076/anat/sub-amos0076_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0076/anat/sub-amos0076_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0088/anat/sub-amos0088_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0088/anat/sub-amos0088_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0318/anat/sub-amos0318_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0318/anat/sub-amos0318_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0196/anat/sub-amos0196_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0196/anat/sub-amos0196_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0063/anat/sub-amos0063_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0063/anat/sub-amos0063_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0166/anat/sub-amos0166_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0166/anat/sub-amos0166_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0048/anat/sub-amos0048_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0048/anat/sub-amos0048_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0179/anat/sub-amos0179_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0179/anat/sub-amos0179_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0050/anat/sub-amos0050_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0050/anat/sub-amos0050_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0193/anat/sub-amos0193_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0193/anat/sub-amos0193_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0034/anat/sub-amos0034_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0034/anat/sub-amos0034_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0043/anat/sub-amos0043_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0043/anat/sub-amos0043_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0391/anat/sub-amos0391_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0391/anat/sub-amos0391_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0203/anat/sub-amos0203_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0203/anat/sub-amos0203_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0378/anat/sub-amos0378_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0378/anat/sub-amos0378_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0371/anat/sub-amos0371_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0371/anat/sub-amos0371_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0353/anat/sub-amos0353_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0353/anat/sub-amos0353_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0296/anat/sub-amos0296_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0296/anat/sub-amos0296_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0041/anat/sub-amos0041_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0041/anat/sub-amos0041_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0397/anat/sub-amos0397_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0397/anat/sub-amos0397_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0013/anat/sub-amos0013_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0013/anat/sub-amos0013_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0158/anat/sub-amos0158_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0158/anat/sub-amos0158_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0067/anat/sub-amos0067_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0067/anat/sub-amos0067_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0133/anat/sub-amos0133_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0133/anat/sub-amos0133_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0402/anat/sub-amos0402_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0402/anat/sub-amos0402_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0280/anat/sub-amos0280_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0280/anat/sub-amos0280_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0106/anat/sub-amos0106_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0106/anat/sub-amos0106_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0202/anat/sub-amos0202_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0202/anat/sub-amos0202_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0171/anat/sub-amos0171_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0171/anat/sub-amos0171_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0085/anat/sub-amos0085_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0085/anat/sub-amos0085_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0105/anat/sub-amos0105_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0105/anat/sub-amos0105_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0226/anat/sub-amos0226_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0226/anat/sub-amos0226_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0027/anat/sub-amos0027_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0027/anat/sub-amos0027_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0152/anat/sub-amos0152_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0152/anat/sub-amos0152_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0368/anat/sub-amos0368_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0368/anat/sub-amos0368_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0323/anat/sub-amos0323_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0323/anat/sub-amos0323_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0154/anat/sub-amos0154_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0154/anat/sub-amos0154_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0127/anat/sub-amos0127_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0127/anat/sub-amos0127_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0001/anat/sub-amos0001_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0001/anat/sub-amos0001_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0313/anat/sub-amos0313_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0313/anat/sub-amos0313_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0356/anat/sub-amos0356_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0356/anat/sub-amos0356_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0358/anat/sub-amos0358_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0358/anat/sub-amos0358_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0361/anat/sub-amos0361_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0361/anat/sub-amos0361_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0237/anat/sub-amos0237_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0237/anat/sub-amos0237_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0405/anat/sub-amos0405_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0405/anat/sub-amos0405_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0113/anat/sub-amos0113_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0113/anat/sub-amos0113_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0160/anat/sub-amos0160_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0160/anat/sub-amos0160_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0086/anat/sub-amos0086_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0086/anat/sub-amos0086_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0231/anat/sub-amos0231_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0231/anat/sub-amos0231_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0398/anat/sub-amos0398_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0398/anat/sub-amos0398_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0366/anat/sub-amos0366_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0366/anat/sub-amos0366_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0197/anat/sub-amos0197_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0197/anat/sub-amos0197_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0374/anat/sub-amos0374_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0374/anat/sub-amos0374_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0022/anat/sub-amos0022_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0022/anat/sub-amos0022_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0194/anat/sub-amos0194_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0194/anat/sub-amos0194_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0248/anat/sub-amos0248_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0248/anat/sub-amos0248_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0344/anat/sub-amos0344_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0344/anat/sub-amos0344_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0138/anat/sub-amos0138_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0138/anat/sub-amos0138_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0030/anat/sub-amos0030_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0030/anat/sub-amos0030_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0141/anat/sub-amos0141_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0141/anat/sub-amos0141_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0176/anat/sub-amos0176_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0176/anat/sub-amos0176_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0336/anat/sub-amos0336_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0336/anat/sub-amos0336_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0257/anat/sub-amos0257_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0257/anat/sub-amos0257_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0381/anat/sub-amos0381_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0381/anat/sub-amos0381_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0132/anat/sub-amos0132_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0132/anat/sub-amos0132_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0278/anat/sub-amos0278_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0278/anat/sub-amos0278_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0376/anat/sub-amos0376_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0376/anat/sub-amos0376_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0047/anat/sub-amos0047_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0047/anat/sub-amos0047_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0051/anat/sub-amos0051_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0051/anat/sub-amos0051_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0173/anat/sub-amos0173_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0173/anat/sub-amos0173_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0147/anat/sub-amos0147_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0147/anat/sub-amos0147_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0150/anat/sub-amos0150_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0150/anat/sub-amos0150_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0102/anat/sub-amos0102_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0102/anat/sub-amos0102_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0111/anat/sub-amos0111_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0111/anat/sub-amos0111_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0320/anat/sub-amos0320_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0320/anat/sub-amos0320_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0400/anat/sub-amos0400_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0400/anat/sub-amos0400_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0399/anat/sub-amos0399_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0399/anat/sub-amos0399_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0200/anat/sub-amos0200_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0200/anat/sub-amos0200_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0218/anat/sub-amos0218_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0218/anat/sub-amos0218_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0199/anat/sub-amos0199_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0199/anat/sub-amos0199_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0170/anat/sub-amos0170_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0170/anat/sub-amos0170_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0089/anat/sub-amos0089_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0089/anat/sub-amos0089_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0120/anat/sub-amos0120_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0120/anat/sub-amos0120_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0311/anat/sub-amos0311_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0311/anat/sub-amos0311_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0404/anat/sub-amos0404_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0404/anat/sub-amos0404_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0208/anat/sub-amos0208_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0208/anat/sub-amos0208_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0044/anat/sub-amos0044_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0044/anat/sub-amos0044_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0084/anat/sub-amos0084_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0084/anat/sub-amos0084_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0396/anat/sub-amos0396_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0396/anat/sub-amos0396_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0008/anat/sub-amos0008_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0008/anat/sub-amos0008_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0136/anat/sub-amos0136_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0136/anat/sub-amos0136_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0274/anat/sub-amos0274_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0274/anat/sub-amos0274_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0370/anat/sub-amos0370_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0370/anat/sub-amos0370_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0383/anat/sub-amos0383_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0383/anat/sub-amos0383_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0292/anat/sub-amos0292_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0292/anat/sub-amos0292_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0333/anat/sub-amos0333_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0333/anat/sub-amos0333_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0395/anat/sub-amos0395_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0395/anat/sub-amos0395_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0059/anat/sub-amos0059_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0059/anat/sub-amos0059_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0341/anat/sub-amos0341_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0341/anat/sub-amos0341_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0117/anat/sub-amos0117_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0117/anat/sub-amos0117_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0357/anat/sub-amos0357_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0357/anat/sub-amos0357_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0049/anat/sub-amos0049_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0049/anat/sub-amos0049_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0216/anat/sub-amos0216_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0216/anat/sub-amos0216_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0198/anat/sub-amos0198_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0198/anat/sub-amos0198_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0184/anat/sub-amos0184_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0184/anat/sub-amos0184_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0239/anat/sub-amos0239_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0239/anat/sub-amos0239_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0149/anat/sub-amos0149_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0149/anat/sub-amos0149_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0023/anat/sub-amos0023_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0023/anat/sub-amos0023_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0328/anat/sub-amos0328_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0328/anat/sub-amos0328_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0230/anat/sub-amos0230_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0230/anat/sub-amos0230_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0116/anat/sub-amos0116_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0116/anat/sub-amos0116_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0010/anat/sub-amos0010_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0010/anat/sub-amos0010_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0124/anat/sub-amos0124_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0124/anat/sub-amos0124_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0190/anat/sub-amos0190_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0190/anat/sub-amos0190_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0254/anat/sub-amos0254_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0254/anat/sub-amos0254_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0276/anat/sub-amos0276_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0276/anat/sub-amos0276_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0005/anat/sub-amos0005_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0005/anat/sub-amos0005_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0192/anat/sub-amos0192_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0192/anat/sub-amos0192_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0045/anat/sub-amos0045_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0045/anat/sub-amos0045_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0263/anat/sub-amos0263_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0263/anat/sub-amos0263_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0019/anat/sub-amos0019_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0019/anat/sub-amos0019_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0219/anat/sub-amos0219_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0219/anat/sub-amos0219_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0081/anat/sub-amos0081_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0081/anat/sub-amos0081_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0351/anat/sub-amos0351_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0351/anat/sub-amos0351_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0294/anat/sub-amos0294_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0294/anat/sub-amos0294_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0372/anat/sub-amos0372_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0372/anat/sub-amos0372_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0004/anat/sub-amos0004_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0004/anat/sub-amos0004_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0308/anat/sub-amos0308_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0308/anat/sub-amos0308_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0212/anat/sub-amos0212_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0212/anat/sub-amos0212_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0097/anat/sub-amos0097_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0097/anat/sub-amos0097_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0379/anat/sub-amos0379_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0379/anat/sub-amos0379_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0385/anat/sub-amos0385_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0385/anat/sub-amos0385_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0103/anat/sub-amos0103_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0103/anat/sub-amos0103_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0189/anat/sub-amos0189_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0189/anat/sub-amos0189_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0349/anat/sub-amos0349_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0349/anat/sub-amos0349_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0388/anat/sub-amos0388_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0388/anat/sub-amos0388_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0245/anat/sub-amos0245_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0245/anat/sub-amos0245_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0094/anat/sub-amos0094_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0094/anat/sub-amos0094_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0255/anat/sub-amos0255_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0255/anat/sub-amos0255_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0073/anat/sub-amos0073_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0073/anat/sub-amos0073_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0350/anat/sub-amos0350_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0350/anat/sub-amos0350_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0079/anat/sub-amos0079_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0079/anat/sub-amos0079_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0293/anat/sub-amos0293_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0293/anat/sub-amos0293_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0282/anat/sub-amos0282_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0282/anat/sub-amos0282_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0109/anat/sub-amos0109_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0109/anat/sub-amos0109_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0238/anat/sub-amos0238_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0238/anat/sub-amos0238_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0206/anat/sub-amos0206_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0206/anat/sub-amos0206_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0015/anat/sub-amos0015_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0015/anat/sub-amos0015_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0235/anat/sub-amos0235_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0235/anat/sub-amos0235_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0330/anat/sub-amos0330_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0330/anat/sub-amos0330_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0348/anat/sub-amos0348_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0348/anat/sub-amos0348_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0125/anat/sub-amos0125_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0125/anat/sub-amos0125_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0143/anat/sub-amos0143_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0143/anat/sub-amos0143_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0131/anat/sub-amos0131_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0131/anat/sub-amos0131_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0069/anat/sub-amos0069_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0069/anat/sub-amos0069_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0410/anat/sub-amos0410_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0410/anat/sub-amos0410_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0377/anat/sub-amos0377_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0377/anat/sub-amos0377_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0317/anat/sub-amos0317_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0317/anat/sub-amos0317_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0104/anat/sub-amos0104_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0104/anat/sub-amos0104_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0017/anat/sub-amos0017_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0017/anat/sub-amos0017_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0310/anat/sub-amos0310_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0310/anat/sub-amos0310_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0036/anat/sub-amos0036_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0036/anat/sub-amos0036_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0186/anat/sub-amos0186_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0186/anat/sub-amos0186_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0188/anat/sub-amos0188_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0188/anat/sub-amos0188_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0272/anat/sub-amos0272_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0272/anat/sub-amos0272_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0223/anat/sub-amos0223_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0223/anat/sub-amos0223_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0288/anat/sub-amos0288_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0288/anat/sub-amos0288_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0289/anat/sub-amos0289_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0289/anat/sub-amos0289_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0058/anat/sub-amos0058_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0058/anat/sub-amos0058_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0363/anat/sub-amos0363_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0363/anat/sub-amos0363_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0140/anat/sub-amos0140_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0140/anat/sub-amos0140_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0264/anat/sub-amos0264_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0264/anat/sub-amos0264_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0244/anat/sub-amos0244_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0244/anat/sub-amos0244_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0011/anat/sub-amos0011_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0011/anat/sub-amos0011_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0337/anat/sub-amos0337_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0337/anat/sub-amos0337_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0409/anat/sub-amos0409_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0409/anat/sub-amos0409_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0259/anat/sub-amos0259_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0259/anat/sub-amos0259_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0380/anat/sub-amos0380_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0380/anat/sub-amos0380_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0142/anat/sub-amos0142_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0142/anat/sub-amos0142_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0174/anat/sub-amos0174_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0174/anat/sub-amos0174_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0024/anat/sub-amos0024_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0024/anat/sub-amos0024_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0225/anat/sub-amos0225_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0225/anat/sub-amos0225_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0144/anat/sub-amos0144_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0144/anat/sub-amos0144_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0181/anat/sub-amos0181_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0181/anat/sub-amos0181_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0042/anat/sub-amos0042_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0042/anat/sub-amos0042_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0224/anat/sub-amos0224_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0224/anat/sub-amos0224_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0054/anat/sub-amos0054_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0054/anat/sub-amos0054_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0342/anat/sub-amos0342_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0342/anat/sub-amos0342_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0075/anat/sub-amos0075_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0075/anat/sub-amos0075_CT_label-abdominal_dlabel.nii.gz"
+        }
+    ],
+    "VALIDATION": [
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0159/anat/sub-amos0159_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0159/anat/sub-amos0159_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0332/anat/sub-amos0332_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0332/anat/sub-amos0332_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0384/anat/sub-amos0384_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0384/anat/sub-amos0384_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0339/anat/sub-amos0339_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0339/anat/sub-amos0339_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0121/anat/sub-amos0121_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0121/anat/sub-amos0121_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0250/anat/sub-amos0250_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0250/anat/sub-amos0250_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0365/anat/sub-amos0365_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0365/anat/sub-amos0365_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0167/anat/sub-amos0167_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0167/anat/sub-amos0167_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0112/anat/sub-amos0112_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0112/anat/sub-amos0112_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0290/anat/sub-amos0290_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0290/anat/sub-amos0290_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0110/anat/sub-amos0110_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0110/anat/sub-amos0110_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0367/anat/sub-amos0367_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0367/anat/sub-amos0367_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0092/anat/sub-amos0092_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0092/anat/sub-amos0092_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0014/anat/sub-amos0014_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0014/anat/sub-amos0014_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0162/anat/sub-amos0162_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0162/anat/sub-amos0162_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0390/anat/sub-amos0390_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0390/anat/sub-amos0390_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0392/anat/sub-amos0392_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0392/anat/sub-amos0392_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0273/anat/sub-amos0273_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0273/anat/sub-amos0273_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0299/anat/sub-amos0299_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0299/anat/sub-amos0299_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0281/anat/sub-amos0281_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0281/anat/sub-amos0281_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0214/anat/sub-amos0214_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0214/anat/sub-amos0214_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0009/anat/sub-amos0009_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0009/anat/sub-amos0009_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0279/anat/sub-amos0279_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0279/anat/sub-amos0279_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0195/anat/sub-amos0195_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0195/anat/sub-amos0195_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0108/anat/sub-amos0108_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0108/anat/sub-amos0108_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0175/anat/sub-amos0175_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0175/anat/sub-amos0175_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0123/anat/sub-amos0123_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0123/anat/sub-amos0123_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0268/anat/sub-amos0268_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0268/anat/sub-amos0268_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0083/anat/sub-amos0083_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0083/anat/sub-amos0083_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0284/anat/sub-amos0284_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0284/anat/sub-amos0284_CT_label-abdominal_dlabel.nii.gz"
+        }
+    ],
+    "TESTING": [
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0153/anat/sub-amos0153_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0153/anat/sub-amos0153_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0172/anat/sub-amos0172_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0172/anat/sub-amos0172_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0286/anat/sub-amos0286_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0286/anat/sub-amos0286_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0137/anat/sub-amos0137_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0137/anat/sub-amos0137_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0135/anat/sub-amos0135_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0135/anat/sub-amos0135_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0038/anat/sub-amos0038_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0038/anat/sub-amos0038_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0403/anat/sub-amos0403_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0403/anat/sub-amos0403_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0309/anat/sub-amos0309_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0309/anat/sub-amos0309_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0161/anat/sub-amos0161_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0161/anat/sub-amos0161_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0304/anat/sub-amos0304_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0304/anat/sub-amos0304_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0401/anat/sub-amos0401_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0401/anat/sub-amos0401_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0060/anat/sub-amos0060_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0060/anat/sub-amos0060_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0157/anat/sub-amos0157_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0157/anat/sub-amos0157_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0406/anat/sub-amos0406_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0406/anat/sub-amos0406_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0362/anat/sub-amos0362_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0362/anat/sub-amos0362_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0185/anat/sub-amos0185_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0185/anat/sub-amos0185_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0156/anat/sub-amos0156_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0156/anat/sub-amos0156_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0325/anat/sub-amos0325_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0325/anat/sub-amos0325_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0301/anat/sub-amos0301_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0301/anat/sub-amos0301_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0155/anat/sub-amos0155_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0155/anat/sub-amos0155_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0215/anat/sub-amos0215_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0215/anat/sub-amos0215_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0129/anat/sub-amos0129_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0129/anat/sub-amos0129_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0021/anat/sub-amos0021_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0021/anat/sub-amos0021_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0087/anat/sub-amos0087_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0087/anat/sub-amos0087_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0115/anat/sub-amos0115_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0115/anat/sub-amos0115_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0207/anat/sub-amos0207_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0207/anat/sub-amos0207_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0352/anat/sub-amos0352_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0352/anat/sub-amos0352_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0099/anat/sub-amos0099_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0099/anat/sub-amos0099_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0052/anat/sub-amos0052_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0052/anat/sub-amos0052_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0078/anat/sub-amos0078_CT.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0078/anat/sub-amos0078_CT_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0507/anat/sub-amos0507_MR.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0507/anat/sub-amos0507_MR_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0589/anat/sub-amos0589_MR.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0589/anat/sub-amos0589_MR_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0590/anat/sub-amos0590_MR.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0590/anat/sub-amos0590_MR_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0591/anat/sub-amos0591_MR.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0591/anat/sub-amos0591_MR_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0541/anat/sub-amos0541_MR.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0541/anat/sub-amos0541_MR_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0549/anat/sub-amos0549_MR.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0549/anat/sub-amos0549_MR_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0548/anat/sub-amos0548_MR.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0548/anat/sub-amos0548_MR_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0572/anat/sub-amos0572_MR.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0572/anat/sub-amos0572_MR_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0575/anat/sub-amos0575_MR.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0575/anat/sub-amos0575_MR_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0559/anat/sub-amos0559_MR.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0559/anat/sub-amos0559_MR_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0544/anat/sub-amos0544_MR.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0544/anat/sub-amos0544_MR_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0538/anat/sub-amos0538_MR.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0538/anat/sub-amos0538_MR_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0596/anat/sub-amos0596_MR.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0596/anat/sub-amos0596_MR_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0588/anat/sub-amos0588_MR.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0588/anat/sub-amos0588_MR_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0522/anat/sub-amos0522_MR.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0522/anat/sub-amos0522_MR_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0593/anat/sub-amos0593_MR.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0593/anat/sub-amos0593_MR_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0532/anat/sub-amos0532_MR.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0532/anat/sub-amos0532_MR_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0547/anat/sub-amos0547_MR.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0547/anat/sub-amos0547_MR_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0517/anat/sub-amos0517_MR.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0517/anat/sub-amos0517_MR_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0518/anat/sub-amos0518_MR.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0518/anat/sub-amos0518_MR_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0571/anat/sub-amos0571_MR.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0571/anat/sub-amos0571_MR_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0530/anat/sub-amos0530_MR.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0530/anat/sub-amos0530_MR_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0568/anat/sub-amos0568_MR.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0568/anat/sub-amos0568_MR_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0599/anat/sub-amos0599_MR.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0599/anat/sub-amos0599_MR_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0597/anat/sub-amos0597_MR.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0597/anat/sub-amos0597_MR_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0545/anat/sub-amos0545_MR.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0545/anat/sub-amos0545_MR_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0554/anat/sub-amos0554_MR.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0554/anat/sub-amos0554_MR_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0581/anat/sub-amos0581_MR.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0581/anat/sub-amos0581_MR_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0578/anat/sub-amos0578_MR.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0578/anat/sub-amos0578_MR_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0584/anat/sub-amos0584_MR.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0584/anat/sub-amos0584_MR_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0583/anat/sub-amos0583_MR.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0583/anat/sub-amos0583_MR_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0582/anat/sub-amos0582_MR.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0582/anat/sub-amos0582_MR_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0552/anat/sub-amos0552_MR.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0552/anat/sub-amos0552_MR_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0573/anat/sub-amos0573_MR.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0573/anat/sub-amos0573_MR_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0585/anat/sub-amos0585_MR.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0585/anat/sub-amos0585_MR_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0563/anat/sub-amos0563_MR.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0563/anat/sub-amos0563_MR_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0546/anat/sub-amos0546_MR.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0546/anat/sub-amos0546_MR_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0595/anat/sub-amos0595_MR.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0595/anat/sub-amos0595_MR_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0558/anat/sub-amos0558_MR.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0558/anat/sub-amos0558_MR_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0576/anat/sub-amos0576_MR.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0576/anat/sub-amos0576_MR_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0580/anat/sub-amos0580_MR.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0580/anat/sub-amos0580_MR_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0570/anat/sub-amos0570_MR.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0570/anat/sub-amos0570_MR_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0550/anat/sub-amos0550_MR.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0550/anat/sub-amos0550_MR_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0556/anat/sub-amos0556_MR.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0556/anat/sub-amos0556_MR_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0555/anat/sub-amos0555_MR.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0555/anat/sub-amos0555_MR_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0557/anat/sub-amos0557_MR.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0557/anat/sub-amos0557_MR_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0553/anat/sub-amos0553_MR.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0553/anat/sub-amos0553_MR_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0600/anat/sub-amos0600_MR.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0600/anat/sub-amos0600_MR_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0561/anat/sub-amos0561_MR.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0561/anat/sub-amos0561_MR_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0586/anat/sub-amos0586_MR.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0586/anat/sub-amos0586_MR_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0514/anat/sub-amos0514_MR.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0514/anat/sub-amos0514_MR_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0540/anat/sub-amos0540_MR.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0540/anat/sub-amos0540_MR_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0510/anat/sub-amos0510_MR.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0510/anat/sub-amos0510_MR_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0598/anat/sub-amos0598_MR.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0598/anat/sub-amos0598_MR_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0587/anat/sub-amos0587_MR.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0587/anat/sub-amos0587_MR_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0508/anat/sub-amos0508_MR.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0508/anat/sub-amos0508_MR_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0562/anat/sub-amos0562_MR.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0562/anat/sub-amos0562_MR_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0594/anat/sub-amos0594_MR.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0594/anat/sub-amos0594_MR_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0592/anat/sub-amos0592_MR.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0592/anat/sub-amos0592_MR_label-abdominal_dlabel.nii.gz"
+        },
+        {
+            "IMAGE": "abdominal-amos22/sub-amos0551/anat/sub-amos0551_MR.nii.gz",
+            "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0551/anat/sub-amos0551_MR_label-abdominal_dlabel.nii.gz"
+        }
+    ]
+}
