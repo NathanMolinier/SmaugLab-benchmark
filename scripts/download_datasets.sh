@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# Script based on https://github.com/neuropoly/totalspineseg/blob/main/scripts/download_datasets.sh
+
 # BASH SETTINGS
 # ======================================================================================================================
 
