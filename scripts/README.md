@@ -4,4 +4,4 @@ This folder contains scripts to train nnunet models in a reproducible way. These
 
 * `download_datasets.sh`: Downloads BIDS-like and git-annexed datasets from the Neuropoly server.
 * `prepare_datasets.sh`: Prepares datasets in the format required by nnUNet.
-* `train.sh`: Trains nnUNet models by specifying the trainer, dataset, fold, and GPU to use. Information about the training configuration is saved in the output nnUNet folder.
+* `train.sh`: Trains nnUNet models by specifying the trainer, dataset, and GPU to use. Information about the training configuration is saved in the output nnUNet folder.
