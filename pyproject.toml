@@ -12,8 +12,8 @@ authors = [
 maintainers = [
     "Nathan Molinier",
 ]
-homepage = ""
-repository = ""
+homepage = "https://github.com/NathanMolinier/SmaugLab-benchmark"
+repository = "https://github.com/NathanMolinier/SmaugLab-benchmark"
 classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Science/Research",
@@ -52,6 +52,7 @@ nnunetv2 = ["nnunetv2"]
 [tool.poetry.scripts]
 smbench_reorient_image = "smbench.utils.reorient_image:main"
 smbench_resample_image = "smbench.utils.resample_image:main"
+smbench_create_splits_nnunet = "smbench.utils.create_splits_nnunet:main"
 
 [build-system]
 requires = ["poetry-core>=1.0.0", "poetry-dynamic-versioning>=1.0.0,<2.0.0"]
