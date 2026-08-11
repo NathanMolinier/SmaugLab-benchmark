@@ -3,7 +3,6 @@ name = "smbench"
 # Placeholder only. The real version is substituted at build time by
 # poetry-dynamic-versioning from the git tag. Do not bump this by hand.
 version = "0.0.0"
-requires-python = ">=3.10"
 description = "This package is a tool allowing simple and reproducible comparison between nnunet training."
 readme = "README.md"
 authors = [
