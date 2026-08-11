@@ -97,7 +97,6 @@ echo "nnUNetPlanner=${nnUNetPlanner}"
 echo "nnUNetPlans=${nnUNetPlans}"
 echo "configuration=${configuration}"
 echo "JOBSNN=${JOBSNN}"
-echo "DEVICE=${DEVICE}"
 echo "DATASET_ID=${DATASET_ID}"
 echo "DATASET_NAME=${DATASET_NAME}"
 echo ""
@@ -116,8 +115,12 @@ jq -r '.TRAINING[].LABEL' "$data_json" | xargs -I{} cp "{}" "$LABELS_TRAIN_DIR/"
 jq -r '.VALIDATION[].LABEL' "$data_json" | xargs -I{} cp "{}" "$LABELS_TRAIN_DIR/"
 
 # Copy images and add nnUNet suffix _0000
-for img in $(jq -r ".TRAINING | .[].IMAGE" "$data_json");do img_name=$(basename ${img/.nii.gz/_0000.nii.gz}); cp "$img" "$IMAGES_TRAIN_DIR/"$img_name";done
-for img in $(jq -r ".VALIDATION | .[].IMAGE" "$data_json");do img_name=$(basename ${img/.nii.gz/_0000.nii.gz}); cp "$img" "$IMAGES_TRAIN_DIR/"$img_name";done
+jq -r '.TRAINING[].IMAGE' "$data_json" | while IFS= read -r img; do
+    cp "$img" "$IMAGES_TRAIN_DIR/$(basename "${img/.nii.gz/_0000.nii.gz}")"
+done
+jq -r '.VALIDATION[].IMAGE' "$data_json" | while IFS= read -r img; do
+    cp "$img" "$IMAGES_TRAIN_DIR/$(basename "${img/.nii.gz/_0000.nii.gz}")"
+done
 
 # Remove label suffix from filename
 for img in "$IMAGES_TRAIN_DIR"/*_0000.nii.gz; do
@@ -162,7 +165,9 @@ mkdir -p "$LABELS_TEST_DIR"
 jq -r '.TESTING[].LABEL' "$data_json" | xargs -I{} cp "{}" "$LABELS_TEST_DIR/"
 
 # Copy images and add nnUNet suffix _0000
-for img in $(jq -r ".TESTING | .[].IMAGE" "$data_json");do img_name=$(basename ${img/.nii.gz/_0000.nii.gz}); cp "$img" "$IMAGES_TEST_DIR"/"$img_name";done
+jq -r '.TESTING[].IMAGE' "$data_json" | while IFS= read -r img; do
+    cp "$img" "$IMAGES_TEST_DIR/$(basename "${img/.nii.gz/_0000.nii.gz}")"
+done
 
 # Remove label suffix from filename
 for img in "$IMAGES_TEST_DIR"/*_0000.nii.gz; do
