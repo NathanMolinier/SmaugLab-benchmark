@@ -68,7 +68,7 @@ FOLD=0 # Set the fold to 0: TODO: Add support for training on multiple folds
 nnUNetPlanner=${1:-nnUNetPlannerResEncL}
 nnUNetPlans=${2:-nnUNetPlans}
 configuration=${3:-3d_fullres}
-data_identifier=${nnUNetPlans}_${configuration}
+visible_gpu=${4:-0}
 
 # Set nnunet params
 export nnUNet_def_n_proc=$JOBSNN
@@ -91,7 +91,6 @@ echo "nnUNetTrainer=${nnUNetTrainer}"
 echo "nnUNetPlanner=${nnUNetPlanner}"
 echo "nnUNetPlans=${nnUNetPlans}"
 echo "configuration=${configuration}"
-echo "data_identifier=${data_identifier}"
 echo "JOBSNN=${JOBSNN}"
 echo "DEVICE=${DEVICE}"
 echo "DATASET_ID=${DATASET_ID}"
@@ -101,7 +100,7 @@ echo ""
 # Start training
 echo "Start training"
 if [[ "$nnUNetTrainer" == "nnUNetTrainerDAExt*" ]]; then
-    SMAUGLAB_PARAMS_GPU_JSON=$(realpath $nnUNetTrainer_config) nnUNetv2_train $DATASET_ID $configuration $FOLD -tr $nnUNetTrainer -p $nnUNetPlans --c -device $DEVICE
+    SMAUGLAB_PARAMS_GPU_JSON=$(realpath $nnUNetTrainer_config) CUDA_VISIBLE_DEVICES=$visible_gpu nnUNetv2_train $DATASET_ID $configuration $FOLD -tr $nnUNetTrainer -p $nnUNetPlans --c -device $DEVICE
 else
-    nnUNetv2_train $DATASET_ID $configuration $FOLD -tr $nnUNetTrainer -p $nnUNetPlans --c -device $DEVICE
+    CUDA_VISIBLE_DEVICES=$visible_gpu nnUNetv2_train $DATASET_ID $configuration $FOLD -tr $nnUNetTrainer -p $nnUNetPlans --c -device $DEVICE
 fi
