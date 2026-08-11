@@ -50,8 +50,19 @@ fi
 CURR_DIR="$(realpath .)"
 cd "$bids"
 
-# Get the number of CPUs
-CORES=${SLURM_JOB_CPUS_PER_NODE:-$(lscpu -p | egrep -v '^#' | wc -l)}
+# Get memory in GB and number of CPUs
+if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+    # Linux: /proc/meminfo
+    MEMGB=$(awk '/MemTotal/ {print int($2/1024/1024)}' /proc/meminfo)
+    CORES=${SLURM_JOB_CPUS_PER_NODE:-$(lscpu -p | egrep -v '^#' | wc -l)}
+elif [[ "$OSTYPE" == "darwin"* ]]; then
+    # MacOS: sysctl -n hw.memsize
+    MEMGB=$(sysctl -n hw.memsize | awk '{print int($1/1024/1024/1024)}')
+    CORES=${SLURM_JOB_CPUS_PER_NODE:-$(sysctl -n hw.ncpu)}
+else
+    echo "Error: Unsupported OS type: $OSTYPE"
+    exit 1
+fi
 
 # Set the number of jobs
 JOBS=${SMBENCH_JOBS:-$CORES}
@@ -87,8 +98,8 @@ echo "nnUNetPlans=${nnUNetPlans}"
 echo "configuration=${configuration}"
 echo "JOBSNN=${JOBSNN}"
 echo "DEVICE=${DEVICE}"
-echo "DATASETS=${DATASETS[@]}"
-echo "FOLD=${FOLD}"
+echo "DATASET_ID=${DATASET_ID}"
+echo "DATASET_NAME=${DATASET_NAME}"
 echo ""
 
 ### Prepare TRAIN set
@@ -101,8 +112,8 @@ mkdir -p "$IMAGES_TRAIN_DIR"
 mkdir -p "$LABELS_TRAIN_DIR"
 
 # Copy label data in nnUNet_raw folder
-cp $(jq -r ".TRAINING | .[].LABEL" "$data_json") "$LABELS_TRAIN_DIR"
-cp $(jq -r ".VALIDATION | .[].LABEL" "$data_json") "$LABELS_TRAIN_DIR"
+jq -r '.TRAINING[].LABEL' "$data_json" | xargs -I{} cp "{}" "$LABELS_TRAIN_DIR/"
+jq -r '.VALIDATION[].LABEL' "$data_json" | xargs -I{} cp "{}" "$LABELS_TRAIN_DIR/"
 
 # Copy images and add nnUNet suffix _0000
 for img in $(jq -r ".TRAINING | .[].IMAGE" "$data_json");do img_name=$(basename ${img/.nii.gz/_0000.nii.gz}); cp "$img" "$IMAGES_TRAIN_DIR/"$img_name";done
@@ -120,7 +131,7 @@ for img in "$IMAGES_TRAIN_DIR"/*_0000.nii.gz; do
     label_matches=("$LABELS_TRAIN_DIR"/"$prefix"_*.nii.gz)
     shopt -u nullglob
     match_count=${#label_matches[@]}
-    if [ ! $match_count -eq 1 ]; then
+    if [ "$match_count" -ne 1 ]; then
         echo "Error: Expected exactly one label file for image $filename, but found $match_count."
         exit 1
     fi
@@ -148,10 +159,10 @@ mkdir -p "$IMAGES_TEST_DIR"
 mkdir -p "$LABELS_TEST_DIR"
 
 # Copy test data in nnUNet_raw folder
-cp $(jq -r ".TESTING | .[].LABEL" "$data_json") "$LABELS_TEST_DIR"
+jq -r '.TESTING[].LABEL' "$data_json" | xargs -I{} cp "{}" "$LABELS_TEST_DIR/"
 
 # Copy images and add nnUNet suffix _0000
-for img in $(jq -r ".TESTING | .[].IMAGE" "$data_json");do img_name=$(basename ${img/.nii.gz/_0000.nii.gz}); cp "$img" "$IMAGES_TEST_DIR/"$img_name";done
+for img in $(jq -r ".TESTING | .[].IMAGE" "$data_json");do img_name=$(basename ${img/.nii.gz/_0000.nii.gz}); cp "$img" "$IMAGES_TEST_DIR"/"$img_name";done
 
 # Remove label suffix from filename
 for img in "$IMAGES_TEST_DIR"/*_0000.nii.gz; do
@@ -165,7 +176,7 @@ for img in "$IMAGES_TEST_DIR"/*_0000.nii.gz; do
     label_matches=("$LABELS_TEST_DIR"/"$prefix"_*.nii.gz)
     shopt -u nullglob
     match_count=${#label_matches[@]}
-    if [ ! $match_count -eq 1 ]; then
+    if [ "$match_count" -ne 1 ]; then
         echo "Error: Expected exactly one label file for image $filename, but found $match_count."
         exit 1
     fi
