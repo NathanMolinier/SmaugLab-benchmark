@@ -45,7 +45,7 @@ mkdir -p "$bids"
 CURR_DIR="$(realpath .)"
 cd "$bids"
 
-# Fetch sources and commits from the data_json file
+# Fetch sources and commits from the data_json file 
 # Then clone datasets and checkout on the right branch
 while IFS=$'\t' read -r source commit; do
     ds="$source"
@@ -53,7 +53,7 @@ while IFS=$'\t' read -r source commit; do
 
     # Clone the dataset from the specified repository
     if [ ! -d "$dsn" ]; then
-    git clone "$ds"
+        git clone "$ds"
     else
         echo "Dataset $dsn already exists. Skipping clone."
     fi
