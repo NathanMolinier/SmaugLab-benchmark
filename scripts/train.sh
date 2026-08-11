@@ -34,11 +34,19 @@ fi
 SMBENCH="$(realpath "$(dirname "$0")/..")"
 echo "SMBENCH project path: $SMBENCH"
 
-# Get the number of CPUs
-CORES=${SLURM_JOB_CPUS_PER_NODE:-$(lscpu -p | egrep -v '^#' | wc -l)}
-
-# Get memory in GB
-MEMGB=$(awk '/MemTotal/ {print int($2/1024/1024)}' /proc/meminfo)
+# Get memory in GB and number of CPUs
+if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+    # Linux: /proc/meminfo
+    MEMGB=$(awk '/MemTotal/ {print int($2/1024/1024)}' /proc/meminfo)
+    CORES=${SLURM_JOB_CPUS_PER_NODE:-$(lscpu -p | egrep -v '^#' | wc -l)}
+elif [[ "$OSTYPE" == "darwin"* ]]; then
+    # MacOS: sysctl -n hw.memsize
+    MEMGB=$(sysctl -n hw.memsize | awk '{print int($1/1024/1024/1024)}')
+    CORES=${SLURM_JOB_CPUS_PER_NODE:-$(sysctl -n hw.ncpu)}
+else
+    echo "Error: Unsupported OS type: $OSTYPE"
+    exit 1
+fi
 
 # Set the number of jobs
 JOBS=${SMBENCH_JOBS:-$CORES}
@@ -58,7 +66,7 @@ shift 2 # Consume the first two arguments. The old $3 is now $1.
 
 if [[ "$nnUNetTrainer" == nnUNetTrainerDAExt* ]]; then
     nnUNetTrainer_config="$1"
-    if [ -z "$nnUNetTrainer_config" ] || [ ! "${nnUNetTrainer_config}" == *.json ]; then # Check if the config exist and it ends with .json
+    if [ -z "$nnUNetTrainer_config" ] || [[ "$nnUNetTrainer_config" != *.json ]]; then # Check if the config exist and it ends with .json
         echo "Please provide a configuration for the nnUNetTrainerDAExt trainer."
         exit 1
     fi
@@ -78,7 +86,7 @@ export nnUNet_preprocessed="$SMBENCH_DATA"/nnUNet/preprocessed
 export nnUNet_results="$SMBENCH_DATA"/nnUNet/results
 
 # Copy smauglab trainer to nnunet folder
-if [[ "$nnUNetTrainer" == "nnUNetTrainerDAExt*" ]]; then
+if [[ "$nnUNetTrainer" == nnUNetTrainerDAExt* ]]; then
     smauglab_add_nnunettrainer -t nnUNetTrainerDAExt --overwrite
 fi
 
@@ -99,7 +107,7 @@ echo ""
 
 # Start training
 echo "Start training"
-if [[ "$nnUNetTrainer" == "nnUNetTrainerDAExt*" ]]; then
+if [[ "$nnUNetTrainer" == nnUNetTrainerDAExt* ]]; then
     SMAUGLAB_PARAMS_GPU_JSON=$(realpath $nnUNetTrainer_config) CUDA_VISIBLE_DEVICES=$visible_gpu nnUNetv2_train $DATASET_ID $configuration $FOLD -tr $nnUNetTrainer -p $nnUNetPlans --c -device $DEVICE
 else
     CUDA_VISIBLE_DEVICES=$visible_gpu nnUNetv2_train $DATASET_ID $configuration $FOLD -tr $nnUNetTrainer -p $nnUNetPlans --c -device $DEVICE
