@@ -46,17 +46,17 @@ CURR_DIR="$(realpath .)"
 cd "$bids"
 
 # Fetch sources and commits from the data_json file
-datasets=($(jq -r '.SOURCE[]' "$data_json"))
-commits=($(jq -r '.COMMIT[]' "$data_json"))
-
-# Clone datasets and checkout on the right branch
-for i in "${!datasets[@]}"; do
-    ds=${datasets[i]}
-    commit=${commits[i]}
+# Then clone datasets and checkout on the right branch
+while IFS=$'\t' read -r source commit; do
+    ds="$source"
     dsn=$(basename $ds .git)
 
     # Clone the dataset from the specified repository
+    if [ ! -d "$dsn" ]; then
     git clone "$ds"
+    else
+        echo "Dataset $dsn already exists. Skipping clone."
+    fi
 
     # Enter the dataset directory
     cd "$dsn"
@@ -66,7 +66,7 @@ for i in "${!datasets[@]}"; do
 
     # Move back to the parent directory to process the next dataset
     cd ..
-done
+done < <(jq -r '[.SOURCE, .COMMIT] | transpose | .[] | @tsv' "$data_json")
 
 keys=(
     IMAGE
