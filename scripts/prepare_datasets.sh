@@ -2,6 +2,7 @@
 
 # This script prepares datasets for training. Input Niftiis are reoriented to a common orientation and resampled.
 # The data is then organized using nnUNet's expected folder structure and running nnUNet's preprocessing steps.
+# Based on https://github.com/neuropoly/totalspineseg/blob/main/scripts/prepare_datasets.sh
 
 # BASH SETTINGS
 # ======================================================================================================================
@@ -27,12 +28,11 @@ fi
 # Get project path
 SMBENCH="$(realpath "$(dirname "$0")/..")"
 echo "SMBENCH project path: $SMBENCH"
-exit 1
 
 # Load provided data_json file
 data_json="$1"
-if [ -z "$data_json" ]; then
-    data_json="$SMBENCH/smbench/datasets/($basename "$1" .sh).json"
+if [ ! -f "$data_json" ]; then
+    data_json="$SMBENCH/smbench/datasets/$(basename "$1").json"
     if [ ! -f "$data_json" ]; then
         echo "Error: Could not find data JSON file."
         exit 1
@@ -56,6 +56,11 @@ CORES=${SLURM_JOB_CPUS_PER_NODE:-$(lscpu -p | egrep -v '^#' | wc -l)}
 # Set the number of jobs
 JOBS=${SMBENCH_JOBS:-$CORES}
 
+# Set the number of jobs for the nnUNet
+JOBSNN=$(( JOBS < $((MEMGB / 8)) ? JOBS : $((MEMGB / 8)) ))
+JOBSNN=$(( JOBSNN < 1 ? 1 : JOBSNN ))
+JOBSNN=${SMBENCH_JOBSNN:-$JOBSNN}
+
 # Set nnunet params
 nnUNet_raw="$SMBENCH_DATA"/nnUNet/raw
 nnUNet_preprocessed="$SMBENCH_DATA"/nnUNet/preprocessed
@@ -63,11 +68,28 @@ nnUNet_results="$SMBENCH_DATA"/nnUNet/results
 
 DATASET_ID="$2"
 DATASET_NAME="$3"
+nnUNetPlanner=${4:-nnUNetPlannerResEncL}
+nnUNetPlans=${5:-nnUNetPlans}
+configuration=${6:-3d_fullres}
 
 ORIENTATION="RPI"
 RESOLUTION="1x1x1"
 
 SRC_DATASET=Dataset${DATASET_ID}_${DATASET_NAME}
+
+echo ""
+echo "Running with the following parameters:"
+echo "nnUNet_raw=${nnUNet_raw}"
+echo "nnUNet_preprocessed=${nnUNet_preprocessed}"
+echo "nnUNet_results=${nnUNet_results}"
+echo "nnUNetPlanner=${nnUNetPlanner}"
+echo "nnUNetPlans=${nnUNetPlans}"
+echo "configuration=${configuration}"
+echo "JOBSNN=${JOBSNN}"
+echo "DEVICE=${DEVICE}"
+echo "DATASETS=${DATASETS[@]}"
+echo "FOLD=${FOLD}"
+echo ""
 
 ### Prepare TRAIN set
 
@@ -162,18 +184,17 @@ smbench_resample_image -i "$IMAGES_TEST_DIR" -o "$IMAGES_TEST_DIR" -res $RESOLUT
 smbench_resample_image -i "$LABELS_TEST_DIR" -o "$LABELS_TEST_DIR" -res $RESOLUTION -int nn -r -w $JOBS
 
 ### nnUNet Plan and Preprocess
+export nnUNet_def_n_proc=$JOBSNN
+export nnUNet_n_proc_DA=$JOBSNN
 export nnUNet_raw="$SMBENCH_DATA"/nnUNet/raw
 export nnUNet_preprocessed="$SMBENCH_DATA"/nnUNet/preprocessed
 export nnUNet_results="$SMBENCH_DATA"/nnUNet/results
 
 echo "Run nnUNet plan and preprocess"
-nnUNetv2_plan_and_preprocess -d $DATASET_ID --verify_dataset_integrity
+nnUNetv2_plan_and_preprocess -d $DATASET_ID -pl $nnUNetPlanner -overwrite_plans_name $nnUNetPlans -c $configuration -np $JOBSNN --verify_dataset_integrity
 
 # Overwrite nnUNet splits_final.json
 smbench_create_splits_nnunet -i "$data_json" -o "$nnUNet_preprocessed"/$SRC_DATASET/splits_final.json -r $JOBS
-
-
-
 
 # Move back
 cd "$CURR_DIR"
