@@ -26,12 +26,11 @@ fi
 # Get project path
 SMBENCH="$(realpath "$(dirname "$0")/..")"
 echo "SMBENCH project path: $SMBENCH"
-exit 1
 
 # Load provided data_json file
 data_json="$1"
-if [ -z "$data_json" ]; then
-    data_json="$SMBENCH/smbench/datasets/($basename "$1" .sh).json"
+if [ ! -f "$data_json" ]; then
+    data_json="$SMBENCH/smbench/datasets/$(basename "$1" .sh).json"
     if [ ! -f "$data_json" ]; then
         echo "Error: Could not find data JSON file."
         exit 1

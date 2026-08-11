@@ -276,7 +276,7 @@ class Image(object):
 
             # nb. that copy() is important because if it were a memory map, save() would corrupt it
             dataobj = self.data.copy()
-            affine = None
+            affine = self.hdr.get_best_affine()
             header = self.hdr.copy() if self.hdr is not None else None
             nib.save(nib.nifti1.Nifti1Image(dataobj, affine, header), self.absolutepath)
             if not os.path.isfile(self.absolutepath):
@@ -548,7 +548,7 @@ def change_type(im_src, dtype, im_dst=None):
             if min_in >= 0:  # unsigned
                 if max_in <= np.iinfo(np.uint8).max:
                     dtype = np.uint8
-                elif max_in <= np.iinfo(np.uint16):
+                elif max_in <= np.iinfo(np.uint16).max:
                     dtype = np.uint16
                 elif max_in <= np.iinfo(np.uint32).max:
                     dtype = np.uint32

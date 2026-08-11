@@ -54,7 +54,7 @@ cd "$bids"
 CORES=${SLURM_JOB_CPUS_PER_NODE:-$(lscpu -p | egrep -v '^#' | wc -l)}
 
 # Set the number of jobs
-JOBS=${TOTALSPINESEG_JOBS:-$CORES}
+JOBS=${SMBENCH_JOBS:-$CORES}
 
 # Set nnunet params
 nnUNet_raw="$SMBENCH_DATA"/nnUNet/raw
@@ -89,7 +89,7 @@ for img in $(jq -r ".VALIDATION | .[].IMAGE" "$data_json");do img_name=$(basenam
 # Remove label suffix from filename
 for img in "$IMAGES_TRAIN_DIR"/*_0000.nii.gz; do
     # Get the filename without the path
-    filename=$(basename "$img_path")
+    filename=$(basename "$img")
     # Extract the prefix by removing the _0000.nii.gz extension
     prefix="${filename%_0000.nii.gz}"
     # Use nullglob so the array is empty if no files match (instead of containing the literal '*' string)
@@ -134,7 +134,7 @@ for img in $(jq -r ".TESTING | .[].IMAGE" "$data_json");do img_name=$(basename $
 # Remove label suffix from filename
 for img in "$IMAGES_TEST_DIR"/*_0000.nii.gz; do
     # Get the filename without the path
-    filename=$(basename "$img_path")
+    filename=$(basename "$img")
     # Extract the prefix by removing the _0000.nii.gz extension
     prefix="${filename%_0000.nii.gz}"
     # Use nullglob so the array is empty if no files match (instead of containing the literal '*' string)
@@ -167,10 +167,10 @@ export nnUNet_preprocessed="$SMBENCH_DATA"/nnUNet/preprocessed
 export nnUNet_results="$SMBENCH_DATA"/nnUNet/results
 
 echo "Run nnUNet plan and preprocess"
-nnUNetv2_plan_and_preprocess -d DATASET_ID --verify_dataset_integrity
+nnUNetv2_plan_and_preprocess -d $DATASET_ID --verify_dataset_integrity
 
 # Overwrite nnUNet splits_final.json
-smbench_create_splits_nnunet -i "$data_json" -o "$nnUNet_preprocessed"/$SRC_DATASET/splits_final.json -r -w $JOBS
+smbench_create_splits_nnunet -i "$data_json" -o "$nnUNet_preprocessed"/$SRC_DATASET/splits_final.json -r $JOBS
 
 
 
