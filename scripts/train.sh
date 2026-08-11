@@ -52,19 +52,22 @@ JOBSNN=${SMBENCH_JOBSNN:-$JOBSNN}
 DEVICE=${SMBENCH_DEVICE:-$(python3 -c "import torch; print('cuda' if torch.cuda.is_available() else 'cpu')")}
 
 # Set variables
-DATASET_ID="$2"
-nnUNetTrainer="$3"
-if [[ "$nnUNetTrainer" == "nnUNetTrainerDAExt*" ]]; then
-    nnUNetTrainer_config="$4"
-    if [ -z "$nnUNetTrainer_config" ]; then
+DATASET_ID="$1"
+nnUNetTrainer="$2"
+shift 2 # Consume the first two arguments. The old $3 is now $1.
+
+if [[ "$nnUNetTrainer" == nnUNetTrainerDAExt* ]]; then
+    nnUNetTrainer_config="$1"
+    if [ -z "$nnUNetTrainer_config" ] || [ ! "${nnUNetTrainer_config}" == *.json ]; then # Check if the config exist and it ends with .json
         echo "Please provide a configuration for the nnUNetTrainerDAExt trainer."
         exit 1
     fi
+    shift 1 # Consume the config argument.
 fi
 FOLD=0 # Set the fold to 0: TODO: Add support for training on multiple folds
-nnUNetPlanner=${4:-nnUNetPlannerResEncL}
-nnUNetPlans=${5:-nnUNetPlans}
-configuration=${6:-3d_fullres}
+nnUNetPlanner=${1:-nnUNetPlannerResEncL}
+nnUNetPlans=${2:-nnUNetPlans}
+configuration=${3:-3d_fullres}
 data_identifier=${nnUNetPlans}_${configuration}
 
 # Set nnunet params
