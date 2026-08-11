@@ -169,8 +169,8 @@ export nnUNet_results="$SMBENCH_DATA"/nnUNet/results
 echo "Run nnUNet plan and preprocess"
 nnUNetv2_plan_and_preprocess -d DATASET_ID --verify_dataset_integrity
 
-# # Overwrite nnUNet splits_final.json
-# $(jq -r ".TRAINING | .[].IMAGE" "$data_json")
+# Overwrite nnUNet splits_final.json
+smbench_create_splits_nnunet -i "$data_json" -o "$nnUNet_preprocessed"/$SRC_DATASET/splits_final.json -r -w $JOBS
 
 
 
