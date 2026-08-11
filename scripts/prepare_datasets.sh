@@ -54,11 +54,11 @@ cd "$bids"
 if [[ "$OSTYPE" == "linux-gnu"* ]]; then
     # Linux: /proc/meminfo
     MEMGB=$(awk '/MemTotal/ {print int($2/1024/1024)}' /proc/meminfo)
-    CORES=${SLURM_JOB_CPUS_PER_NODE:-$(lscpu -p | egrep -v '^#' | wc -l)}
+    CORES=$(lscpu -p | egrep -v '^#' | wc -l)
 elif [[ "$OSTYPE" == "darwin"* ]]; then
     # MacOS: sysctl -n hw.memsize
     MEMGB=$(sysctl -n hw.memsize | awk '{print int($1/1024/1024/1024)}')
-    CORES=${SLURM_JOB_CPUS_PER_NODE:-$(sysctl -n hw.ncpu)}
+    CORES=$(sysctl -n hw.ncpu)
 else
     echo "Error: Unsupported OS type: $OSTYPE"
     exit 1
