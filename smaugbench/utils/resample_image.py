@@ -4,7 +4,7 @@ from functools import partial
 from tqdm.contrib.concurrent import process_map
 from pathlib import Path
 import warnings
-from smbench.utils.image import Image, resample_nib
+from smaugbench.utils.image import Image, resample_nib
 
 warnings.filterwarnings("ignore")
 

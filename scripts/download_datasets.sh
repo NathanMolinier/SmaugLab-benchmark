@@ -17,20 +17,20 @@ trap "echo Caught Keyboard Interrupt within script. Exiting now.; exit" INT
 # SCRIPT STARTS HERE
 # ======================================================================================================================
 
-# Check if SMBENCH_DATA is set else stop script.
-if [ -z "$SMBENCH_DATA" ]; then
-    echo "Please set the SMBENCH_DATA environment variable. This folder will store all preprocessed datasets and training."
+# Check if SMAUGBENCH_DATA is set else stop script.
+if [ -z "$SMAUGBENCH_DATA" ]; then
+    echo "Please set the SMAUGBENCH_DATA environment variable. This folder will store all preprocessed datasets and training."
     exit 1
 fi
 
 # Get project path
-SMBENCH="$(realpath "$(dirname "$0")/..")"
-echo "SMBENCH project path: $SMBENCH"
+SMAUGBENCH="$(realpath "$(dirname "$0")/..")"
+echo "SMAUGBENCH project path: $SMAUGBENCH"
 
 # Load provided data_json file
 data_json="$1"
 if [ ! -f "$data_json" ]; then
-    data_json="$SMBENCH/smbench/datasets/$(basename "$1").json"
+    data_json="$SMAUGBENCH/smaugbench/datasets/$(basename "$1").json"
     if [ ! -f "$data_json" ]; then
         echo "Error: Could not find data JSON file."
         exit 1
@@ -38,9 +38,9 @@ if [ ! -f "$data_json" ]; then
 fi
 
 # Set the paths to the BIDS data folders
-bids="$SMBENCH_DATA"/bids
+bids="$SMAUGBENCH_DATA"/bids
 
-# Make sure $SMBENCH_DATA/bids exists and enter it
+# Make sure $SMAUGBENCH_DATA/bids exists and enter it
 mkdir -p "$bids"
 CURR_DIR="$(realpath .)"
 cd "$bids"

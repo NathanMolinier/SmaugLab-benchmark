@@ -4,10 +4,10 @@
 # Based on https://github.com/neuropoly/totalspineseg/blob/main/scripts/train.sh
 
 # The script expects the following environment variables to be set:
-#   SMBENCH_DATA: The path to the data folder where data and weights will be stored.
-#   SMBENCH_JOBS: The number of CPU cores to use. Default is the number of CPU cores available.
-#   SMBENCH_JOBSNN: The number of jobs to use for the nnUNet. Default is the number of CPU cores available or the available memory in GB divided by 8, whichever is smaller.
-#   SMBENCH_DEVICE: The device to use. Default is "cuda" if available, otherwise "cpu".
+#   SMAUGBENCH_DATA: The path to the data folder where data and weights will be stored.
+#   SMAUGBENCH_JOBS: The number of CPU cores to use. Default is the number of CPU cores available.
+#   SMAUGBENCH_JOBSNN: The number of jobs to use for the nnUNet. Default is the number of CPU cores available or the available memory in GB divided by 8, whichever is smaller.
+#   SMAUGBENCH_DEVICE: The device to use. Default is "cuda" if available, otherwise "cpu".
 
 # BASH SETTINGS
 # ======================================================================================================================
@@ -24,15 +24,15 @@ trap "echo Caught Keyboard Interrupt within script. Exiting now.; exit" INT
 # SCRIPT STARTS HERE
 # ======================================================================================================================
 
-# Check if SMBENCH_DATA is set else stop script.
-if [ -z "$SMBENCH_DATA" ]; then
-    echo "Please set the SMBENCH_DATA environment variable. This folder will store all preprocessed datasets and training."
+# Check if SMAUGBENCH_DATA is set else stop script.
+if [ -z "$SMAUGBENCH_DATA" ]; then
+    echo "Please set the SMAUGBENCH_DATA environment variable. This folder will store all preprocessed datasets and training."
     exit 1
 fi
 
 # Get project path
-SMBENCH="$(realpath "$(dirname "$0")/..")"
-echo "SMBENCH project path: $SMBENCH"
+SMAUGBENCH="$(realpath "$(dirname "$0")/..")"
+echo "SMAUGBENCH project path: $SMAUGBENCH"
 
 # Get memory in GB and number of CPUs
 if [[ "$OSTYPE" == "linux-gnu"* ]]; then
@@ -49,15 +49,15 @@ else
 fi
 
 # Set the number of jobs
-JOBS=${SMBENCH_JOBS:-$CORES}
+JOBS=${SMAUGBENCH_JOBS:-$CORES}
 
 # Set the number of jobs for the nnUNet
 JOBSNN=$(( JOBS < $((MEMGB / 8)) ? JOBS : $((MEMGB / 8)) ))
 JOBSNN=$(( JOBSNN < 1 ? 1 : JOBSNN ))
-JOBSNN=${SMBENCH_JOBSNN:-$JOBSNN}
+JOBSNN=${SMAUGBENCH_JOBSNN:-$JOBSNN}
 
 # Set the device to cpu if cuda is not available
-DEVICE=${SMBENCH_DEVICE:-$(python3 -c "import torch; print('cuda' if torch.cuda.is_available() else 'cpu')")}
+DEVICE=${SMAUGBENCH_DEVICE:-$(python3 -c "import torch; print('cuda' if torch.cuda.is_available() else 'cpu')")}
 
 # Set variables
 DATASET_ID="$1"
@@ -80,9 +80,9 @@ configuration=${3:-3d_fullres}
 # Set nnunet params
 export nnUNet_def_n_proc=$JOBSNN
 export nnUNet_n_proc_DA=$JOBSNN
-export nnUNet_raw="$SMBENCH_DATA"/nnUNet/raw
-export nnUNet_preprocessed="$SMBENCH_DATA"/nnUNet/preprocessed
-export nnUNet_results="$SMBENCH_DATA"/nnUNet/results
+export nnUNet_raw="$SMAUGBENCH_DATA"/nnUNet/raw
+export nnUNet_preprocessed="$SMAUGBENCH_DATA"/nnUNet/preprocessed
+export nnUNet_results="$SMAUGBENCH_DATA"/nnUNet/results
 
 # Copy smauglab trainer to nnunet folder
 if [[ "$nnUNetTrainer" == nnUNetTrainerDAExt* ]]; then

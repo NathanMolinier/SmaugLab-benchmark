@@ -15,8 +15,8 @@ trap "echo Caught Keyboard Interrupt within script. Exiting now.; exit" INT
 # SCRIPT STARTS HERE
 # ======================================================================================================================
 
-if [ -z "$SMBENCH_DATA" ]; then
-    echo "Please set the SMBENCH_DATA environment variable. This folder will store all preprocessed datasets and training."
+if [ -z "$SMAUGBENCH_DATA" ]; then
+    echo "Please set the SMAUGBENCH_DATA environment variable. This folder will store all preprocessed datasets and training."
     exit 1
 fi
 
@@ -106,7 +106,7 @@ if [ "$DO_TRAIN" = "true" ]; then
     fi
 
     # Archive config next to the weights (fold_0 is hardcoded in train.sh)
-    FOLD_DIR="$SMBENCH_DATA/nnUNet/results/Dataset${DATASET_ID}_${DATASET_NAME}/${NNUNET_TRAINER}__${NNUNET_PLANS}__${CONFIGURATION}/fold_0"
+    FOLD_DIR="$SMAUGBENCH_DATA/nnUNet/results/Dataset${DATASET_ID}_${DATASET_NAME}/${NNUNET_TRAINER}__${NNUNET_PLANS}__${CONFIGURATION}/fold_0"
     if [ -d "$FOLD_DIR" ]; then
         cp "$config_json" "$FOLD_DIR/config.json"
         echo "Config archived to $FOLD_DIR/config.json"

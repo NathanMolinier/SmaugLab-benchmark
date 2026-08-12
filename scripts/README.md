@@ -17,27 +17,27 @@ Adapted from [`totalspineseg/scripts`](https://github.com/neuropoly/totalspinese
 - Bash 4+
 - `jq`
 - `git` and [`git-annex`](https://git-annex.branchable.com/) with SSH access to `data.neuro.polymtl.ca`
-- Python environment with the `smbench` package and `nnunetv2` installed (see Installation instructions in the main README)
+- Python environment with the `smaugbench` package and `nnunetv2` installed (see Installation instructions in the main README)
 - For GPU training: PyTorch with CUDA
 
 ## Environment variables
 
 | Variable | Required | Default | Used by |
 | --- | --- | --- | --- |
-| `SMBENCH_DATA` | **yes** | — | all scripts. Root folder where `bids/` and `nnUNet/{raw,preprocessed,results}` are created. |
-| `SMBENCH_JOBS` | no | detected CPU count (`lscpu` on Linux or `sysctl hw.ncpu` on macOS) | `prepare_datasets.sh`, `train.sh` |
-| `SMBENCH_JOBSNN` | no | `min(SMBENCH_JOBS, RAM_GB / 8)` clamped to ≥ 1 | `prepare_datasets.sh`, `train.sh` |
-| `SMBENCH_DEVICE` | no | `cuda` if `torch.cuda.is_available()` else `cpu` | `train.sh` |
+| `SMAUGBENCH_DATA` | **yes** | — | all scripts. Root folder where `bids/` and `nnUNet/{raw,preprocessed,results}` are created. |
+| `SMAUGBENCH_JOBS` | no | detected CPU count (`lscpu` on Linux or `sysctl hw.ncpu` on macOS) | `prepare_datasets.sh`, `train.sh` |
+| `SMAUGBENCH_JOBSNN` | no | `min(SMAUGBENCH_JOBS, RAM_GB / 8)` clamped to ≥ 1 | `prepare_datasets.sh`, `train.sh` |
+| `SMAUGBENCH_DEVICE` | no | `cuda` if `torch.cuda.is_available()` else `cpu` | `train.sh` |
 
 Set once before running the scripts or inside your shell configuration file (e.g., `.bashrc`, `.zshrc`), for example:
 
 ```bash
-export SMBENCH_DATA=/path/to/scratch/smbench
+export SMAUGBENCH_DATA=/path/to/scratch/smaugbench
 ```
 
 ## Dataset JSON schema
 
-Each dataset is described by a JSON file (see `smbench/datasets/amos22.json` for a full example):
+Each dataset is described by a JSON file (see `smaugbench/datasets/amos22.json` for a full example):
 
 ```json
 {
@@ -53,11 +53,11 @@ Each dataset is described by a JSON file (see `smbench/datasets/amos22.json` for
 ```
 
 - `SOURCE[i]` and `COMMIT[i]` are paired: each source repo is checked out at the matching commit.
-- `IMAGE` / `LABEL` paths are **relative to `$SMBENCH_DATA/bids/`** and their first path segment is the repo name that owns them (used by `git annex get`).
+- `IMAGE` / `LABEL` paths are **relative to `$SMAUGBENCH_DATA/bids/`** and their first path segment is the repo name that owns them (used by `git annex get`).
 - All image/label files must be `.nii.gz`.
 - For every image, there must be exactly **one** label file with the same base name plus a `_<suffix>` marker (e.g. `sub-amos0056_CT.nii.gz` ↔ `sub-amos0056_CT_label-abdominal_dlabel.nii.gz`). `prepare_datasets.sh` will strip the suffix and rename it to match.
 
-The dataset argument accepted by scripts is either an **absolute path to a JSON file** or a JSON **shortcut name** already defined in `smbench/datasets/` that resolves to `smbench/datasets/<name>.json` (so `amos22` → `smbench/datasets/amos22.json`).
+The dataset argument accepted by scripts is either an **absolute path to a JSON file** or a JSON **shortcut name** already defined in `smaugbench/datasets/` that resolves to `smaugbench/datasets/<name>.json` (so `amos22` → `smaugbench/datasets/amos22.json`).
 
 ---
 
@@ -80,7 +80,7 @@ Clone the BIDS repos listed in a dataset JSON and pull the git-annex payload for
 **Result**
 
 ```
-$SMBENCH_DATA/
+$SMAUGBENCH_DATA/
 └── bids/
     └── abdominal-amos22/
         ├── sub-amos0056/…
@@ -119,12 +119,12 @@ Convert the BIDS layout into nnU-Net's `Dataset<ID>_<NAME>` layout, reorient to 
 **Result**
 
 ```
-$SMBENCH_DATA/nnUNet/
+$SMAUGBENCH_DATA/nnUNet/
 ├── raw/Dataset501_AMOS22/{imagesTr,labelsTr,imagesTs,labelsTs}
 └── preprocessed/Dataset501_AMOS22/splits_final.json
 ```
 
-Requires that `download_datasets.sh` has already populated `$SMBENCH_DATA/bids/`.
+Requires that `download_datasets.sh` has already populated `$SMAUGBENCH_DATA/bids/`.
 
 ---
 
@@ -168,7 +168,7 @@ DAExt trainers (`nnUNetTrainerDAExt…`) from [SmaugLab](https://github.com/neur
 ./scripts/train.sh 501 nnUNetTrainerDAExtGPU ./daext_config.json
 ```
 
-Training runs with `--c` (continue), so re-launching resumes from the last checkpoint. Outputs land under `$SMBENCH_DATA/nnUNet/results/Dataset<ID>_<NAME>/…`.
+Training runs with `--c` (continue), so re-launching resumes from the last checkpoint. Outputs land under `$SMAUGBENCH_DATA/nnUNet/results/Dataset<ID>_<NAME>/…`.
 
 ---
 
@@ -223,7 +223,7 @@ Drives all three scripts from a single JSON config, then archives that config ne
 After the `train` step finishes, the config JSON is copied to:
 
 ```
-$SMBENCH_DATA/nnUNet/results/Dataset<ID>_<NAME>/<trainer>__<plans>__<configuration>/fold_0/config.json
+$SMAUGBENCH_DATA/nnUNet/results/Dataset<ID>_<NAME>/<trainer>__<plans>__<configuration>/fold_0/config.json
 ```
 
 so each checkpoint carries the exact config used to produce it. Runs that skip the `train` step do not archive.
@@ -252,7 +252,7 @@ To re-train against already-downloaded and already-prepared data, set both `step
 Run the scripts individually:
 
 ```bash
-export SMBENCH_DATA=/scratch/smbench
+export SMAUGBENCH_DATA=/scratch/smaugbench
 
 ./scripts/download_datasets.sh amos22
 ./scripts/prepare_datasets.sh  amos22 501 AMOS22
@@ -262,15 +262,15 @@ export SMBENCH_DATA=/scratch/smbench
 Or drive them from a config:
 
 ```bash
-export SMBENCH_DATA=/scratch/smbench
+export SMAUGBENCH_DATA=/scratch/smaugbench
 
 ./scripts/run_pipeline.sh amos22_run.json
 ```
 
 ## Troubleshooting
 
-- **`Please set the SMBENCH_DATA environment variable.`** — export it and retry.
-- **`Could not find data JSON file.`** — pass an absolute path, or make sure `smbench/datasets/<name>.json` exists.
+- **`Please set the SMAUGBENCH_DATA environment variable.`** — export it and retry.
+- **`Could not find data JSON file.`** — pass an absolute path, or make sure `smaugbench/datasets/<name>.json` exists.
 - **`Could not find BIDS data folder.`** — run `download_datasets.sh` before `prepare_datasets.sh`.
 - **`Expected exactly one label file for image …`** — an image in the JSON has zero or more than one matching label file in `labelsTr` / `labelsTs`. Check the naming convention (`<image-basename>_<suffix>.nii.gz`).
 - **`git annex get` asks for credentials or fails** — confirm SSH access to `data.neuro.polymtl.ca` and that `git-annex` is installed.

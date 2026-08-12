@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "smbench"
+name = "smaugbench"
 # Placeholder only. The real version is substituted at build time by
 # poetry-dynamic-versioning from the git tag. Do not bump this by hand.
 version = "0.0.0"
@@ -30,11 +30,11 @@ keywords = [
     "magnetic resonance imaging",
     "mri",
 ]
-# smbench has no __init__.py anywhere, so it is a PEP 420 namespace package.
+# smaugbench has no __init__.py anywhere, so it is a PEP 420 namespace package.
 # poetry-core still walks the tree correctly; the CI build job and
-packages = [{ include = "smbench" }]
+packages = [{ include = "smaugbench" }]
 # The config JSONs are package data, not code, so they need listing explicitly.
-include = [{ path = "smbench/datasets/*.json", format = ["sdist", "wheel"] }]
+include = [{ path = "smaugbench/datasets/*.json", format = ["sdist", "wheel"] }]
 
 [tool.poetry.dependencies]
 python = ">=3.10"
@@ -49,9 +49,9 @@ nnunetv2 = { version = "*", optional = true }
 nnunetv2 = ["nnunetv2"]
 
 [tool.poetry.scripts]
-smbench_reorient_image = "smbench.utils.reorient_image:main"
-smbench_resample_image = "smbench.utils.resample_image:main"
-smbench_create_splits_nnunet = "smbench.utils.create_splits_nnunet:main"
+smaugbench_reorient_image = "smaugbench.utils.reorient_image:main"
+smaugbench_resample_image = "smaugbench.utils.resample_image:main"
+smaugbench_create_splits_nnunet = "smaugbench.utils.create_splits_nnunet:main"
 
 [build-system]
 requires = ["poetry-core>=1.0.0", "poetry-dynamic-versioning>=1.0.0,<2.0.0"]

@@ -19,20 +19,20 @@ trap "echo Caught Keyboard Interrupt within script. Exiting now.; exit" INT
 # SCRIPT STARTS HERE
 # ======================================================================================================================
 
-# Check if SMBENCH_DATA is set else stop script.
-if [ -z "$SMBENCH_DATA" ]; then
-    echo "Please set the SMBENCH_DATA environment variable. This folder will store all preprocessed datasets and training."
+# Check if SMAUGBENCH_DATA is set else stop script.
+if [ -z "$SMAUGBENCH_DATA" ]; then
+    echo "Please set the SMAUGBENCH_DATA environment variable. This folder will store all preprocessed datasets and training."
     exit 1
 fi
 
 # Get project path
-SMBENCH="$(realpath "$(dirname "$0")/..")"
-echo "SMBENCH project path: $SMBENCH"
+SMAUGBENCH="$(realpath "$(dirname "$0")/..")"
+echo "SMAUGBENCH project path: $SMAUGBENCH"
 
 # Load provided data_json file
 data_json="$1"
 if [ ! -f "$data_json" ]; then
-    data_json="$SMBENCH/smbench/datasets/$(basename "$1").json"
+    data_json="$SMAUGBENCH/smaugbench/datasets/$(basename "$1").json"
     if [ ! -f "$data_json" ]; then
         echo "Error: Could not find data JSON file."
         exit 1
@@ -40,9 +40,9 @@ if [ ! -f "$data_json" ]; then
 fi
 
 # Set the paths to the BIDS data folders
-bids="$SMBENCH_DATA"/bids
+bids="$SMAUGBENCH_DATA"/bids
 
-# Make sure $SMBENCH_DATA/bids exists and enter it
+# Make sure $SMAUGBENCH_DATA/bids exists and enter it
 if [ ! -d "$bids" ]; then
     echo "Error: Could not find BIDS data folder. Please run the download_datasets.sh script first."
     exit 1
@@ -65,17 +65,17 @@ else
 fi
 
 # Set the number of jobs
-JOBS=${SMBENCH_JOBS:-$CORES}
+JOBS=${SMAUGBENCH_JOBS:-$CORES}
 
 # Set the number of jobs for the nnUNet
 JOBSNN=$(( JOBS < $((MEMGB / 8)) ? JOBS : $((MEMGB / 8)) ))
 JOBSNN=$(( JOBSNN < 1 ? 1 : JOBSNN ))
-JOBSNN=${SMBENCH_JOBSNN:-$JOBSNN}
+JOBSNN=${SMAUGBENCH_JOBSNN:-$JOBSNN}
 
 # Set nnunet params
-nnUNet_raw="$SMBENCH_DATA"/nnUNet/raw
-nnUNet_preprocessed="$SMBENCH_DATA"/nnUNet/preprocessed
-nnUNet_results="$SMBENCH_DATA"/nnUNet/results
+nnUNet_raw="$SMAUGBENCH_DATA"/nnUNet/raw
+nnUNet_preprocessed="$SMAUGBENCH_DATA"/nnUNet/preprocessed
+nnUNet_results="$SMAUGBENCH_DATA"/nnUNet/results
 
 DATASET_ID="$2"
 DATASET_NAME="$3"
@@ -144,13 +144,13 @@ done
 
 # Reorient images to same orientation
 echo "Transform training and validation images to $ORIENTATION"
-smbench_reorient_image -i "$IMAGES_TRAIN_DIR" -o "$IMAGES_TRAIN_DIR" -ori $ORIENTATION -r -w $JOBS
-smbench_reorient_image -i "$LABELS_TRAIN_DIR" -o "$LABELS_TRAIN_DIR" -ori $ORIENTATION -r -w $JOBS
+smaugbench_reorient_image -i "$IMAGES_TRAIN_DIR" -o "$IMAGES_TRAIN_DIR" -ori $ORIENTATION -r -w $JOBS
+smaugbench_reorient_image -i "$LABELS_TRAIN_DIR" -o "$LABELS_TRAIN_DIR" -ori $ORIENTATION -r -w $JOBS
 
 # Resample images to a same resolution
 echo "Resample training and validation images to $RESOLUTION"
-smbench_resample_image -i "$IMAGES_TRAIN_DIR" -o "$IMAGES_TRAIN_DIR" -res $RESOLUTION -int linear -r -w $JOBS
-smbench_resample_image -i "$LABELS_TRAIN_DIR" -o "$LABELS_TRAIN_DIR" -res $RESOLUTION -int nn -r -w $JOBS
+smaugbench_resample_image -i "$IMAGES_TRAIN_DIR" -o "$IMAGES_TRAIN_DIR" -res $RESOLUTION -int linear -r -w $JOBS
+smaugbench_resample_image -i "$LABELS_TRAIN_DIR" -o "$LABELS_TRAIN_DIR" -res $RESOLUTION -int nn -r -w $JOBS
 
 ### Prepare TEST set
 
@@ -191,26 +191,26 @@ done
 
 # Reorient images to same orientation
 echo "Transform test images to $ORIENTATION"
-smbench_reorient_image -i "$IMAGES_TEST_DIR" -o "$IMAGES_TEST_DIR" -ori $ORIENTATION -r -w $JOBS
-smbench_reorient_image -i "$LABELS_TEST_DIR" -o "$LABELS_TEST_DIR" -ori $ORIENTATION -r -w $JOBS
+smaugbench_reorient_image -i "$IMAGES_TEST_DIR" -o "$IMAGES_TEST_DIR" -ori $ORIENTATION -r -w $JOBS
+smaugbench_reorient_image -i "$LABELS_TEST_DIR" -o "$LABELS_TEST_DIR" -ori $ORIENTATION -r -w $JOBS
 
 # Resample images to a same resolution
 echo "Resample test images to $RESOLUTION"
-smbench_resample_image -i "$IMAGES_TEST_DIR" -o "$IMAGES_TEST_DIR" -res $RESOLUTION -int linear -r -w $JOBS
-smbench_resample_image -i "$LABELS_TEST_DIR" -o "$LABELS_TEST_DIR" -res $RESOLUTION -int nn -r -w $JOBS
+smaugbench_resample_image -i "$IMAGES_TEST_DIR" -o "$IMAGES_TEST_DIR" -res $RESOLUTION -int linear -r -w $JOBS
+smaugbench_resample_image -i "$LABELS_TEST_DIR" -o "$LABELS_TEST_DIR" -res $RESOLUTION -int nn -r -w $JOBS
 
 ### nnUNet Plan and Preprocess
 export nnUNet_def_n_proc=$JOBSNN
 export nnUNet_n_proc_DA=$JOBSNN
-export nnUNet_raw="$SMBENCH_DATA"/nnUNet/raw
-export nnUNet_preprocessed="$SMBENCH_DATA"/nnUNet/preprocessed
-export nnUNet_results="$SMBENCH_DATA"/nnUNet/results
+export nnUNet_raw="$SMAUGBENCH_DATA"/nnUNet/raw
+export nnUNet_preprocessed="$SMAUGBENCH_DATA"/nnUNet/preprocessed
+export nnUNet_results="$SMAUGBENCH_DATA"/nnUNet/results
 
 echo "Run nnUNet plan and preprocess"
 nnUNetv2_plan_and_preprocess -d $DATASET_ID -pl $nnUNetPlanner -overwrite_plans_name $nnUNetPlans -c $configuration -np $JOBSNN --verify_dataset_integrity
 
 # Overwrite nnUNet splits_final.json
-smbench_create_splits_nnunet -i "$data_json" -o "$nnUNet_preprocessed"/$SRC_DATASET/splits_final.json -r $JOBS
+smaugbench_create_splits_nnunet -i "$data_json" -o "$nnUNet_preprocessed"/$SRC_DATASET/splits_final.json -r $JOBS
 
 # Move back
 cd "$CURR_DIR"
