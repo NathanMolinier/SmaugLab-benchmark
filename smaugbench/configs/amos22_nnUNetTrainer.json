@@ -1,6 +1,6 @@
 {
   "steps": {
-    "download": true,
+    "download": false,
     "prepare": true,
     "train": true
   },
@@ -18,3 +18,4 @@
   "nnunet_trainer_config": null,
   "nnunet_folder_name": "nnUNetTrainer"
 }
+
