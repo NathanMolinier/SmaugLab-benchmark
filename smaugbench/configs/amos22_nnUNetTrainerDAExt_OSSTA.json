@@ -14,7 +14,7 @@
   "nnunet_plans":   "nnUNetPlans",
   "configuration":  "3d_fullres",
 
-  "nnunet_trainer": "nnUNetTrainer",
-  "nnunet_trainer_config": null,
-  "nnunet_folder_name": "nnUNetTrainer"
+  "nnunet_trainer": "nnUNetTrainerDAExtGPU",
+  "nnunet_trainer_config": "/home/ge.polymtl.ca/p118739/code/SmaugLab/smauglab/configs/transform_params_one-sequence-to-segment-them-all.json",
+  "nnunet_folder_name": "nnUNetTrainerDAExtGPU_OSSTA"
 }
