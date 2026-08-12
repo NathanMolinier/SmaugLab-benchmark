@@ -1,6 +1,9 @@
 # Vscode
 .vscode
 
+# Claude
+.claude
+
 # Local History for Visual Studio Code
 .history/
 
