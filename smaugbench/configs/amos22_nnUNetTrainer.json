@@ -15,5 +15,6 @@
   "configuration":  "3d_fullres",
 
   "nnunet_trainer": "nnUNetTrainer",
-  "nnunet_trainer_config": null
+  "nnunet_trainer_config": null,
+  "nnunet_folder_name": "nnUNetTrainer"
 }

@@ -63,6 +63,7 @@ DATASET_NAME=$(jreq '.dataset_name' )
 # Train-only parameters
 NNUNET_TRAINER=$(jopt        '.nnunet_trainer'        'empty')
 NNUNET_TRAINER_CONFIG=$(jopt '.nnunet_trainer_config' 'empty')
+NNUNET_FOLDER_NAME=$(jreq  '.nnunet_folder_name' )
 
 echo ""
 echo "Pipeline steps: download=$DO_DOWNLOAD prepare=$DO_PREPARE train=$DO_TRAIN"
@@ -87,6 +88,7 @@ if [ "$DO_PREPARE" = "true" ]; then
 fi
 
 # 3. Train
+export nnUNet_results="$SMAUGBENCH_DATA"/nnUNet/results/"$NNUNET_FOLDER_NAME"
 if [ "$DO_TRAIN" = "true" ]; then
     if [ -z "$DATASET_ID" ] || [ -z "$NNUNET_TRAINER" ]; then
         echo "config: .dataset_id and .nnunet_trainer are required when steps.train=true"
@@ -106,7 +108,7 @@ if [ "$DO_TRAIN" = "true" ]; then
     fi
 
     # Archive config next to the weights (fold_0 is hardcoded in train.sh)
-    FOLD_DIR="$SMAUGBENCH_DATA/nnUNet/results/Dataset${DATASET_ID}_${DATASET_NAME}/${NNUNET_TRAINER}__${NNUNET_PLANS}__${CONFIGURATION}/fold_0"
+    FOLD_DIR="$nnUNet_results/Dataset${DATASET_ID}_${DATASET_NAME}/${NNUNET_TRAINER}__${NNUNET_PLANS}__${CONFIGURATION}/fold_0"
     if [ -d "$FOLD_DIR" ]; then
         cp "$config_json" "$FOLD_DIR/config.json"
         echo "Config archived to $FOLD_DIR/config.json"

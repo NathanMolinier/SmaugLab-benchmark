@@ -80,9 +80,11 @@ configuration=${3:-3d_fullres}
 # Set nnunet params
 export nnUNet_def_n_proc=$JOBSNN
 export nnUNet_n_proc_DA=$JOBSNN
-export nnUNet_raw="$SMAUGBENCH_DATA"/nnUNet/raw
-export nnUNet_preprocessed="$SMAUGBENCH_DATA"/nnUNet/preprocessed
-export nnUNet_results="$SMAUGBENCH_DATA"/nnUNet/results
+
+# Check if variables are already set
+export nnUNet_raw=${nnUNet_raw:-"$SMAUGBENCH_DATA"/nnUNet/raw}
+export nnUNet_preprocessed=${nnUNet_preprocessed:-"$SMAUGBENCH_DATA"/nnUNet/preprocessed}
+export nnUNet_results=${nnUNet_results:-"$SMAUGBENCH_DATA"/nnUNet/results}
 
 # Copy smauglab trainer to nnunet folder
 if [[ "$nnUNetTrainer" == nnUNetTrainerDAExt* ]]; then
