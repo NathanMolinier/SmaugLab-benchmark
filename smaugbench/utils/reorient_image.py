@@ -130,8 +130,8 @@ def _reorient(
 
     if not image_path.exists() or not image_path.is_file():
         raise FileNotFoundError(f'Input image file {image_path} does not exist.')
-    print(f'Processing image: {image_path} -> {output_image_path}')
-    image = Image(image_path)
+
+    image = Image(str(image_path))
 
     # Reorient the image to the specified orientation using SCT's convention
     # https://github.com/spinalcordtoolbox/spinalcordtoolbox/issues/4419
@@ -139,7 +139,7 @@ def _reorient(
 
     # Make sure output directory exists and save the image
     output_image_path.parent.mkdir(parents=True, exist_ok=True)
-    image.save(output_image_path)
+    image.save(str(output_image_path))
 
 if __name__ == '__main__':
     main()

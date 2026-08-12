@@ -140,7 +140,7 @@ def _resample(
     if not overwrite and output_image_path.exists():
         return
 
-    image = Image(image_path)
+    image = Image(str(image_path))
 
     # Resample the image to the specified resolution
     resolution_tuple = tuple(map(float, resolution.split('x')))
@@ -148,7 +148,7 @@ def _resample(
 
     # Make sure output directory exists and save the image
     output_image_path.parent.mkdir(parents=True, exist_ok=True)
-    image.save(output_image_path)
+    image.save(str(output_image_path))
 
 if __name__ == '__main__':
     main()
