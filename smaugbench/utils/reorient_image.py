@@ -139,7 +139,7 @@ def _reorient(
 
     # Make sure output directory exists and save the image
     output_image_path.parent.mkdir(parents=True, exist_ok=True)
-    image.save(str(output_image_path))
+    image.save(str(output_image_path), verbose=False)
 
 if __name__ == '__main__':
     main()

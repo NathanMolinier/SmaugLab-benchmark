@@ -113,7 +113,6 @@ def resample_mp(
             overwrite=overwrite,
             resolution=resolution,
             interpolation=interpolation,
-            quiet=quiet
         ),
         image_path_list,
         output_image_path_list,
@@ -128,7 +127,6 @@ def _resample(
         overwrite=False,
         resolution='1x1x1',
         interpolation='linear',
-        quiet=False
     ):
     '''
     Resample the image to the specified resolution.
@@ -144,11 +142,11 @@ def _resample(
 
     # Resample the image to the specified resolution
     resolution_tuple = tuple(map(float, resolution.split('x')))
-    image = resample_nib(image, new_size=resolution_tuple, new_size_type='mm', interpolation=interpolation, verbose=not quiet)
+    image = resample_nib(image, new_size=resolution_tuple, new_size_type='mm', interpolation=interpolation, verbose=False)
 
     # Make sure output directory exists and save the image
     output_image_path.parent.mkdir(parents=True, exist_ok=True)
-    image.save(str(output_image_path))
+    image.save(str(output_image_path), verbose=False)
 
 if __name__ == '__main__':
     main()
