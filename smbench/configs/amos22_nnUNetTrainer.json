@@ -1,0 +1,19 @@
+{
+  "steps": {
+    "download": true,
+    "prepare": true,
+    "train": true
+  },
+
+  "data_json": "amos22",
+
+  "dataset_id": 501,
+  "dataset_name": "AMOS22",
+
+  "nnunet_planner": "nnUNetPlannerResEncL",
+  "nnunet_plans":   "nnUNetPlans",
+  "configuration":  "3d_fullres",
+
+  "nnunet_trainer": "nnUNetTrainer",
+  "nnunet_trainer_config": null
+}

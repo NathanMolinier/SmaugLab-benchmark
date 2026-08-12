@@ -6,6 +6,8 @@ End-to-end pipeline for training [nnU-Net](https://github.com/MIC-DKFZ/nnUNet) v
 download_datasets.sh  →  prepare_datasets.sh  →  train.sh
 ```
 
+Each script can be invoked individually, or all three can be driven from a single JSON config through `run_pipeline.sh` (see [§4](#4-run_pipelinesh)).
+
 Adapted from [`totalspineseg/scripts`](https://github.com/neuropoly/totalspineseg/tree/4502d41bcb4a12e44f4be666411461ca81b02d89/scripts).
 
 ---
@@ -170,7 +172,84 @@ Training runs with `--c` (continue), so re-launching resumes from the last check
 
 ---
 
+## 4. `run_pipeline.sh`
+
+Drives all three scripts from a single JSON config, then archives that config next to the trained weights.
+
+**Usage**
+
+```bash
+./scripts/run_pipeline.sh <pipeline-config.json>
+```
+
+**Config schema** (all `steps.*` default to `true`; setting any of them to `false` skips that step):
+
+```json
+{
+  "steps": {
+    "download": true,
+    "prepare": true,
+    "train": true
+  },
+
+  "data_json": "amos22",
+
+  "dataset_id": 501,
+  "dataset_name": "AMOS22",
+
+  "nnunet_planner": "nnUNetPlannerResEncL",
+  "nnunet_plans":   "nnUNetPlans",
+  "configuration":  "3d_fullres",
+
+  "nnunet_trainer": "nnUNetTrainer",
+  "nnunet_trainer_config": null
+}
+```
+
+| Key | Required for | Default | Description |
+| --- | --- | --- | --- |
+| `steps.download` / `steps.prepare` / `steps.train` | — | `true` | Toggle each pipeline step. |
+| `data_json` | all steps | — | Absolute path or shortcut name for the dataset JSON (see [§Dataset JSON schema](#dataset-json-schema)). |
+| `dataset_id` | prepare, train | — | nnUNet dataset ID (integer). |
+| `dataset_name` | prepare | — | nnUNet dataset name (also used to locate the archive folder after training). |
+| `nnunet_planner` | prepare | `nnUNetPlannerResEncL` | |
+| `nnunet_plans` | prepare, train | `nnUNetPlans` | |
+| `configuration` | prepare, train | `3d_fullres` | |
+| `nnunet_trainer` | train | — | e.g. `nnUNetTrainer`, `nnUNetTrainerDA5`, `nnUNetTrainerDAExt…` |
+| `nnunet_trainer_config` | train (DAExt only) | — | Path to the DAExt GPU-params JSON. |
+
+**Config archival**
+
+After the `train` step finishes, the config JSON is copied to:
+
+```
+$SMBENCH_DATA/nnUNet/results/Dataset<ID>_<NAME>/<trainer>__<plans>__<configuration>/fold_0/config.json
+```
+
+so each checkpoint carries the exact config used to produce it. Runs that skip the `train` step do not archive.
+
+**Example**
+
+```bash
+cat > amos22_run.json <<'EOF'
+{
+  "data_json": "amos22",
+  "dataset_id": 501,
+  "dataset_name": "AMOS22",
+  "nnunet_trainer": "nnUNetTrainer",
+}
+EOF
+
+./scripts/run_pipeline.sh amos22_run.json
+```
+
+To re-train against already-downloaded and already-prepared data, set both `steps.download` and `steps.prepare` to `false`.
+
+---
+
 ## End-to-end example
+
+Run the scripts individually:
 
 ```bash
 export SMBENCH_DATA=/scratch/smbench
@@ -178,6 +257,14 @@ export SMBENCH_DATA=/scratch/smbench
 ./scripts/download_datasets.sh amos22
 ./scripts/prepare_datasets.sh  amos22 501 AMOS22
 ./scripts/train.sh             501    nnUNetTrainer
+```
+
+Or drive them from a config:
+
+```bash
+export SMBENCH_DATA=/scratch/smbench
+
+./scripts/run_pipeline.sh amos22_run.json
 ```
 
 ## Troubleshooting
