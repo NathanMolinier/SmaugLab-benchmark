@@ -128,7 +128,7 @@ def _reorient(
     if not overwrite and output_image_path.exists():
         return
 
-    if not image_path.exists():
+    if not image_path.exists() or not image_path.is_file():
         raise FileNotFoundError(f'Input image file {image_path} does not exist.')
 
     image = Image(image_path)
