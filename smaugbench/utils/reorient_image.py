@@ -128,6 +128,9 @@ def _reorient(
     if not overwrite and output_image_path.exists():
         return
 
+    if not image_path.exists():
+        raise FileNotFoundError(f'Input image file {image_path} does not exist.')
+
     image = Image(image_path)
 
     # Reorient the image to the specified orientation using SCT's convention
