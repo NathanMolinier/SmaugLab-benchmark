@@ -110,6 +110,8 @@ if [ "$DO_TRAIN" = "true" ]; then
     if [ -d "$FOLD_DIR" ]; then
         cp "$config_json" "$FOLD_DIR/config.json"
         echo "Config archived to $FOLD_DIR/config.json"
+        cp "$DATA_JSON" "$FOLD_DIR/data.json"
+        echo "Data archived to $FOLD_DIR/data.json"
     else
         echo "Warning: expected fold folder $FOLD_DIR does not exist; config not archived."
     fi
