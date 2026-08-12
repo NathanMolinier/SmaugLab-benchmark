@@ -7,6 +7,24 @@
     "COMMIT":[
         "dfff51b6fbb46dcbe2465739fb52f1ca3e3bb767"
     ],
+    "LABELS": {
+            "0": "background",
+            "1": "spleen",
+            "2": "right kidney",
+            "3": "left kidney",
+            "4": "gall bladder",
+            "5": "esophagus",
+            "6": "liver",
+            "7": "stomach",
+            "8": "arota",
+            "9": "postcava",
+            "10": "pancreas",
+            "11": "right adrenal gland",
+            "12": "left adrenal gland",
+            "13": "duodenum",
+            "14": "bladder",
+            "15": "prostate/uterus"
+    },
     "TRAINING": [
         {
             "IMAGE": "abdominal-amos22/sub-amos0056/anat/sub-amos0056_CT.nii.gz",

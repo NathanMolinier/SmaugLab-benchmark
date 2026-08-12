@@ -45,6 +45,7 @@ Each dataset is described by a JSON file (see `smaugbench/datasets/amos22.json` 
   "CONTRASTS": "CT_MR",
   "SOURCE":  ["git@data.neuro.polymtl.ca:datasets/abdominal-amos22.git"],
   "COMMIT":  ["dfff51b6fbb46dcbe2465739fb52f1ca3e3bb767"],
+  "LABELS": {"0": "background","1": "spleen"},
   "TRAINING":   [{ "IMAGE": "abdominal-amos22/sub-amos0056/anat/sub-amos0056_CT.nii.gz",
                    "LABEL": "abdominal-amos22/derivatives/labels/sub-amos0056/anat/sub-amos0056_CT_label-abdominal_dlabel.nii.gz" }],
   "VALIDATION": [{ "IMAGE": "…", "LABEL": "…" }],

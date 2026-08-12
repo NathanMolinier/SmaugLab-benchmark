@@ -199,6 +199,10 @@ echo "Resample test images to $RESOLUTION"
 smaugbench_resample_image -i "$IMAGES_TEST_DIR" -o "$IMAGES_TEST_DIR" -res $RESOLUTION -int linear -r -w $JOBS
 smaugbench_resample_image -i "$LABELS_TEST_DIR" -o "$LABELS_TEST_DIR" -res $RESOLUTION -int nn -r -w $JOBS
 
+# Create dataset.json file for nnUNet
+echo "Create dataset.json file for nnUNet"
+smaugbench_dataset_json_nnunet -i "$data_json" -o "$nnUNet_raw"/$SRC_DATASET/dataset.json -r
+
 ### nnUNet Plan and Preprocess
 export nnUNet_def_n_proc=$JOBSNN
 export nnUNet_n_proc_DA=$JOBSNN
