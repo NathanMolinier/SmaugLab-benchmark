@@ -135,13 +135,13 @@ Launch `nnUNetv2_train` on fold 0 of a prepared dataset. Currently hard-coded to
 Default nnUNet trainers (e.g., `nnUNetTrainer`, `nnUNetTrainerDA5`, etc.) take the following arguments:
 
 ```bash
-./scripts/train.sh <DATASET_ID> <nnUNetTrainer> [nnUNetPlanner] [nnUNetPlans] [configuration] [visible_gpu]
+./scripts/train.sh <DATASET_ID> <nnUNetTrainer> [nnUNetPlanner] [nnUNetPlans] [configuration]
 ```
 
 DAExt trainers (`nnUNetTrainerDAExt…`) from [SmaugLab](https://github.com/neuropoly/SmaugLab) take an extra config path as arg 3:
 
 ```bash
-./scripts/train.sh <DATASET_ID> <nnUNetTrainerDAExt...> <config.json> [nnUNetPlanner] [nnUNetPlans] [configuration] [visible_gpu]
+./scripts/train.sh <DATASET_ID> <nnUNetTrainerDAExt...> <config.json> [nnUNetPlanner] [nnUNetPlans] [configuration]
 ```
 
 | Position (std / DAExt) | Arg | Default | Description |
@@ -151,17 +151,16 @@ DAExt trainers (`nnUNetTrainerDAExt…`) from [SmaugLab](https://github.com/neur
 | — / 3 | DAExt config JSON | — | The DAExt config file to use |
 | 3 / 4 | `nnUNetPlanner` | `nnUNetPlannerResEncL` | The nnUNet planner to use |
 | 4 / 5 | `nnUNetPlans` | `nnUNetPlans` | The nnUNet plans to use |
-| 5 / 6 | `configuration` | `3d_fullres` | The nnUNet configuration to use (mapped to `CUDA_VISIBLE_DEVICES`) |
-| 6 / 7 | `visible_gpu` | `0` | The GPU to use |
+| 5 / 6 | `configuration` | `3d_fullres` | The nnUNet configuration to use |
 
 **Examples**
 
 ```bash
-# Standard trainer on GPU 0
+# Standard trainer
 ./scripts/train.sh 501 nnUNetTrainer
 
-# Standard trainer on GPU 1 with a custom configuration
-./scripts/train.sh 501 nnUNetTrainer nnUNetPlannerResEncL nnUNetPlans 3d_fullres 1
+# Standard trainer with a custom configuration
+./scripts/train.sh 501 nnUNetTrainer nnUNetPlannerResEncL nnUNetPlans 3d_fullres
 
 # DAExt trainer with its GPU-params JSON
 ./scripts/train.sh 501 nnUNetTrainerDAExtGPU ./daext_config.json
