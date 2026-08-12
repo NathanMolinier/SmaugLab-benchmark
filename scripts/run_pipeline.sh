@@ -112,6 +112,8 @@ if [ "$DO_TRAIN" = "true" ]; then
         echo "Config archived to $FOLD_DIR/config.json"
         cp "$DATA_JSON" "$FOLD_DIR/data.json"
         echo "Data archived to $FOLD_DIR/data.json"
+        pip freeze > "$FOLD_DIR/requirements.txt"
+        echo "Requirements archived to $FOLD_DIR/requirements.txt"
     else
         echo "Warning: expected fold folder $FOLD_DIR does not exist; config not archived."
     fi
