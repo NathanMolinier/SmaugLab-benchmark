@@ -189,7 +189,7 @@ fi
 # Run model inference
 PRED_DIR="$inference_dir"/"$SRC_DATASET"/prediction_"$NNUNET_FOLDER_NAME"
 export nnUNet_results="$SMAUGBENCH_DATA"/nnUNet/results/"$NNUNET_FOLDER_NAME"
-nnUNetv2_predict -i "$IMAGES_DIR" -o "$PRED_DIR" -d "$DATASET_ID" -tr $NNUNET_TRAINER -p $NNUNET_PLANS --c -device $DEVICE
+nnUNetv2_predict -i "$IMAGES_DIR" -o "$PRED_DIR" -d "$DATASET_ID" -tr "$NNUNET_TRAINER" -p "$NNUNET_PLANS" -c "$CONFIGURATION" -f "$FOLD" -device $DEVICE
 
 # Remove nnUNet suffix _0000 from image filenames
 for img in "$IMAGES_DIR"/*_0000.nii.gz; do
@@ -203,4 +203,4 @@ mkdir -p "$METRICS_DIR"
 
 # Create mapping for measurements
 jq '.LABELS |= (to_entries | map({key: .value, value: (.key | tonumber)}) | from_entries)' "$DATA_JSON"  > "$METRICS_DIR"/mapping.json
-smaugbench_compute_pairwise_measurements -pred "$PRED_DIR" -ref "$LABELS_DIR" -pred-map "$METRICS_DIR"/mapping.json -ref-map "$METRICS_DIR"/mapping.json -o "$METRICS_DIR"/metrics.csv -metrics 'dsc' 'nsd' 'hd'
+smaugbench_compute_pairwise_measurements -pred "$PRED_DIR" -ref "$LABELS_DIR" -pred-map "$METRICS_DIR"/mapping.json -ref-map "$METRICS_DIR"/mapping.json -o "$METRICS_DIR"/metrics.csv -metrics "dsc" "nsd" "hd" 
