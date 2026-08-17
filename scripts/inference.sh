@@ -121,6 +121,8 @@ fi
 
 SRC_DATASET=Dataset${DATASET_ID}_${DATASET_NAME}
 inference_dir="$SMAUGBENCH_DATA"/inference
+IMAGES_DIR="$inference_dir"/"$SRC_DATASET"/images
+LABELS_DIR="$inference_dir"/"$SRC_DATASET"/labels
 
 if [ "$DO_PREPROCESSING" = "true" ] || [ ! -d "$inference_dir" ]; then
     echo "Preprocess inference data"
@@ -137,9 +139,6 @@ if [ "$DO_PREPROCESSING" = "true" ] || [ ! -d "$inference_dir" ]; then
     mkdir -p "$inference_dir"
 
     # Prepare inference data
-    IMAGES_DIR="$inference_dir"/"$SRC_DATASET"/images
-    LABELS_DIR="$inference_dir"/"$SRC_DATASET"/labels
-
     echo "Creating inference folders"
     mkdir -p "$IMAGES_DIR"
     mkdir -p "$LABELS_DIR"
