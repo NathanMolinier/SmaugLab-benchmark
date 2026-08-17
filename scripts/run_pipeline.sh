@@ -74,7 +74,7 @@ echo ""
 
 # Get data_json path
 if [ ! -f "$DATA_JSON" ]; then
-    DATA_JSON="$SMAUGBENCH/smaugbench/datasets/$(basename "$1").json"
+    DATA_JSON="$SMAUGBENCH/smaugbench/datasets/$(basename "$DATA_JSON").json"
     if [ ! -f "$DATA_JSON" ]; then
         echo "Error: Could not find data JSON file: $DATA_JSON"
         exit 1
