@@ -152,53 +152,6 @@ echo "Resample training and validation images to $RESOLUTION"
 smaugbench_resample_image -i "$IMAGES_TRAIN_DIR" -o "$IMAGES_TRAIN_DIR" -res $RESOLUTION -int linear -r -w $JOBS
 smaugbench_resample_image -i "$LABELS_TRAIN_DIR" -o "$LABELS_TRAIN_DIR" -res $RESOLUTION -int nn -r -w $JOBS
 
-### Prepare TEST set
-
-IMAGES_TEST_DIR="$nnUNet_raw"/$SRC_DATASET/imagesTs
-LABELS_TEST_DIR="$nnUNet_raw"/$SRC_DATASET/labelsTs
-
-echo "Creating test folders"
-mkdir -p "$IMAGES_TEST_DIR"
-mkdir -p "$LABELS_TEST_DIR"
-
-# Copy test data in nnUNet_raw folder
-jq -r '.TESTING[].LABEL' "$data_json" | xargs -I{} cp "{}" "$LABELS_TEST_DIR/"
-
-# Copy images and add nnUNet suffix _0000
-jq -r '.TESTING[].IMAGE' "$data_json" | while IFS= read -r img; do
-    cp "$img" "$IMAGES_TEST_DIR/$(basename "${img/.nii.gz/_0000.nii.gz}")"
-done
-
-# Remove label suffix from filename
-for img in "$IMAGES_TEST_DIR"/*_0000.nii.gz; do
-    # Get the filename without the path
-    filename=$(basename "$img")
-    # Extract the prefix by removing the _0000.nii.gz extension
-    prefix="${filename%_0000.nii.gz}"
-    # Use nullglob so the array is empty if no files match (instead of containing the literal '*' string)
-    shopt -s nullglob
-    # Find all labels that start with the prefix and have an underscore afterward
-    label_matches=("$LABELS_TEST_DIR"/"$prefix"_*.nii.gz)
-    shopt -u nullglob
-    match_count=${#label_matches[@]}
-    if [ "$match_count" -ne 1 ]; then
-        echo "Error: Expected exactly one label file for image $filename, but found $match_count."
-        exit 1
-    fi
-    # Rename label file
-    mv "${label_matches[0]}" "$LABELS_TEST_DIR"/"$prefix".nii.gz
-done
-
-# Reorient images to same orientation
-echo "Transform test images to $ORIENTATION"
-smaugbench_reorient_image -i "$IMAGES_TEST_DIR" -o "$IMAGES_TEST_DIR" -ori $ORIENTATION -r -w $JOBS
-smaugbench_reorient_image -i "$LABELS_TEST_DIR" -o "$LABELS_TEST_DIR" -ori $ORIENTATION -r -w $JOBS
-
-# Resample images to a same resolution
-echo "Resample test images to $RESOLUTION"
-smaugbench_resample_image -i "$IMAGES_TEST_DIR" -o "$IMAGES_TEST_DIR" -res $RESOLUTION -int linear -r -w $JOBS
-smaugbench_resample_image -i "$LABELS_TEST_DIR" -o "$LABELS_TEST_DIR" -res $RESOLUTION -int nn -r -w $JOBS
-
 # Create dataset.json file for nnUNet
 echo "Create dataset.json file for nnUNet"
 smaugbench_dataset_json_nnunet -i "$data_json" -o "$nnUNet_raw"/$SRC_DATASET/dataset.json -r
