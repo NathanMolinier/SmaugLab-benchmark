@@ -106,17 +106,17 @@ if [ "$DO_TRAIN" = "true" ]; then
         exit 1
     fi
     echo "==> train.sh"
-    # if [[ "$NNUNET_TRAINER" == nnUNetTrainerDAExt* ]]; then
-    #     if [ -z "$NNUNET_TRAINER_CONFIG" ]; then
-    #         echo "config: .nnunet_trainer_config is required for DAExt trainers"
-    #         exit 1
-    #     fi
-    #     "$SCRIPT_DIR/train.sh" "$DATASET_ID" "$NNUNET_TRAINER" "$NNUNET_TRAINER_CONFIG" \
-    #         "$NNUNET_PLANNER" "$NNUNET_PLANS" "$CONFIGURATION"
-    # else
-    #     "$SCRIPT_DIR/train.sh" "$DATASET_ID" "$NNUNET_TRAINER" \
-    #         "$NNUNET_PLANNER" "$NNUNET_PLANS" "$CONFIGURATION"
-    # fi
+    if [[ "$NNUNET_TRAINER" == nnUNetTrainerDAExt* ]]; then
+        if [ -z "$NNUNET_TRAINER_CONFIG" ]; then
+            echo "config: .nnunet_trainer_config is required for DAExt trainers"
+            exit 1
+        fi
+        "$SCRIPT_DIR/train.sh" "$DATASET_ID" "$NNUNET_TRAINER" "$NNUNET_TRAINER_CONFIG" \
+            "$NNUNET_PLANNER" "$NNUNET_PLANS" "$CONFIGURATION"
+    else
+        "$SCRIPT_DIR/train.sh" "$DATASET_ID" "$NNUNET_TRAINER" \
+            "$NNUNET_PLANNER" "$NNUNET_PLANS" "$CONFIGURATION"
+    fi
 
     # Archive config next to the weights (fold_0 is hardcoded in train.sh)
     FOLD_DIR="$nnUNet_results/Dataset${DATASET_ID}_${DATASET_NAME}/${NNUNET_TRAINER}__${NNUNET_PLANS}__${CONFIGURATION}/fold_0"
