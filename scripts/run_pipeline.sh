@@ -53,16 +53,16 @@ DO_TRAIN=$(jopt    '.steps.train'    'true')
 
 # Shared parameters
 DATA_JSON=$(jreq '.data_json')
-NNUNET_PLANNER=$(jopt '.nnunet_planner' '"nnUNetPlannerResEncL"')
-NNUNET_PLANS=$(jopt   '.nnunet_plans'   '"nnUNetPlans"')
-CONFIGURATION=$(jopt  '.configuration'  '"3d_fullres"')
+NNUNET_PLANNER=$(jreq '.nnunet_planner' )
+NNUNET_PLANS=$(jreq   '.nnunet_plans' )
+CONFIGURATION=$(jreq  '.configuration' )
 
-# Prepare / train parameters (validated per step)
+# Dataset parameters
 DATASET_ID=$(jreq   '.dataset_id' )
 DATASET_NAME=$(jreq '.dataset_name' )
 
-# Train-only parameters
-NNUNET_TRAINER=$(jopt        '.nnunet_trainer'        'empty')
+# Training parameters
+NNUNET_TRAINER=$(jreq        '.nnunet_trainer' )
 NNUNET_TRAINER_CONFIG=$(jopt '.nnunet_trainer_config' 'empty')
 NNUNET_FOLDER_NAME=$(jreq  '.nnunet_folder_name' )
 
