@@ -17,7 +17,6 @@ from functools import partial
 from pathlib import Path
 import json
 from smaugbench.utils.image import Image
-import csv
 
 from smaugbench.utils.measures.pairwise_measures import BinaryPairwiseMeasures as BPM
 
@@ -173,14 +172,14 @@ def compute_metrics_mp(
     glob_pattern = '*.nii.gz'
 
     # Process the NIfTI image and segmentation files
-    prediction_path_list = list(prediction_path.glob(glob_pattern)).sort()
-    reference_path_list = list(reference_path.glob(glob_pattern)).sort()
+    prediction_path_list = sorted(prediction_path.glob(glob_pattern))
+    reference_path_list = sorted(reference_path.glob(glob_pattern))
 
     # Check if every predictions and references have the same names
     if len(prediction_path_list) != len(reference_path_list):
         raise ValueError('The number of files between references and predictions is different.')
 
-    check_names = np.array([True if pred == ref else False for pred, ref in zip(prediction_path_list, reference_path_list)])
+    check_names = np.array([pred.name == ref.name for pred, ref in zip(prediction_path_list, reference_path_list)])
     if not check_names.all():
         raise ValueError('Predictions and references must be named the same way in the two folders.')
 
@@ -188,9 +187,9 @@ def compute_metrics_mp(
     output_path.parent.mkdir(parents=True, exist_ok=True)
 
     # Create pairwise folder to keep individual predictions
-    pairwise_path = output_path / 'pairwise'
-    pairwise_path.parent.mkdir(parents=True, exist_ok=True)
-    pairwise_path_list = [f'{pred}_metrics.csv' for pred in prediction_path_list]
+    pairwise_path = output_path.parent / 'pairwise'
+    pairwise_path.mkdir(parents=True, exist_ok=True)
+    pairwise_path_list = [pairwise_path / f'{pred.name.replace(".nii.gz", "")}_metrics.json' for pred in prediction_path_list]
 
     process_map(
         partial(
@@ -224,10 +223,14 @@ def compute_pairwise_metrics(
     """
     Compute the pairwise metrics between prediction and reference
     """
+    # Check if pairwise metrics are already computed
+    if not overwrite and output_path.exists():
+        return
+
     # load nifti images
     print(f'\nProcessing:\n\tPrediction: {os.path.basename(prediction_path)}\n\tReference: {os.path.basename(reference_path)}')
-    prediction_data = Image(prediction_path).change_orientation('RPI')
-    reference_data = Image(reference_path).change_orientation('RPI')
+    prediction_data = Image(str(prediction_path)).change_orientation('RPI').data
+    reference_data = Image(str(reference_path)).change_orientation('RPI').data
 
     # check whether the images have the same shape and orientation
     if prediction_data.shape != reference_data.shape:
@@ -244,12 +247,8 @@ def compute_pairwise_metrics(
         # Get the unique labels that are present in the reference
         unique_labels = list(ref_map.keys())
 
-    # Check if pairwise metrics are already computed
-    if not overwrite and output_path.exists():
-        return
-
     # append entry into the output_list to store the metrics for the current subject
-    metrics_dict = {'reference': reference_path, 'prediction': prediction_path}
+    metrics_dict = {'reference': str(reference_path), 'prediction': str(prediction_path)}
 
     # loop over all unique labels, e.g., voxels with values 1, 2, ...
     # by doing this, we can compute metrics for each label separately, e.g., separately for spinal cord and lesions
@@ -265,14 +264,15 @@ def compute_pairwise_metrics(
         bpm = BPM(prediction_data_label, reference_data_label, measures=metrics)
         dict_seg = bpm.to_dict_meas()
         # Store info whether the reference or prediction is empty
-        dict_seg['EmptyRef'] = bpm.flag_empty_ref
-        dict_seg['EmptyPred'] = bpm.flag_empty_pred
-        # add the metrics to the output dictionary
-        metrics_dict[label] = dict_seg
+        dict_seg['EmptyRef'] = bool(bpm.flag_empty_ref)
+        dict_seg['EmptyPred'] = bool(bpm.flag_empty_pred)
+        # add the metrics to the output dictionary; JSON keys must be strings
+        label_key = label if isinstance(label, str) else str(label.item() if hasattr(label, 'item') else label)
+        metrics_dict[label_key] = dict_seg
 
     # Save pairwise metrics
     with open(str(output_path), 'w') as f:
-        metrics_dict = csv.DictWriter(f)
+        json.dump(metrics_dict, f, indent=2)
 
 def save_metrics(path_list, output_path):
 
@@ -280,8 +280,7 @@ def save_metrics(path_list, output_path):
     dict_list = []
     for path in path_list:
         with open(path, 'r') as f:
-            reader = csv.DictReader(f)
-            dict_list.append()
+            dict_list.append(json.load(f))
 
     # Convert JSON data to pandas DataFrame
     df = build_output_dataframe(dict_list)
