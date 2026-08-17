@@ -27,14 +27,14 @@ SCRIPT_DIR="$(realpath "$(dirname "$0")")"
 SMAUGBENCH="$(realpath "$(dirname "$0")/..")"
 
 # Load config json
-config_json = "$1"
+config_json="$1"
 if [ -z "$config_json" ] || [ ! -f "$config_json" ]; then
     echo "Usage: $0 <config.json>"
     exit 1
 fi
 config_json="$(realpath "$config_json")"
 
-# Check if data_json field isRead a required string; error out if missing
+# Read a required string; error out if missing
 jreq() {
     local val
     val=$(jq -r "$1 // empty" "$config_json")
@@ -68,6 +68,20 @@ NNUNET_FOLDER_NAME=$(jreq  '.nnunet_folder_name' )
 # Inference parameters
 ALL_WEIGHTS=$(jopt '.inference_all_weights' false)
 DO_PREPROCESSING=$(jopt '.inference_do_preprocessing' true)
+
+# Get memory in GB and number of CPUs
+if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+    # Linux: /proc/meminfo
+    MEMGB=$(awk '/MemTotal/ {print int($2/1024/1024)}' /proc/meminfo)
+    CORES=$(lscpu -p | egrep -v '^#' | wc -l)
+elif [[ "$OSTYPE" == "darwin"* ]]; then
+    # MacOS: sysctl -n hw.memsize
+    MEMGB=$(sysctl -n hw.memsize | awk '{print int($1/1024/1024/1024)}')
+    CORES=$(sysctl -n hw.ncpu)
+else
+    echo "Error: Unsupported OS type: $OSTYPE"
+    exit 1
+fi
 
 # Set the number of jobs
 JOBS=${SMAUGBENCH_JOBS:-$CORES}
@@ -108,7 +122,7 @@ fi
 SRC_DATASET=Dataset${DATASET_ID}_${DATASET_NAME}
 inference_dir="$SMAUGBENCH_DATA"/inference
 
-if $DO_PREPROCESSING or not inference_dir;do
+if [ "$DO_PREPROCESSING" = "true" ] || [ ! -d "$inference_dir" ]; then
     echo "Preprocess inference data"
     # Preprocessing parameters
     ORIENTATION="RPI"
@@ -135,7 +149,7 @@ if $DO_PREPROCESSING or not inference_dir;do
 
     # Copy images and add nnUNet suffix _0000 for inference
     jq -r '.TESTING[].IMAGE' "$DATA_JSON" | while IFS= read -r img; do
-        cp "$img" "$IMAGES_DIR/$(basename "${img/.nii.gz/_0000.nii.gz}")"
+        cp "$img" "$IMAGES_DIR/$(basename "${img/%.nii.gz/_0000.nii.gz}")"
     done
 
     # Remove label suffix from filename
@@ -170,7 +184,7 @@ if $DO_PREPROCESSING or not inference_dir;do
 
     # Move back
     cd "$CURR_DIR"
-done
+fi
 
 # Run model inference
 PRED_DIR="$inference_dir"/"$SRC_DATASET"/prediction_"$NNUNET_FOLDER_NAME"
@@ -179,7 +193,7 @@ nnUNetv2_predict -i "$IMAGES_DIR" -o "$PRED_DIR" -d "$DATASET_ID" -tr $NNUNET_TR
 
 # Remove nnUNet suffix _0000 from image filenames
 for img in "$IMAGES_DIR"/*_0000.nii.gz; do
-    mv "$img" "${img/_0000.nii.gz/.nii.gz}"
+    mv "$img" "${img/%_0000.nii.gz/.nii.gz}"
 done
 
 # Create directory for pairwise measurements
