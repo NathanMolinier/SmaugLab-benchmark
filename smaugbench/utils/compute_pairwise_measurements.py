@@ -9,9 +9,7 @@ import os
 import argparse, textwrap
 import numpy as np
 import multiprocessing as mp
-import nibabel as nib
 import pandas as pd
-from multiprocessing import Pool, cpu_count
 from tqdm.contrib.concurrent import process_map
 from functools import partial
 from pathlib import Path
@@ -49,11 +47,11 @@ def main():
         formatter_class=argparse.RawTextHelpFormatter
     )
     parser.add_argument(
-        '-prediction', required=True, type=str,
+        '-pred', required=True, type=str,
         help='Path to the folder with nifti images of test predictions or path to a single nifti image of test prediction.'
     )
     parser.add_argument(
-        '-reference', required=True, type=str,
+        '-ref', required=True, type=str,
         help='Path to the folder with nifti images of reference (ground truth) or path to a single nifti image of reference (ground truth).'
     )
     parser.add_argument(
@@ -64,7 +62,7 @@ def main():
         help='List of metrics to compute. For details, see: https://metricsreloaded.readthedocs.io/en/latest/reference/metrics/metrics.html.'
     )
     parser.add_argument(
-        '-output', type=str, default='metrics.csv', required=False,
+        '-output', '-o', type=str, default='metrics.csv', required=False,
         help='Path to the output CSV file to save the metrics. Default: metrics.csv'
     )
     parser.add_argument(
@@ -92,8 +90,8 @@ def main():
     args = parser.parse_args()
 
     # Get the command-line argument values
-    prediction_path = args.prediction
-    reference_path = args.reference
+    prediction_path = args.pred
+    reference_path = args.ref
     metrics = args.metrics
     output_path = args.output
     pred_map_path = args.pred_map
@@ -121,7 +119,7 @@ def main():
             quiet = {quiet}
         '''))
 
-    compute_metrics_mp(
+    compute_pairwise_metrics_mp(
         prediction_path=prediction_path,
         reference_path=reference_path,
         metrics=metrics,
@@ -133,7 +131,7 @@ def main():
         quiet=quiet,
     )
 
-def compute_metrics_mp(
+def compute_pairwise_metrics_mp(
         prediction_path,
         reference_path,
         metrics,
