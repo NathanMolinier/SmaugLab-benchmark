@@ -196,5 +196,6 @@ METRICS_DIR="$inference_dir"/"$SRC_DATASET"/metrics_"$NNUNET_FOLDER_NAME"
 mkdir -p "$METRICS_DIR"
 
 # Create mapping for measurements
+JOBSMEASURE=$(( JOBS < $((MEMGB / 32)) ? JOBS : $((MEMGB / 32)) ))
 jq '.LABELS | to_entries | map({key: .value, value: (.key | tonumber)}) | from_entries' "$DATA_JSON"  > "$METRICS_DIR"/mapping.json
-smaugbench_compute_pairwise_measurements -pred "$PRED_DIR" -ref "$LABELS_DIR" -pred-map "$METRICS_DIR"/mapping.json -ref-map "$METRICS_DIR"/mapping.json -o "$METRICS_DIR"/metrics.csv -metrics "dsc" "nsd" "hd" -w "$JOBSNN"
+smaugbench_compute_pairwise_measurements -pred "$PRED_DIR" -ref "$LABELS_DIR" -pred-map "$METRICS_DIR"/mapping.json -ref-map "$METRICS_DIR"/mapping.json -o "$METRICS_DIR"/metrics.csv -metrics "dsc" "nsd" "hd" -w $JOBSMEASURE
