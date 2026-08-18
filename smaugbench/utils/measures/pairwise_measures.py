@@ -1091,19 +1091,25 @@ class BinaryPairwiseMeasures(object):
             perc = 95
         if np.sum(self.pred + self.ref) == 0:
             return 0, 0, 0, 0
+        # Distance-based metrics are undefined if either mask is empty.
+        if self.flag_empty_pred or self.flag_empty_ref:
+            return np.nan, np.nan, np.nan, np.nan
         (
             ref_border_dist,
             pred_border_dist,
             ref_border,
             pred_border,
         ) = self.border_distance()
-        #print(ref_border_dist)
+        sum_ref_border = np.sum(ref_border)
+        sum_pred_border = np.sum(pred_border)
+        if sum_ref_border == 0 or sum_pred_border == 0:
+            return np.nan, np.nan, np.nan, np.nan
         average_distance = (np.sum(ref_border_dist) + np.sum(pred_border_dist)) / (
-            np.sum(pred_border + ref_border)
+            sum_pred_border + sum_ref_border
         )
         masd = 0.5 * (
-            np.sum(ref_border_dist) / np.sum(pred_border)
-            + np.sum(pred_border_dist) / np.sum(ref_border)
+            np.sum(ref_border_dist) / sum_pred_border
+            + np.sum(pred_border_dist) / sum_ref_border
         )
 
         hausdorff_distance = np.max([np.max(ref_border_dist), np.max(pred_border_dist)])
