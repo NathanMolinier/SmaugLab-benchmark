@@ -226,7 +226,6 @@ def compute_pairwise_metrics(
         return
 
     # load nifti images
-    print(f'\nProcessing:\n\tPrediction: {os.path.basename(prediction_path)}\n\tReference: {os.path.basename(reference_path)}')
     prediction_data = Image(str(prediction_path)).change_orientation('RPI').data
     reference_data = Image(str(reference_path)).change_orientation('RPI').data
 
