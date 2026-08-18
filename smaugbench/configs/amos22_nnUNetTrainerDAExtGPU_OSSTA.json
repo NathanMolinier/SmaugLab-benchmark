@@ -14,9 +14,9 @@
   "configuration":  "3d_fullres",
 
   "nnunet_trainer": "nnUNetTrainerDAExtGPU",
-  "nnunet_trainer_config": "/home/ge.polymtl.ca/p118739/code/SmaugLab/smauglab/configs/transform_params_one-sequence-to-segment-them-all.json",
-  "nnunet_folder_name": "nnUNetTrainerDAExtGPU_OSSTA",
+  "nnunet_trainer_config": "/home/ge.polymtl.ca/p118739/code/SmaugLab/smauglab/configs/transform_params_gpu.json",
+  "nnunet_folder_name": "nnUNetTrainerDAExtGPU_AugmentVal",
 
   "inference_do_preprocessing": false,
-  "inference_all_weights": false
+  "inference_all_weights": true
 }
