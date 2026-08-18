@@ -197,4 +197,4 @@ mkdir -p "$METRICS_DIR"
 
 # Create mapping for measurements
 jq '.LABELS | to_entries | map({key: .value, value: (.key | tonumber)}) | from_entries' "$DATA_JSON"  > "$METRICS_DIR"/mapping.json
-smaugbench_compute_pairwise_measurements -pred "$PRED_DIR" -ref "$LABELS_DIR" -pred-map "$METRICS_DIR"/mapping.json -ref-map "$METRICS_DIR"/mapping.json -o "$METRICS_DIR"/metrics.csv -metrics "dsc" "nsd" "hd" 
+smaugbench_compute_pairwise_measurements -pred "$PRED_DIR" -ref "$LABELS_DIR" -pred-map "$METRICS_DIR"/mapping.json -ref-map "$METRICS_DIR"/mapping.json -o "$METRICS_DIR"/metrics.csv -metrics "dsc" "nsd" "hd" -w "$JOBSNN"
