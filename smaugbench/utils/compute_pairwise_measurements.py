@@ -257,7 +257,9 @@ def compute_pairwise_metrics(
         else:
             prediction_data_label = (prediction_data == pred_map[label]).astype(np.uint8)
             reference_data_label = (reference_data == ref_map[label]).astype(np.uint8)
-
+        if not np.any(reference_data_label):
+            # If reference is empty for this label, skip computing metrics
+            continue
         bpm = BPM(prediction_data_label, reference_data_label, measures=metrics)
         dict_seg = bpm.to_dict_meas()
         # Store info whether the reference or prediction is empty
