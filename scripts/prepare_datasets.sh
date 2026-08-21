@@ -167,7 +167,7 @@ echo "Run nnUNet plan and preprocess"
 nnUNetv2_plan_and_preprocess -d $DATASET_ID -pl $nnUNetPlanner -overwrite_plans_name $nnUNetPlans -c $configuration -np $JOBSNN --verify_dataset_integrity
 
 # Overwrite nnUNet splits_final.json
-smaugbench_create_splits_nnunet -i "$data_json" -o "$nnUNet_preprocessed"/$SRC_DATASET/splits_final.json -r
+# smaugbench_create_splits_nnunet -i "$data_json" -o "$nnUNet_preprocessed"/$SRC_DATASET/splits_final.json -r
 
 # Move back
 cd "$CURR_DIR"

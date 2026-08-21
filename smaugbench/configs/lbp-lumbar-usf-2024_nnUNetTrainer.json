@@ -1,0 +1,22 @@
+{
+  "steps": {
+    "download": false,
+    "prepare": true,
+    "train": true
+  },
+
+  "data_json": "lbp-lumbar-usf-2024",
+  "dataset_id": 200,
+  "dataset_name": "Lumbar-Roots",
+
+  "nnunet_planner": "nnUNetPlannerResEncL",
+  "nnunet_plans":   "nnUNetPlans",
+  "configuration":  "2d",
+
+  "nnunet_trainer": "nnUNetTrainer",
+  "nnunet_trainer_config": null,
+  "nnunet_folder_name": "nnUNetTrainer",
+
+  "inference_do_preprocessing": false,
+  "inference_all_weights": false
+}
