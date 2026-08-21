@@ -10,11 +10,6 @@
             "LABEL": "lbp-lumbar-usf-2024/derivatives/labels/sub-001/ses-A/anat/sub-001_ses-A_acq-isotropic_T2w_label-rootlets_seg.nii.gz"
         }
     ],
-    "VALIDATION": [
-        {
-            "IMAGE": "lbp-lumbar-usf-2024/sub-001/ses-A/anat/sub-001_ses-A_acq-isotropic_T2w.nii.gz",
-            "LABEL": "lbp-lumbar-usf-2024/derivatives/labels/sub-001/ses-A/anat/sub-001_ses-A_acq-isotropic_T2w_label-rootlets_seg.nii.gz"
-        }
-    ],
+    "VALIDATION": [],
     "TESTING": []
 }
