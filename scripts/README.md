@@ -188,7 +188,7 @@ The config is the same JSON consumed by `run_pipeline.sh` — required keys are 
 | Key | Default | Description |
 | --- | --- | --- |
 | `inference_do_preprocessing` | `true` | If `false` (and the inference dir already exists), skip copying and reorient/resample and reuse the previously preprocessed images/labels. |
-| `inference_all_weights` | `false` | Reserved for a future multi-checkpoint sweep; currently unused by the script. |
+| `inference_all_weights` | `false` | If `true`, iterate over every `*.pth` checkpoint in the fold folder, writing one prediction dir (and one metrics dir when labels are available) per checkpoint. Otherwise only the default `checkpoint_best.pth` is used. |
 
 **`--images-only` mode**
 
@@ -205,8 +205,8 @@ Only the images are preprocessed and fed through `nnUNetv2_predict`. Use this wh
 $SMAUGBENCH_DATA/inference/Dataset<ID>_<NAME>/
 ├── images/                        # preprocessed test images (nnUNet _0000 suffix)
 ├── labels/                        # preprocessed reference labels (skipped in --images-only)
-├── prediction_<nnunet_folder>/    # nnUNetv2_predict output
-└── metrics_<nnunet_folder>/       # metrics.csv + mapping.json (skipped in --images-only)
+├── prediction_<nnunet_folder>/    # nnUNetv2_predict output (one dir per checkpoint when inference_all_weights=true, suffixed with the checkpoint name)
+└── metrics_<nnunet_folder>/       # metrics.csv + mapping.json (skipped in --images-only; one dir per checkpoint when inference_all_weights=true)
 ```
 
 **Example**

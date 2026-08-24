@@ -122,6 +122,9 @@ echo "nnUNetTrainer=${NNUNET_TRAINER}"
 echo "nnUNetPlanner=${NNUNET_PLANNER}"
 echo "nnUNetPlans=${NNUNET_PLANS}"
 echo "configuration=${CONFIGURATION}"
+echo "nnUNetFolderName=${NNUNET_FOLDER_NAME}"
+echo "ALL_WEIGHTS=${ALL_WEIGHTS}"
+echo "DO_PREPROCESSING=${DO_PREPROCESSING}"
 echo "JOBSNN=${JOBSNN}"
 echo "DEVICE=${DEVICE}"
 echo "DATASET_ID=${DATASET_ID}"
@@ -221,18 +224,46 @@ if [ "$DO_PREPROCESSING" = "true" ] || [ ! -d "$inference_dir" ]; then
 fi
 
 # Run model inference
-PRED_DIR="$inference_dir"/"$SRC_DATASET"/prediction_"$NNUNET_FOLDER_NAME"
 export nnUNet_results="$SMAUGBENCH_DATA"/nnUNet/results/"$NNUNET_FOLDER_NAME"
-nnUNetv2_predict -i "$IMAGES_DIR" -o "$PRED_DIR" -d "$DATASET_ID" -tr "$NNUNET_TRAINER" -p "$NNUNET_PLANS" -c "$CONFIGURATION" -f "$FOLD" -device $DEVICE
+JOBSMEASURE=$(( JOBS < $((MEMGB / 32)) ? JOBS : $((MEMGB / 32)) ))
 
-if [ "$IMAGES_ONLY" != "true" ]; then
-    # Create directory for pairwise measurements
-    echo "Create pairwise measurements directory"
-    METRICS_DIR="$inference_dir"/"$SRC_DATASET"/metrics_"$NNUNET_FOLDER_NAME"
-    mkdir -p "$METRICS_DIR"
+run_metrics() {
+    local pred_dir="$1"
+    local metrics_dir="$2"
+    echo "Compute pairwise measurements -> $metrics_dir"
+    mkdir -p "$metrics_dir"
+    jq '.LABELS | to_entries | map({key: .value, value: (.key | tonumber)}) | from_entries' "$DATA_JSON" > "$metrics_dir"/mapping.json
+    smaugbench_compute_pairwise_measurements -pred "$pred_dir" -ref "$LABELS_DIR" -pred-map "$metrics_dir"/mapping.json -ref-map "$metrics_dir"/mapping.json -o "$metrics_dir"/metrics.csv -metrics "dsc" "nsd" "hd" -w $JOBSMEASURE
+}
 
-    # Create mapping for measurements
-    JOBSMEASURE=$(( JOBS < $((MEMGB / 32)) ? JOBS : $((MEMGB / 32)) ))
-    jq '.LABELS | to_entries | map({key: .value, value: (.key | tonumber)}) | from_entries' "$DATA_JSON"  > "$METRICS_DIR"/mapping.json
-    smaugbench_compute_pairwise_measurements -pred "$PRED_DIR" -ref "$LABELS_DIR" -pred-map "$METRICS_DIR"/mapping.json -ref-map "$METRICS_DIR"/mapping.json -o "$METRICS_DIR"/metrics.csv -metrics "dsc" "nsd" "hd" -w $JOBSMEASURE
+if [ "$ALL_WEIGHTS" = "true" ]; then
+    weight_folder="$nnUNet_results/$SRC_DATASET/${NNUNET_TRAINER}__${NNUNET_PLANS}__${CONFIGURATION}/fold_${FOLD}"
+    echo "Running inference for all weights in $weight_folder"
+    shopt -s nullglob
+    weights=("$weight_folder"/*.pth)
+    shopt -u nullglob
+    if [ ${#weights[@]} -eq 0 ]; then
+        echo "Error: No .pth weights found in $weight_folder"
+        exit 1
+    fi
+    for weight in "${weights[@]}"; do
+        weight_file=$(basename "$weight")
+        weight_name="${weight_file%.pth}"
+        echo "Running inference for weight: $weight_file"
+        PRED_DIR="$inference_dir/$SRC_DATASET/prediction_${NNUNET_FOLDER_NAME}_${weight_name}"
+        nnUNetv2_predict -i "$IMAGES_DIR" -o "$PRED_DIR" -d "$DATASET_ID" -tr "$NNUNET_TRAINER" -p "$NNUNET_PLANS" -c "$CONFIGURATION" -f "$FOLD" -device $DEVICE -chk "$weight_file"
+        if [ "$IMAGES_ONLY" != "true" ]; then
+            METRICS_DIR="$inference_dir/$SRC_DATASET/metrics_${NNUNET_FOLDER_NAME}_${weight_name}"
+            run_metrics "$PRED_DIR" "$METRICS_DIR"
+        fi
+    done
+else
+    echo "Running inference for the best model in $nnUNet_results"
+    weight_name="checkpoint_best.pth"
+    PRED_DIR="$inference_dir/$SRC_DATASET/prediction_$NNUNET_FOLDER_NAME"
+    nnUNetv2_predict -i "$IMAGES_DIR" -o "$PRED_DIR" -d "$DATASET_ID" -tr "$NNUNET_TRAINER" -p "$NNUNET_PLANS" -c "$CONFIGURATION" -f "$FOLD" -device $DEVICE -chk "$weight_name"
+    if [ "$IMAGES_ONLY" != "true" ]; then
+        METRICS_DIR="$inference_dir/$SRC_DATASET/metrics_$NNUNET_FOLDER_NAME"
+        run_metrics "$PRED_DIR" "$METRICS_DIR"
+    fi
 fi
