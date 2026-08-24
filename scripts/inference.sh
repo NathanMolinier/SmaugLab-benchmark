@@ -142,6 +142,15 @@ inference_dir="$SMAUGBENCH_DATA"/inference
 IMAGES_DIR="$inference_dir"/"$SRC_DATASET"/images
 LABELS_DIR="$inference_dir"/"$SRC_DATASET"/labels
 
+# Auto-enable images-only when the first TESTING entry has no LABEL
+if [ "$IMAGES_ONLY" != "true" ]; then
+    first_label=$(jq -r '.TESTING[0].LABEL // empty' "$DATA_JSON")
+    if [ -z "$first_label" ]; then
+        echo "No LABEL found in first TESTING entry: enabling --images-only mode"
+        IMAGES_ONLY=true
+    fi
+fi
+
 if [ "$DO_PREPROCESSING" = "true" ] || [ ! -d "$inference_dir" ]; then
     echo "Preprocess inference data"
     # Preprocessing parameters
