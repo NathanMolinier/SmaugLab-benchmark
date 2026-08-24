@@ -2,7 +2,8 @@
   "steps": {
     "download": false,
     "prepare": false,
-    "train": true
+    "train": true,
+    "inference": true
   },
 
   "data_json": "amos22",
