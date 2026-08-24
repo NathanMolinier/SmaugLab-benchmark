@@ -26,10 +26,28 @@ fi
 SCRIPT_DIR="$(realpath "$(dirname "$0")")"
 SMAUGBENCH="$(realpath "$(dirname "$0")/..")"
 
-# Load config json
-config_json="$1"
+# Parse arguments
+IMAGES_ONLY=false
+config_json=""
+for arg in "$@"; do
+    case "$arg" in
+        --images-only)
+            IMAGES_ONLY=true
+            ;;
+        *)
+            if [ -z "$config_json" ]; then
+                config_json="$arg"
+            else
+                echo "Unknown argument: $arg"
+                echo "Usage: $0 <config.json> [--images-only]"
+                exit 1
+            fi
+            ;;
+    esac
+done
+
 if [ -z "$config_json" ] || [ ! -f "$config_json" ]; then
-    echo "Usage: $0 <config.json>"
+    echo "Usage: $0 <config.json> [--images-only]"
     exit 1
 fi
 config_json="$(realpath "$config_json")"
@@ -141,45 +159,53 @@ if [ "$DO_PREPROCESSING" = "true" ] || [ ! -d "$inference_dir" ]; then
     # Prepare inference data
     echo "Creating inference folders"
     mkdir -p "$IMAGES_DIR"
-    mkdir -p "$LABELS_DIR"
+    if [ "$IMAGES_ONLY" != "true" ]; then
+        mkdir -p "$LABELS_DIR"
 
-    # Copy data in inference folders
-    jq -r '.TESTING[].LABEL' "$DATA_JSON" | xargs -I{} cp "{}" "$LABELS_DIR/"
+        # Copy data in inference folders
+        jq -r '.TESTING[].LABEL' "$DATA_JSON" | xargs -I{} cp "{}" "$LABELS_DIR/"
+    fi
 
     # Copy images and add nnUNet suffix _0000 for inference
     jq -r '.TESTING[].IMAGE' "$DATA_JSON" | while IFS= read -r img; do
         cp "$img" "$IMAGES_DIR/$(basename "${img/%.nii.gz/_0000.nii.gz}")"
     done
 
-    # Remove label suffix from filename
-    for img in "$IMAGES_DIR"/*_0000.nii.gz; do
-        # Get the filename without the path
-        filename=$(basename "$img")
-        # Extract the prefix by removing the _0000.nii.gz extension
-        prefix="${filename%_0000.nii.gz}"
-        # Use nullglob so the array is empty if no files match (instead of containing the literal '*' string)
-        shopt -s nullglob
-        # Find all labels that start with the prefix and have an underscore afterward
-        label_matches=("$LABELS_DIR"/"$prefix"_*.nii.gz)
-        shopt -u nullglob
-        match_count=${#label_matches[@]}
-        if [ "$match_count" -ne 1 ]; then
-            echo "Error: Expected exactly one label file for image $filename, but found $match_count."
-            exit 1
-        fi
-        # Rename label file
-        mv "${label_matches[0]}" "$LABELS_DIR"/"$prefix".nii.gz
-    done
+    if [ "$IMAGES_ONLY" != "true" ]; then
+        # Remove label suffix from filename
+        for img in "$IMAGES_DIR"/*_0000.nii.gz; do
+            # Get the filename without the path
+            filename=$(basename "$img")
+            # Extract the prefix by removing the _0000.nii.gz extension
+            prefix="${filename%_0000.nii.gz}"
+            # Use nullglob so the array is empty if no files match (instead of containing the literal '*' string)
+            shopt -s nullglob
+            # Find all labels that start with the prefix and have an underscore afterward
+            label_matches=("$LABELS_DIR"/"$prefix"_*.nii.gz)
+            shopt -u nullglob
+            match_count=${#label_matches[@]}
+            if [ "$match_count" -ne 1 ]; then
+                echo "Error: Expected exactly one label file for image $filename, but found $match_count."
+                exit 1
+            fi
+            # Rename label file
+            mv "${label_matches[0]}" "$LABELS_DIR"/"$prefix".nii.gz
+        done
+    fi
 
     # Reorient images to same orientation
     echo "Transform test images to $ORIENTATION"
     smaugbench_reorient_image -i "$IMAGES_DIR" -o "$IMAGES_DIR" -ori $ORIENTATION -r -w $JOBS
-    smaugbench_reorient_image -i "$LABELS_DIR" -o "$LABELS_DIR" -ori $ORIENTATION -r -w $JOBS
+    if [ "$IMAGES_ONLY" != "true" ]; then
+        smaugbench_reorient_image -i "$LABELS_DIR" -o "$LABELS_DIR" -ori $ORIENTATION -r -w $JOBS
+    fi
 
     # Resample images to a same resolution
     echo "Resample test images to $RESOLUTION"
     smaugbench_resample_image -i "$IMAGES_DIR" -o "$IMAGES_DIR" -res $RESOLUTION -int linear -r -w $JOBS
-    smaugbench_resample_image -i "$LABELS_DIR" -o "$LABELS_DIR" -res $RESOLUTION -int nn -r -w $JOBS
+    if [ "$IMAGES_ONLY" != "true" ]; then
+        smaugbench_resample_image -i "$LABELS_DIR" -o "$LABELS_DIR" -res $RESOLUTION -int nn -r -w $JOBS
+    fi
 
     # Move back
     cd "$CURR_DIR"
@@ -190,12 +216,14 @@ PRED_DIR="$inference_dir"/"$SRC_DATASET"/prediction_"$NNUNET_FOLDER_NAME"
 export nnUNet_results="$SMAUGBENCH_DATA"/nnUNet/results/"$NNUNET_FOLDER_NAME"
 nnUNetv2_predict -i "$IMAGES_DIR" -o "$PRED_DIR" -d "$DATASET_ID" -tr "$NNUNET_TRAINER" -p "$NNUNET_PLANS" -c "$CONFIGURATION" -f "$FOLD" -device $DEVICE
 
-# Create directory for pairwise measurements
-echo "Create pairwise measurements directory"
-METRICS_DIR="$inference_dir"/"$SRC_DATASET"/metrics_"$NNUNET_FOLDER_NAME"
-mkdir -p "$METRICS_DIR"
+if [ "$IMAGES_ONLY" != "true" ]; then
+    # Create directory for pairwise measurements
+    echo "Create pairwise measurements directory"
+    METRICS_DIR="$inference_dir"/"$SRC_DATASET"/metrics_"$NNUNET_FOLDER_NAME"
+    mkdir -p "$METRICS_DIR"
 
-# Create mapping for measurements
-JOBSMEASURE=$(( JOBS < $((MEMGB / 32)) ? JOBS : $((MEMGB / 32)) ))
-jq '.LABELS | to_entries | map({key: .value, value: (.key | tonumber)}) | from_entries' "$DATA_JSON"  > "$METRICS_DIR"/mapping.json
-smaugbench_compute_pairwise_measurements -pred "$PRED_DIR" -ref "$LABELS_DIR" -pred-map "$METRICS_DIR"/mapping.json -ref-map "$METRICS_DIR"/mapping.json -o "$METRICS_DIR"/metrics.csv -metrics "dsc" "nsd" "hd" -w $JOBSMEASURE
+    # Create mapping for measurements
+    JOBSMEASURE=$(( JOBS < $((MEMGB / 32)) ? JOBS : $((MEMGB / 32)) ))
+    jq '.LABELS | to_entries | map({key: .value, value: (.key | tonumber)}) | from_entries' "$DATA_JSON"  > "$METRICS_DIR"/mapping.json
+    smaugbench_compute_pairwise_measurements -pred "$PRED_DIR" -ref "$LABELS_DIR" -pred-map "$METRICS_DIR"/mapping.json -ref-map "$METRICS_DIR"/mapping.json -o "$METRICS_DIR"/metrics.csv -metrics "dsc" "nsd" "hd" -w $JOBSMEASURE
+fi
