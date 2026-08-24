@@ -1,12 +1,12 @@
 # Scripts
 
-End-to-end pipeline for training [nnU-Net](https://github.com/MIC-DKFZ/nnUNet) v2 models with [SmaugLab](https://github.com/neuropoly/SmaugLab) trainers on git-annexed BIDS datasets in a reproducible way. The three scripts run in order:
+End-to-end pipeline for training [nnU-Net](https://github.com/MIC-DKFZ/nnUNet) v2 models with [SmaugLab](https://github.com/neuropoly/SmaugLab) trainers on git-annexed BIDS datasets in a reproducible way. The four scripts run in order:
 
 ```
-download_datasets.sh  →  prepare_datasets.sh  →  train.sh
+download_datasets.sh  →  prepare_datasets.sh  →  train.sh  →  inference.sh
 ```
 
-Each script can be invoked individually, or all three can be driven from a single JSON config through `run_pipeline.sh` (see [§4](#4-run_pipelinesh)).
+Each script can be invoked individually, or all four can be driven from a single JSON config through `run_pipeline.sh` (see [§5](#5-run_pipelinesh)).
 
 Adapted from [`totalspineseg/scripts`](https://github.com/neuropoly/totalspineseg/tree/4502d41bcb4a12e44f4be666411461ca81b02d89/scripts).
 
@@ -173,9 +173,54 @@ Training runs with `--c` (continue), so re-launching resumes from the last check
 
 ---
 
-## 4. `run_pipeline.sh`
+## 4. `inference.sh`
 
-Drives all three scripts from a single JSON config, then archives that config next to the trained weights.
+Preprocess the `TESTING` split, run `nnUNetv2_predict` on the trained weights, and compute pairwise reference/prediction metrics (Dice, NSD, HD).
+
+**Usage**
+
+```bash
+./scripts/inference.sh <pipeline-config.json> [--images-only]
+```
+
+The config is the same JSON consumed by `run_pipeline.sh` — required keys are `data_json`, `dataset_id`, `dataset_name`, `nnunet_planner`, `nnunet_plans`, `configuration`, `nnunet_trainer`, and `nnunet_folder_name`. Optional keys:
+
+| Key | Default | Description |
+| --- | --- | --- |
+| `inference_do_preprocessing` | `true` | If `false` (and the inference dir already exists), skip copying and reorient/resample and reuse the previously preprocessed images/labels. |
+| `inference_all_weights` | `false` | Reserved for a future multi-checkpoint sweep; currently unused by the script. |
+
+**`--images-only` mode**
+
+Passing `--images-only` (or having no `LABEL` on the first `TESTING` entry) tells the script to:
+
+- skip copying / renaming / reorienting / resampling labels
+- skip the pairwise metrics computation
+
+Only the images are preprocessed and fed through `nnUNetv2_predict`. Use this when running the trained model on a dataset that has no ground truth.
+
+**Result**
+
+```
+$SMAUGBENCH_DATA/inference/Dataset<ID>_<NAME>/
+├── images/                        # preprocessed test images (nnUNet _0000 suffix)
+├── labels/                        # preprocessed reference labels (skipped in --images-only)
+├── prediction_<nnunet_folder>/    # nnUNetv2_predict output
+└── metrics_<nnunet_folder>/       # metrics.csv + mapping.json (skipped in --images-only)
+```
+
+**Example**
+
+```bash
+./scripts/inference.sh smaugbench/configs/amos22_nnUNetTrainer.json
+./scripts/inference.sh smaugbench/configs/amos22_nnUNetTrainer.json --images-only
+```
+
+---
+
+## 5. `run_pipeline.sh`
+
+Drives all four scripts from a single JSON config, then archives that config next to the trained weights.
 
 **Usage**
 
@@ -190,7 +235,8 @@ Drives all three scripts from a single JSON config, then archives that config ne
   "steps": {
     "download": true,
     "prepare": true,
-    "train": true
+    "train": true,
+    "inference": true
   },
 
   "data_json": "amos22",
@@ -203,21 +249,28 @@ Drives all three scripts from a single JSON config, then archives that config ne
   "configuration":  "3d_fullres",
 
   "nnunet_trainer": "nnUNetTrainer",
-  "nnunet_trainer_config": null
+  "nnunet_trainer_config": null,
+  "nnunet_folder_name": "amos22_nnUNetTrainer",
+
+  "inference_do_preprocessing": true,
+  "inference_images_only": false
 }
 ```
 
 | Key | Required for | Default | Description |
 | --- | --- | --- | --- |
-| `steps.download` / `steps.prepare` / `steps.train` | — | `true` | Toggle each pipeline step. |
+| `steps.download` / `steps.prepare` / `steps.train` / `steps.inference` | — | `true` | Toggle each pipeline step. |
 | `data_json` | all steps | — | Absolute path or shortcut name for the dataset JSON (see [§Dataset JSON schema](#dataset-json-schema)). |
-| `dataset_id` | prepare, train | — | nnUNet dataset ID (integer). |
-| `dataset_name` | prepare | — | nnUNet dataset name (also used to locate the archive folder after training). |
-| `nnunet_planner` | prepare | `nnUNetPlannerResEncL` | |
-| `nnunet_plans` | prepare, train | `nnUNetPlans` | |
-| `configuration` | prepare, train | `3d_fullres` | |
-| `nnunet_trainer` | train | — | e.g. `nnUNetTrainer`, `nnUNetTrainerDA5`, `nnUNetTrainerDAExt…` |
+| `dataset_id` | prepare, train, inference | — | nnUNet dataset ID (integer). |
+| `dataset_name` | prepare, inference | — | nnUNet dataset name (also used to locate the archive folder after training). |
+| `nnunet_planner` | prepare, inference | `nnUNetPlannerResEncL` | |
+| `nnunet_plans` | prepare, train, inference | `nnUNetPlans` | |
+| `configuration` | prepare, train, inference | `3d_fullres` | |
+| `nnunet_trainer` | train, inference | — | e.g. `nnUNetTrainer`, `nnUNetTrainerDA5`, `nnUNetTrainerDAExt…` |
 | `nnunet_trainer_config` | train (DAExt only) | — | Path to the DAExt GPU-params JSON. |
+| `nnunet_folder_name` | train, inference | — | Sub-folder under `$SMAUGBENCH_DATA/nnUNet/results/` where weights live and where predictions/metrics are written. |
+| `inference_do_preprocessing` | inference | `true` | Reuse an existing preprocessed inference folder when `false`. |
+| `inference_images_only` | inference | `false` | Skip label handling and metrics — passes `--images-only` through to `inference.sh`. Auto-enabled when the first `TESTING` entry has no `LABEL`. |
 
 **Config archival**
 
@@ -244,7 +297,7 @@ EOF
 ./scripts/run_pipeline.sh amos22_run.json
 ```
 
-To re-train against already-downloaded and already-prepared data, set both `steps.download` and `steps.prepare` to `false`.
+To re-train against already-downloaded and already-prepared data, set both `steps.download` and `steps.prepare` to `false`. To only run inference against existing weights, set `steps.download`, `steps.prepare`, and `steps.train` to `false`.
 
 ---
 
@@ -258,6 +311,7 @@ export SMAUGBENCH_DATA=/scratch/smaugbench
 ./scripts/download_datasets.sh amos22
 ./scripts/prepare_datasets.sh  amos22 501 AMOS22
 ./scripts/train.sh             501    nnUNetTrainer
+./scripts/inference.sh         smaugbench/configs/amos22_nnUNetTrainer.json
 ```
 
 Or drive them from a config:

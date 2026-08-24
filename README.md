@@ -29,10 +29,10 @@ export SMAUGBENCH_DATA=/path/to/scratch/smaugbench
 ./scripts/run_pipeline.sh smaugbench/configs/amos22_nnUNetTrainer.json
 ```
 
-`run_pipeline.sh` reads a JSON config and runs three stages in order:
+`run_pipeline.sh` reads a JSON config and runs four stages in order:
 
 ```
-download_datasets.sh  →  prepare_datasets.sh  →  train.sh
+download_datasets.sh  →  prepare_datasets.sh  →  train.sh  →  inference.sh
 ```
 
 Each stage can be run individually and each is idempotent. See [`scripts/README.md`](scripts/README.md) for the full pipeline reference (env vars, dataset JSON schema, per-step arguments).
@@ -44,7 +44,7 @@ smaugbench/
 ├── configs/      # example pipeline configs (e.g. amos22_nnUNetTrainer.json)
 ├── datasets/     # dataset JSONs (source repos + commits + train/val/test splits)
 └── utils/        # reorient / resample / splits helpers exposed as console scripts
-scripts/          # download → prepare → train pipeline (bash)
+scripts/          # download → prepare → train → inference pipeline (bash)
 ```
 
 Console scripts installed with the package:
