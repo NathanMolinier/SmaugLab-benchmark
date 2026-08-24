@@ -47,9 +47,13 @@ jreq() {
 jopt() { jq -r "if $1 == null then $2 else $1 end" "$config_json"; }
 
 # Steps default to true
-DO_DOWNLOAD=$(jopt '.steps.download' 'true')
-DO_PREPARE=$(jopt  '.steps.prepare'  'true')
-DO_TRAIN=$(jopt    '.steps.train'    'true')
+DO_DOWNLOAD=$(jopt '.steps.download'  'true')
+DO_PREPARE=$(jopt  '.steps.prepare'   'true')
+DO_TRAIN=$(jopt    '.steps.train'     'true')
+DO_INFERENCE=$(jopt '.steps.inference' 'true')
+
+# Inference parameters
+INFERENCE_IMAGES_ONLY=$(jopt '.inference_images_only' 'false')
 
 # Shared parameters
 DATA_JSON=$(jreq '.data_json')
@@ -67,7 +71,7 @@ NNUNET_TRAINER_CONFIG=$(jopt '.nnunet_trainer_config' 'empty')
 NNUNET_FOLDER_NAME=$(jreq  '.nnunet_folder_name' )
 
 echo ""
-echo "Pipeline steps: download=$DO_DOWNLOAD prepare=$DO_PREPARE train=$DO_TRAIN"
+echo "Pipeline steps: download=$DO_DOWNLOAD prepare=$DO_PREPARE train=$DO_TRAIN inference=$DO_INFERENCE"
 echo "Config: $config_json"
 echo "Data: $DATA_JSON"
 echo ""
@@ -130,4 +134,14 @@ if [ "$DO_TRAIN" = "true" ]; then
     else
         echo "Warning: expected fold folder $FOLD_DIR does not exist; config not archived."
     fi
+fi
+
+# 4. Inference
+if [ "$DO_INFERENCE" = "true" ]; then
+    echo "==> inference.sh"
+    inference_args=("$config_json")
+    if [ "$INFERENCE_IMAGES_ONLY" = "true" ]; then
+        inference_args+=(--images-only)
+    fi
+    "$SCRIPT_DIR/inference.sh" "${inference_args[@]}"
 fi
