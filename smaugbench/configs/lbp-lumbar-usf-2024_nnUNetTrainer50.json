@@ -17,6 +17,6 @@
   "nnunet_trainer_config": null,
   "nnunet_folder_name": "nnUNetTrainer50",
 
-  "inference_do_preprocessing": false,
+  "inference_do_preprocessing": true,
   "inference_all_weights": false
 }
