@@ -54,6 +54,7 @@ smaugbench_resample_image = "smaugbench.utils.resample_image:main"
 smaugbench_create_splits_nnunet = "smaugbench.utils.create_splits_nnunet:main"
 smaugbench_dataset_json_nnunet = "smaugbench.utils.create_dataset_json_nnunet:main"
 smaugbench_compute_pairwise_measurements = "smaugbench.utils.compute_pairwise_measurements:main"
+smaugbench_compare_results = "smaugbench.utils.compare_results:main"
 
 [build-system]
 requires = ["poetry-core>=1.0.0", "poetry-dynamic-versioning>=1.0.0,<2.0.0"]

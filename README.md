@@ -52,6 +52,8 @@ Console scripts installed with the package:
 - `smaugbench_reorient_image` — reorient every NIfTI in a folder to a given orientation
 - `smaugbench_resample_image` — resample to a target voxel size
 - `smaugbench_create_splits_nnunet` — generate nnU-Net's `splits_final.json` from a dataset JSON
+- `smaugbench_compute_pairwise_measurements` — pairwise reference/prediction metrics (Dice, NSD, HD, …)
+- `smaugbench_compare_results` — aggregate every `metrics*/metrics.csv` under `Dataset<ID>_*` into comparison tables
 
 ## Environment variables
 
