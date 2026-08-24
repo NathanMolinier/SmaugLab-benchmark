@@ -103,58 +103,58 @@ echo ""
 
 # ### Prepare TRAIN set
 
-# IMAGES_TRAIN_DIR="$nnUNet_raw"/$SRC_DATASET/imagesTr
-# LABELS_TRAIN_DIR="$nnUNet_raw"/$SRC_DATASET/labelsTr
+IMAGES_TRAIN_DIR="$nnUNet_raw"/$SRC_DATASET/imagesTr
+LABELS_TRAIN_DIR="$nnUNet_raw"/$SRC_DATASET/labelsTr
 
-# echo "Make nnUNet raw folders"
-# mkdir -p "$IMAGES_TRAIN_DIR"
-# mkdir -p "$LABELS_TRAIN_DIR"
+echo "Make nnUNet raw folders"
+mkdir -p "$IMAGES_TRAIN_DIR"
+mkdir -p "$LABELS_TRAIN_DIR"
 
-# # Copy label data in nnUNet_raw folder
-# jq -r '.TRAINING[].LABEL' "$data_json" | xargs -I{} cp "{}" "$LABELS_TRAIN_DIR/"
-# jq -r '.VALIDATION[].LABEL' "$data_json" | xargs -I{} cp "{}" "$LABELS_TRAIN_DIR/"
+# Copy label data in nnUNet_raw folder
+jq -r '.TRAINING[].LABEL' "$data_json" | xargs -I{} cp "{}" "$LABELS_TRAIN_DIR/"
+jq -r '.VALIDATION[].LABEL' "$data_json" | xargs -I{} cp "{}" "$LABELS_TRAIN_DIR/"
 
-# # Copy images and add nnUNet suffix _0000
-# jq -r '.TRAINING[].IMAGE' "$data_json" | while IFS= read -r img; do
-#     cp "$img" "$IMAGES_TRAIN_DIR/$(basename "${img/.nii.gz/_0000.nii.gz}")"
-# done
-# jq -r '.VALIDATION[].IMAGE' "$data_json" | while IFS= read -r img; do
-#     cp "$img" "$IMAGES_TRAIN_DIR/$(basename "${img/.nii.gz/_0000.nii.gz}")"
-# done
+# Copy images and add nnUNet suffix _0000
+jq -r '.TRAINING[].IMAGE' "$data_json" | while IFS= read -r img; do
+    cp "$img" "$IMAGES_TRAIN_DIR/$(basename "${img/.nii.gz/_0000.nii.gz}")"
+done
+jq -r '.VALIDATION[].IMAGE' "$data_json" | while IFS= read -r img; do
+    cp "$img" "$IMAGES_TRAIN_DIR/$(basename "${img/.nii.gz/_0000.nii.gz}")"
+done
 
-# # Remove label suffix from filename
-# for img in "$IMAGES_TRAIN_DIR"/*_0000.nii.gz; do
-#     # Get the filename without the path
-#     filename=$(basename "$img")
-#     # Extract the prefix by removing the _0000.nii.gz extension
-#     prefix="${filename%_0000.nii.gz}"
-#     # Use nullglob so the array is empty if no files match (instead of containing the literal '*' string)
-#     shopt -s nullglob
-#     # Find all labels that start with the prefix and have an underscore afterward
-#     label_matches=("$LABELS_TRAIN_DIR"/"$prefix"_*.nii.gz)
-#     shopt -u nullglob
-#     match_count=${#label_matches[@]}
-#     if [ "$match_count" -ne 1 ]; then
-#         echo "Error: Expected exactly one label file for image $filename, but found $match_count."
-#         exit 1
-#     fi
-#     # Rename label file
-#     mv "${label_matches[0]}" "$LABELS_TRAIN_DIR"/"$prefix".nii.gz
-# done
+# Remove label suffix from filename
+for img in "$IMAGES_TRAIN_DIR"/*_0000.nii.gz; do
+    # Get the filename without the path
+    filename=$(basename "$img")
+    # Extract the prefix by removing the _0000.nii.gz extension
+    prefix="${filename%_0000.nii.gz}"
+    # Use nullglob so the array is empty if no files match (instead of containing the literal '*' string)
+    shopt -s nullglob
+    # Find all labels that start with the prefix and have an underscore afterward
+    label_matches=("$LABELS_TRAIN_DIR"/"$prefix"_*.nii.gz)
+    shopt -u nullglob
+    match_count=${#label_matches[@]}
+    if [ "$match_count" -ne 1 ]; then
+        echo "Error: Expected exactly one label file for image $filename, but found $match_count."
+        exit 1
+    fi
+    # Rename label file
+    mv "${label_matches[0]}" "$LABELS_TRAIN_DIR"/"$prefix".nii.gz
+done
 
-# # Reorient images to same orientation
-# echo "Transform training and validation images to $ORIENTATION"
-# smaugbench_reorient_image -i "$IMAGES_TRAIN_DIR" -o "$IMAGES_TRAIN_DIR" -ori $ORIENTATION -r -w $JOBS
-# smaugbench_reorient_image -i "$LABELS_TRAIN_DIR" -o "$LABELS_TRAIN_DIR" -ori $ORIENTATION -r -w $JOBS
+# Reorient images to same orientation
+echo "Transform training and validation images to $ORIENTATION"
+smaugbench_reorient_image -i "$IMAGES_TRAIN_DIR" -o "$IMAGES_TRAIN_DIR" -ori $ORIENTATION -r -w $JOBS
+smaugbench_reorient_image -i "$LABELS_TRAIN_DIR" -o "$LABELS_TRAIN_DIR" -ori $ORIENTATION -r -w $JOBS
 
-# # Resample images to a same resolution
-# echo "Resample training and validation images to $RESOLUTION"
-# smaugbench_resample_image -i "$IMAGES_TRAIN_DIR" -o "$IMAGES_TRAIN_DIR" -res $RESOLUTION -int linear -r -w $JOBS
-# smaugbench_resample_image -i "$LABELS_TRAIN_DIR" -o "$LABELS_TRAIN_DIR" -res $RESOLUTION -int nn -r -w $JOBS
+# Resample images to a same resolution
+echo "Resample training and validation images to $RESOLUTION"
+smaugbench_resample_image -i "$IMAGES_TRAIN_DIR" -o "$IMAGES_TRAIN_DIR" -res $RESOLUTION -int linear -r -w $JOBS
+smaugbench_resample_image -i "$LABELS_TRAIN_DIR" -o "$LABELS_TRAIN_DIR" -res $RESOLUTION -int nn -r -w $JOBS
 
-# # Create dataset.json file for nnUNet
-# echo "Create dataset.json file for nnUNet"
-# smaugbench_dataset_json_nnunet -i "$data_json" -o "$nnUNet_raw"/$SRC_DATASET/dataset.json -r
+# Create dataset.json file for nnUNet
+echo "Create dataset.json file for nnUNet"
+smaugbench_dataset_json_nnunet -i "$data_json" -o "$nnUNet_raw"/$SRC_DATASET/dataset.json -r
 
 ### nnUNet Plan and Preprocess
 export nnUNet_def_n_proc=$JOBSNN
@@ -167,7 +167,7 @@ echo "Run nnUNet plan and preprocess"
 nnUNetv2_plan_and_preprocess -d $DATASET_ID -pl $nnUNetPlanner -overwrite_plans_name $nnUNetPlans -c $configuration -np $JOBSNN --verify_dataset_integrity
 
 # Overwrite nnUNet splits_final.json
-# smaugbench_create_splits_nnunet -i "$data_json" -o "$nnUNet_preprocessed"/$SRC_DATASET/splits_final.json -r
+smaugbench_create_splits_nnunet -i "$data_json" -o "$nnUNet_preprocessed"/$SRC_DATASET/splits_final.json -r
 
 # Move back
 cd "$CURR_DIR"
