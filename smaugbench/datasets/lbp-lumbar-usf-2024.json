@@ -11,5 +11,47 @@
         }
     ],
     "VALIDATION": [],
-    "TESTING": []
+    "TESTING": [
+        {
+            "IMAGE": "lbp-lumbar-usf-2024/sub-033/ses-A/anat/sub-033_ses-A_acq-isotropic_T2w.nii.gz"
+        },
+        {
+            "IMAGE": "lbp-lumbar-usf-2024/sub-006/ses-A/anat/sub-006_ses-A_acq-isotropic_T2w.nii.gz"
+        },
+        {
+            "IMAGE": "lbp-lumbar-usf-2024/sub-021/ses-A/anat/sub-021_ses-A_acq-isotropic_T2w.nii.gz"
+        },
+        {
+            "IMAGE": "lbp-lumbar-usf-2024/sub-017/ses-A/anat/sub-017_ses-A_acq-isotropic_T2w.nii.gz"
+        },
+        {
+            "IMAGE": "lbp-lumbar-usf-2024/sub-001/ses-A/anat/sub-001_ses-A_acq-isotropic_T2w.nii.gz"
+        },
+        {
+            "IMAGE": "lbp-lumbar-usf-2024/sub-066/ses-B/anat/sub-066_ses-B_acq-isotropic_T2w.nii.gz"
+        },
+        {
+            "IMAGE": "lbp-lumbar-usf-2024/sub-016/ses-A/anat/sub-016_ses-A_acq-isotropic_T2w.nii.gz"
+        },
+        {
+            "IMAGE": "lbp-lumbar-usf-2024/sub-069/ses-B/anat/sub-069_ses-B_acq-isotropic_T2w.nii.gz"
+        },
+        {
+            "IMAGE": "lbp-lumbar-usf-2024/sub-031/ses-A/anat/sub-031_ses-A_acq-isotropic_T2w.nii.gz"
+        },
+        {
+            "IMAGE": "lbp-lumbar-usf-2024/sub-111/ses-A/anat/sub-111_ses-A_acq-isotropic_T2w.nii.gz"
+        },
+        {
+            "IMAGE": "lbp-lumbar-usf-2024/sub-018/ses-A/anat/sub-018_ses-A_acq-isotropic_T2w.nii.gz"
+        },
+        {
+            "IMAGE": "lbp-lumbar-usf-2024/sub-014/ses-B/anat/sub-014_ses-B_acq-isotropic_T2w.nii.gz"
+        },
+        {
+            "IMAGE": "lbp-lumbar-usf-2024/sub-002/ses-B/anat/sub-002_ses-B_acq-isotropic_T2w.nii.gz"
+        }
+    ]
 }
+
+    
