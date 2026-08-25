@@ -4,10 +4,14 @@ inference.sh for a given nnUNet dataset ID, and generate comparison tables.
 
 For each `$SMAUGBENCH_DATA/inference/Dataset<ID>_*/metrics*/metrics.csv` this
 script produces:
-  * comparison_long.csv    -- concatenated per-subject rows, tagged by model
-  * comparison_summary.csv -- mean / std / count per (model, label, metric)
-  * comparison_<metric>.csv -- pivot with rows=model, columns=label,
-                               values="mean +/- std" (one file per metric)
+  * comparison_long.csv                    -- concatenated per-subject rows, tagged by model + modality
+  * comparison_summary.csv                 -- mean / std / count per (model, label, metric)
+  * comparison_<metric>.csv                -- pivot rows=model, columns=label
+  * comparison_summary_by_modality.csv     -- mean / std / count per (model, modality, label, metric)
+  * comparison_<metric>_by_modality.csv    -- pivot rows=model, columns=modality (aggregated over labels)
+
+Modality is parsed from the reference filename token between the last `_` and
+`.nii.gz`, e.g. `sub-amos0021_CT.nii.gz` -> `CT`.
 """
 
 import argparse
@@ -18,7 +22,7 @@ from pathlib import Path
 import pandas as pd
 
 
-META_COLUMNS = {'model', 'reference', 'prediction', 'label', 'EmptyRef', 'EmptyPred'}
+META_COLUMNS = {'model', 'modality', 'reference', 'prediction', 'label', 'EmptyRef', 'EmptyPred'}
 
 
 def main():
@@ -71,25 +75,38 @@ def main():
     output_dir.mkdir(parents=True, exist_ok=True)
 
     long_df = _load_all_metrics(dataset_dir)
+    long_df.insert(1, 'modality', long_df['reference'].map(_extract_modality))
     metric_cols = _select_metric_columns(long_df, args.metrics)
 
     print(f'Loaded metrics from {long_df["model"].nunique()} model(s), '
-          f'{len(long_df)} subject-label rows, {len(metric_cols)} metric column(s).')
+          f'{len(long_df)} subject-label rows, '
+          f'{long_df["modality"].nunique()} modality/contrast(s), '
+          f'{len(metric_cols)} metric column(s).')
 
     long_out = output_dir / 'comparison_long.csv'
     long_df.to_csv(long_out, index=False)
     print(f'Wrote {long_out}')
 
-    summary = _summary_table(long_df, metric_cols)
+    summary = _summary_table(long_df, ['model', 'label'], metric_cols)
     summary_out = output_dir / 'comparison_summary.csv'
     summary.to_csv(summary_out, index=False)
     print(f'Wrote {summary_out}')
 
+    summary_mod = _summary_table(long_df, ['model', 'modality', 'label'], metric_cols)
+    summary_mod_out = output_dir / 'comparison_summary_by_modality.csv'
+    summary_mod.to_csv(summary_mod_out, index=False)
+    print(f'Wrote {summary_mod_out}')
+
     for metric in metric_cols:
-        pivot = _pivot_metric(long_df, metric)
+        pivot = _pivot_metric(long_df, metric, 'label')
         pivot_out = output_dir / f'comparison_{metric}.csv'
         pivot.to_csv(pivot_out)
         print(f'Wrote {pivot_out}')
+
+        pivot_mod = _pivot_metric(long_df, metric, 'modality')
+        pivot_mod_out = output_dir / f'comparison_{metric}_by_modality.csv'
+        pivot_mod.to_csv(pivot_mod_out)
+        print(f'Wrote {pivot_mod_out}')
 
 
 def _resolve_inference_dir(inference_dir_arg):
@@ -133,20 +150,36 @@ def _select_metric_columns(df, requested):
     return numeric_cols
 
 
-def _summary_table(df, metric_cols):
-    agg = df.groupby(['model', 'label'])[metric_cols].agg(['mean', 'std', 'count']).reset_index()
+def _summary_table(df, group_cols, metric_cols):
+    agg = df.groupby(group_cols)[metric_cols].agg(['mean', 'std', 'count']).reset_index()
     agg.columns = ['_'.join(col).rstrip('_') for col in agg.columns.values]
     return agg.round(3)
 
 
-def _pivot_metric(df, metric):
-    grouped = df.groupby(['model', 'label'])[metric].agg(['mean', 'std'])
+def _pivot_metric(df, metric, column):
+    grouped = df.groupby(['model', column])[metric].agg(['mean', 'std'])
     formatted = grouped.apply(
         lambda row: (f'{row["mean"]:.3f} +/- {row["std"]:.3f}'
                      if pd.notna(row['std']) else f'{row["mean"]:.3f}'),
         axis=1,
     )
-    return formatted.unstack('label')
+    return formatted.unstack(column)
+
+
+def _extract_modality(reference_path):
+    """Return the modality/contrast token from a reference filename.
+
+    Example: `.../sub-amos0021_CT.nii.gz` -> `CT`.
+    Falls back to the whole stem when there is no `_` separator.
+    """
+    name = Path(str(reference_path)).name
+    for suffix in ('.nii.gz', '.nii'):
+        if name.endswith(suffix):
+            name = name[: -len(suffix)]
+            break
+    if '_' in name:
+        return name.rsplit('_', 1)[1]
+    return name
 
 
 if __name__ == '__main__':
