@@ -1,0 +1,23 @@
+{
+  "steps": {
+    "download": true,
+    "prepare": true,
+    "train": true,
+    "inference": true
+  },
+
+  "data_json": "totalsegmentator-ct",
+  "dataset_id": 300,
+  "dataset_name": "TOTALSEGMENTATOR-CT",
+
+  "nnunet_planner": "nnUNetPlannerResEncL",
+  "nnunet_plans":   "nnUNetPlans",
+  "configuration":  "3d_fullres",
+
+  "nnunet_trainer": "nnUNetTrainer",
+  "nnunet_trainer_config": null,
+  "nnunet_folder_name": "nnUNetTrainer",
+
+  "inference_do_preprocessing": false,
+  "inference_all_weights": false
+}
