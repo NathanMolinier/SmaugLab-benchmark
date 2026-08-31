@@ -1,16 +1,31 @@
 {
     "TYPE": "LABEL",
     "CONTRASTS": "T2w",
+    "SOURCE":[
+        "git@data.neuro.polymtl.ca:datasets/lbp-lumbar-usf-2024.git"
+    ],
+    "COMMIT":[
+        "a4ae6eb1cab5a3967ee2172c7c23606acbc3184f"
+    ],
     "LABELS": {
             "1": "roots"
     },
     "TRAINING": [
         {
+            "IMAGE": "lbp-lumbar-usf-2024/sub-021/ses-A/anat/sub-021_ses-A_acq-isotropic_T2w.nii.gz",
+            "LABEL": "lbp-lumbar-usf-2024/derivatives/labels/sub-021/ses-A/anat/sub-021_ses-A_acq-isotropic_T2w_label-rootlets_seg.nii.gz"
+        },
+        {
+            "IMAGE": "lbp-lumbar-usf-2024/sub-018/ses-A/anat/sub-018_ses-A_acq-isotropic_T2w.nii.gz",
+            "LABEL": "lbp-lumbar-usf-2024/derivatives/labels/sub-018/ses-A/anat/sub-018_ses-A_acq-isotropic_T2w_label-rootlets_seg.nii.gz"
+        }
+    ],
+    "VALIDATION": [
+        {
             "IMAGE": "lbp-lumbar-usf-2024/sub-001/ses-A/anat/sub-001_ses-A_acq-isotropic_T2w.nii.gz",
             "LABEL": "lbp-lumbar-usf-2024/derivatives/labels/sub-001/ses-A/anat/sub-001_ses-A_acq-isotropic_T2w_label-rootlets_seg.nii.gz"
         }
     ],
-    "VALIDATION": [],
     "TESTING": [
         {
             "IMAGE": "lbp-lumbar-usf-2024/sub-033/ses-A/anat/sub-033_ses-A_acq-isotropic_T2w.nii.gz"
