@@ -1,7 +1,7 @@
 {
   "steps": {
     "download": false,
-    "prepare": true,
+    "prepare": false,
     "train": true,
     "inference": true
   },
