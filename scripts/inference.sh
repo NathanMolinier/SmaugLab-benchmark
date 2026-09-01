@@ -105,7 +105,7 @@ fi
 JOBS=${SMAUGBENCH_JOBS:-$CORES}
 
 # Set the number of jobs for the nnUNet
-JOBSNN=$(( JOBS < $((MEMGB / 8)) ? JOBS : $((MEMGB / 8)) ))
+JOBSNN=$(( JOBS < $((MEMGB / 32)) ? JOBS : $((MEMGB / 32)) ))
 JOBSNN=$(( JOBSNN < 1 ? 1 : JOBSNN ))
 JOBSNN=${SMAUGBENCH_JOBSNN:-$JOBSNN}
 
