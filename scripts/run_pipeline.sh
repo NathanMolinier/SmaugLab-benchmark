@@ -61,6 +61,10 @@ NNUNET_PLANNER=$(jreq '.nnunet_planner' )
 NNUNET_PLANS=$(jreq   '.nnunet_plans' )
 CONFIGURATION=$(jreq  '.configuration' )
 
+# Preprocessing parameters
+ORIENTATION=$(jopt '.orientation' '"RPI"')
+RESOLUTION=$(jopt  '.resolution'  '"1x1x1"')
+
 # Dataset parameters
 DATASET_ID=$(jreq   '.dataset_id' )
 DATASET_NAME=$(jreq '.dataset_name' )
@@ -99,7 +103,8 @@ if [ "$DO_PREPARE" = "true" ]; then
     fi
     echo "==> prepare_datasets.sh"
     "$SCRIPT_DIR/prepare_datasets.sh" "$DATA_JSON" "$DATASET_ID" "$DATASET_NAME" \
-        "$NNUNET_PLANNER" "$NNUNET_PLANS" "$CONFIGURATION"
+        "$NNUNET_PLANNER" "$NNUNET_PLANS" "$CONFIGURATION" \
+        "$ORIENTATION" "$RESOLUTION"
 fi
 
 # 3. Train

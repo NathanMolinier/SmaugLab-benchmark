@@ -87,6 +87,10 @@ NNUNET_FOLDER_NAME=$(jreq  '.nnunet_folder_name' )
 ALL_WEIGHTS=$(jopt '.inference_all_weights' false)
 DO_PREPROCESSING=$(jopt '.inference_do_preprocessing' true)
 
+# Preprocessing parameters
+ORIENTATION=$(jopt '.orientation' '"RPI"')
+RESOLUTION=$(jopt  '.resolution'  '"1x1x1"')
+
 # Get memory in GB and number of CPUs
 if [[ "$OSTYPE" == "linux-gnu"* ]]; then
     # Linux: /proc/meminfo
@@ -125,6 +129,8 @@ echo "configuration=${CONFIGURATION}"
 echo "nnUNetFolderName=${NNUNET_FOLDER_NAME}"
 echo "ALL_WEIGHTS=${ALL_WEIGHTS}"
 echo "DO_PREPROCESSING=${DO_PREPROCESSING}"
+echo "ORIENTATION=${ORIENTATION}"
+echo "RESOLUTION=${RESOLUTION}"
 echo "JOBSNN=${JOBSNN}"
 echo "DEVICE=${DEVICE}"
 echo "DATASET_ID=${DATASET_ID}"
@@ -156,9 +162,6 @@ fi
 
 if [ "$DO_PREPROCESSING" = "true" ] || [ ! -d "$inference_dir" ]; then
     echo "Preprocess inference data"
-    # Preprocessing parameters
-    ORIENTATION="RPI"
-    RESOLUTION="1x1x1"
 
     # Set the paths to the inference data folder
     bids="$SMAUGBENCH_DATA"/bids

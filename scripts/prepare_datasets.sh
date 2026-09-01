@@ -82,9 +82,8 @@ DATASET_NAME="$3"
 nnUNetPlanner=${4:-nnUNetPlannerResEncL}
 nnUNetPlans=${5:-nnUNetPlans}
 configuration=${6:-3d_fullres}
-
-ORIENTATION="RPI"
-RESOLUTION="1x1x1"
+ORIENTATION=${7:-RPI}
+RESOLUTION=${8:-1x1x1}
 
 SRC_DATASET=Dataset${DATASET_ID}_${DATASET_NAME}
 
@@ -96,6 +95,8 @@ echo "nnUNet_results=${nnUNet_results}"
 echo "nnUNetPlanner=${nnUNetPlanner}"
 echo "nnUNetPlans=${nnUNetPlans}"
 echo "configuration=${configuration}"
+echo "ORIENTATION=${ORIENTATION}"
+echo "RESOLUTION=${RESOLUTION}"
 echo "JOBSNN=${JOBSNN}"
 echo "DATASET_ID=${DATASET_ID}"
 echo "DATASET_NAME=${DATASET_NAME}"
