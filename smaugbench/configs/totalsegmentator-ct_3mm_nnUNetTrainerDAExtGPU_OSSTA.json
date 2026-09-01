@@ -1,0 +1,26 @@
+{
+  "steps": {
+    "download": false,
+    "prepare": true,
+    "train": true,
+    "inference": true
+  },
+
+  "orientation": "RPI",
+  "resolution": "3x3x3",
+
+  "data_json": "totalsegmentator-ct",
+  "dataset_id": 301,
+  "dataset_name": "TOTALSEGMENTATOR-CT-3mm",
+
+  "nnunet_planner": "nnUNetPlannerResEncL",
+  "nnunet_plans":   "nnUNetPlans",
+  "configuration":  "3d_fullres",
+
+  "nnunet_trainer": "nnUNetTrainerDAExtGPU",
+  "nnunet_trainer_config": "/home/ge.polymtl.ca/p118739/code/SmaugLab/smauglab/configs/transform_params_one-sequence-to-segment-them-all.json",
+  "nnunet_folder_name": "nnUNetTrainerDAExtGPU_OSSTA",
+
+  "inference_do_preprocessing": false,
+  "inference_all_weights": false
+}
