@@ -109,6 +109,17 @@ fi
 
 # 3. Train
 export nnUNet_results="$SMAUGBENCH_DATA"/nnUNet/results/"$NNUNET_FOLDER_NAME"
+
+# Archive config next to the weights (fold_0 is hardcoded in train.sh)
+FOLD_DIR="$nnUNet_results/Dataset${DATASET_ID}_${DATASET_NAME}/${NNUNET_TRAINER}__${NNUNET_PLANS}__${CONFIGURATION}/fold_0"
+mkdir -p "$FOLD_DIR"
+cp "$config_json" "$FOLD_DIR/config.json"
+echo "Config archived to $FOLD_DIR/config.json"
+cp "$DATA_JSON" "$FOLD_DIR/data.json"
+echo "Data archived to $FOLD_DIR/data.json"
+pip freeze > "$FOLD_DIR/requirements.txt"
+echo "Requirements archived to $FOLD_DIR/requirements.txt"
+
 if [ "$DO_TRAIN" = "true" ]; then
     if [ -z "$DATASET_ID" ] || [ -z "$NNUNET_TRAINER" ]; then
         echo "config: .dataset_id and .nnunet_trainer are required when steps.train=true"
@@ -125,19 +136,6 @@ if [ "$DO_TRAIN" = "true" ]; then
     else
         "$SCRIPT_DIR/train.sh" "$DATASET_ID" "$NNUNET_TRAINER" \
             "$NNUNET_PLANNER" "$NNUNET_PLANS" "$CONFIGURATION"
-    fi
-
-    # Archive config next to the weights (fold_0 is hardcoded in train.sh)
-    FOLD_DIR="$nnUNet_results/Dataset${DATASET_ID}_${DATASET_NAME}/${NNUNET_TRAINER}__${NNUNET_PLANS}__${CONFIGURATION}/fold_0"
-    if [ -d "$FOLD_DIR" ]; then
-        cp "$config_json" "$FOLD_DIR/config.json"
-        echo "Config archived to $FOLD_DIR/config.json"
-        cp "$DATA_JSON" "$FOLD_DIR/data.json"
-        echo "Data archived to $FOLD_DIR/data.json"
-        pip freeze > "$FOLD_DIR/requirements.txt"
-        echo "Requirements archived to $FOLD_DIR/requirements.txt"
-    else
-        echo "Warning: expected fold folder $FOLD_DIR does not exist; config not archived."
     fi
 fi
 
