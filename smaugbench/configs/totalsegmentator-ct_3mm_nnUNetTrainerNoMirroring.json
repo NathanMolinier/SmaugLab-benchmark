@@ -1,0 +1,26 @@
+{
+  "steps": {
+    "download": false,
+    "prepare": false,
+    "train": true,
+    "inference": true
+  },
+
+  "orientation": "RPI",
+  "resolution": "3x3x3",
+
+  "data_json": "totalsegmentator-ct",
+  "dataset_id": 301,
+  "dataset_name": "TOTALSEGMENTATOR-CT-3mm",
+
+  "nnunet_planner": "nnUNetPlannerResEncL",
+  "nnunet_plans":   "nnUNetPlans",
+  "configuration":  "3d_fullres",
+
+  "nnunet_trainer": "nnUNetTrainerNoMirroring",
+  "nnunet_trainer_config": null,
+  "nnunet_folder_name": "nnUNetTrainerNoMirroring",
+
+  "inference_do_preprocessing": false,
+  "inference_all_weights": false
+}
