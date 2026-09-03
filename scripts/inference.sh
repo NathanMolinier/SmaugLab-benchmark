@@ -228,15 +228,17 @@ fi
 
 # Run model inference
 export nnUNet_results="$SMAUGBENCH_DATA"/nnUNet/results/"$NNUNET_FOLDER_NAME"
-JOBSMEASURE=$(( JOBS < $((MEMGB / 32)) ? JOBS : $((MEMGB / 32)) ))
+FOLD_DIR="$nnUNet_results/Dataset${DATASET_ID}_${DATASET_NAME}/${NNUNET_TRAINER}__${NNUNET_PLANS}__${CONFIGURATION}/fold_0"
+JOBSMEASURE=$(( JOBS < $((MEMGB / 8)) ? JOBS : $((MEMGB / 8)) ))
 
 run_metrics() {
     local pred_dir="$1"
     local metrics_dir="$2"
     echo "Compute pairwise measurements -> $metrics_dir"
     mkdir -p "$metrics_dir"
-    jq '.LABELS | to_entries | map({key: .value, value: (.key | tonumber)}) | from_entries' "$DATA_JSON" > "$metrics_dir"/mapping.json
-    smaugbench_compute_pairwise_measurements -pred "$pred_dir" -ref "$LABELS_DIR" -pred-map "$metrics_dir"/mapping.json -ref-map "$metrics_dir"/mapping.json -o "$metrics_dir"/metrics.csv -metrics "dsc" "nsd" "hd" -w $JOBSMEASURE
+    jq '.LABELS | to_entries | map({key: .value, value: (.key | tonumber)}) | from_entries' "$DATA_JSON" > "$metrics_dir"/ref_mapping.json
+    jq '.LABELS | to_entries | map({key: .value, value: (.key | tonumber)}) | from_entries' "$FOLD_DIR/data.json" > "$metrics_dir"/pred_mapping.json
+    smaugbench_compute_pairwise_measurements -pred "$pred_dir" -ref "$LABELS_DIR" -pred-map "$metrics_dir"/pred_mapping.json -ref-map "$metrics_dir"/ref_mapping.json -o "$metrics_dir"/metrics.csv -metrics "dsc" "nsd" "hd" -w $JOBSMEASURE
 }
 
 if [ "$ALL_WEIGHTS" = "true" ]; then
