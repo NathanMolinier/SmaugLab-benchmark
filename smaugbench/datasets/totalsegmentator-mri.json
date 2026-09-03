@@ -1,0 +1,286 @@
+{
+    "TYPE": "LABEL",
+    "CONTRASTS": "MR",
+    "SOURCE":[
+        "git@data.neuro.polymtl.ca:datasets/fullbody-totalsegmentator-mri.git"
+    ],
+    "COMMIT":[
+        "59c0dd6e545272c0617af4911c9b78402b48997d"
+    ],
+    "LABELS": {
+            "1": "spleen",
+            "2": "kidney_right",
+            "3": "kidney_left",
+            "4": "gallbladder",
+            "5": "liver",
+            "6": "stomach",
+            "7": "pancreas",
+            "8": "adrenal_gland_right",
+            "9": "adrenal_gland_left",
+            "10": "lung_left",
+            "11": "lung_right",
+            "12": "esophagus",
+            "13": "small_bowel",
+            "14": "duodenum",
+            "15": "colon",
+            "16": "urinary_bladder",
+            "17": "prostate",
+            "18": "sacrum",
+            "19": "vertebrae",
+            "20": "intervertebral_discs",
+            "21": "spinal_cord",
+            "22": "heart",
+            "23": "aorta",
+            "24": "inferior_vena_cava",
+            "25": "portal_vein_and_splenic_vein",
+            "26": "iliac_artery_left",
+            "27": "iliac_artery_right",
+            "28": "iliac_vena_left",
+            "29": "iliac_vena_right",
+            "30": "humerus_left",
+            "31": "humerus_right",
+            "32": "scapula_left",
+            "33": "scapula_right",
+            "34": "clavicula_left",
+            "35": "clavicula_right",
+            "36": "femur_left",
+            "37": "femur_right",
+            "38": "hip_left",
+            "39": "hip_right",
+            "40": "gluteus_maximus_left",
+            "41": "gluteus_maximus_right",
+            "42": "gluteus_medius_left",
+            "43": "gluteus_medius_right",
+            "44": "gluteus_minimus_left",
+            "45": "gluteus_minimus_right",
+            "46": "autochthon_left",
+            "47": "autochthon_right",
+            "48": "iliopsoas_left",
+            "49": "iliopsoas_right",
+            "50": "brain"
+    },
+    "TRAINING": [],
+    "VALIDATION": [],
+    "TESTING": [
+        {
+            "IMAGE": "fullbody-totalsegmentator-mri/sub-0216/anat/sub-0216_MR.nii.gz",
+            "LABEL": "fullbody-totalsegmentator-mri/derivatives/labels/sub-0216/anat/sub-0216_MR_label-body_dseg.nii.gz"
+        },
+        {
+            "IMAGE": "fullbody-totalsegmentator-mri/sub-0342/anat/sub-0342_MR.nii.gz",
+            "LABEL": "fullbody-totalsegmentator-mri/derivatives/labels/sub-0342/anat/sub-0342_MR_label-body_dseg.nii.gz"
+        },
+        {
+            "IMAGE": "fullbody-totalsegmentator-mri/sub-0027/anat/sub-0027_MR.nii.gz",
+            "LABEL": "fullbody-totalsegmentator-mri/derivatives/labels/sub-0027/anat/sub-0027_MR_label-body_dseg.nii.gz"
+        },
+        {
+            "IMAGE": "fullbody-totalsegmentator-mri/sub-0592/anat/sub-0592_MR.nii.gz",
+            "LABEL": "fullbody-totalsegmentator-mri/derivatives/labels/sub-0592/anat/sub-0592_MR_label-body_dseg.nii.gz"
+        },
+        {
+            "IMAGE": "fullbody-totalsegmentator-mri/sub-0580/anat/sub-0580_MR.nii.gz",
+            "LABEL": "fullbody-totalsegmentator-mri/derivatives/labels/sub-0580/anat/sub-0580_MR_label-body_dseg.nii.gz"
+        },
+        {
+            "IMAGE": "fullbody-totalsegmentator-mri/sub-0287/anat/sub-0287_MR.nii.gz",
+            "LABEL": "fullbody-totalsegmentator-mri/derivatives/labels/sub-0287/anat/sub-0287_MR_label-body_dseg.nii.gz"
+        },
+        {
+            "IMAGE": "fullbody-totalsegmentator-mri/sub-0501/anat/sub-0501_MR.nii.gz",
+            "LABEL": "fullbody-totalsegmentator-mri/derivatives/labels/sub-0501/anat/sub-0501_MR_label-body_dseg.nii.gz"
+        },
+        {
+            "IMAGE": "fullbody-totalsegmentator-mri/sub-0031/anat/sub-0031_MR.nii.gz",
+            "LABEL": "fullbody-totalsegmentator-mri/derivatives/labels/sub-0031/anat/sub-0031_MR_label-body_dseg.nii.gz"
+        },
+        {
+            "IMAGE": "fullbody-totalsegmentator-mri/sub-0545/anat/sub-0545_MR.nii.gz",
+            "LABEL": "fullbody-totalsegmentator-mri/derivatives/labels/sub-0545/anat/sub-0545_MR_label-body_dseg.nii.gz"
+        },
+        {
+            "IMAGE": "fullbody-totalsegmentator-mri/sub-0309/anat/sub-0309_MR.nii.gz",
+            "LABEL": "fullbody-totalsegmentator-mri/derivatives/labels/sub-0309/anat/sub-0309_MR_label-body_dseg.nii.gz"
+        },
+        {
+            "IMAGE": "fullbody-totalsegmentator-mri/sub-0327/anat/sub-0327_MR.nii.gz",
+            "LABEL": "fullbody-totalsegmentator-mri/derivatives/labels/sub-0327/anat/sub-0327_MR_label-body_dseg.nii.gz"
+        },
+        {
+            "IMAGE": "fullbody-totalsegmentator-mri/sub-0537/anat/sub-0537_MR.nii.gz",
+            "LABEL": "fullbody-totalsegmentator-mri/derivatives/labels/sub-0537/anat/sub-0537_MR_label-body_dseg.nii.gz"
+        },
+        {
+            "IMAGE": "fullbody-totalsegmentator-mri/sub-0515/anat/sub-0515_MR.nii.gz",
+            "LABEL": "fullbody-totalsegmentator-mri/derivatives/labels/sub-0515/anat/sub-0515_MR_label-body_dseg.nii.gz"
+        },
+        {
+            "IMAGE": "fullbody-totalsegmentator-mri/sub-0114/anat/sub-0114_MR.nii.gz",
+            "LABEL": "fullbody-totalsegmentator-mri/derivatives/labels/sub-0114/anat/sub-0114_MR_label-body_dseg.nii.gz"
+        },
+        {
+            "IMAGE": "fullbody-totalsegmentator-mri/sub-0145/anat/sub-0145_MR.nii.gz",
+            "LABEL": "fullbody-totalsegmentator-mri/derivatives/labels/sub-0145/anat/sub-0145_MR_label-body_dseg.nii.gz"
+        },
+        {
+            "IMAGE": "fullbody-totalsegmentator-mri/sub-0459/anat/sub-0459_MR.nii.gz",
+            "LABEL": "fullbody-totalsegmentator-mri/derivatives/labels/sub-0459/anat/sub-0459_MR_label-body_dseg.nii.gz"
+        },
+        {
+            "IMAGE": "fullbody-totalsegmentator-mri/sub-0395/anat/sub-0395_MR.nii.gz",
+            "LABEL": "fullbody-totalsegmentator-mri/derivatives/labels/sub-0395/anat/sub-0395_MR_label-body_dseg.nii.gz"
+        },
+        {
+            "IMAGE": "fullbody-totalsegmentator-mri/sub-0505/anat/sub-0505_MR.nii.gz",
+            "LABEL": "fullbody-totalsegmentator-mri/derivatives/labels/sub-0505/anat/sub-0505_MR_label-body_dseg.nii.gz"
+        },
+        {
+            "IMAGE": "fullbody-totalsegmentator-mri/sub-0078/anat/sub-0078_MR.nii.gz",
+            "LABEL": "fullbody-totalsegmentator-mri/derivatives/labels/sub-0078/anat/sub-0078_MR_label-body_dseg.nii.gz"
+        },
+        {
+            "IMAGE": "fullbody-totalsegmentator-mri/sub-0316/anat/sub-0316_MR.nii.gz",
+            "LABEL": "fullbody-totalsegmentator-mri/derivatives/labels/sub-0316/anat/sub-0316_MR_label-body_dseg.nii.gz"
+        },
+        {
+            "IMAGE": "fullbody-totalsegmentator-mri/sub-0284/anat/sub-0284_MR.nii.gz",
+            "LABEL": "fullbody-totalsegmentator-mri/derivatives/labels/sub-0284/anat/sub-0284_MR_label-body_dseg.nii.gz"
+        },
+        {
+            "IMAGE": "fullbody-totalsegmentator-mri/sub-0323/anat/sub-0323_MR.nii.gz",
+            "LABEL": "fullbody-totalsegmentator-mri/derivatives/labels/sub-0323/anat/sub-0323_MR_label-body_dseg.nii.gz"
+        },
+        {
+            "IMAGE": "fullbody-totalsegmentator-mri/sub-0143/anat/sub-0143_MR.nii.gz",
+            "LABEL": "fullbody-totalsegmentator-mri/derivatives/labels/sub-0143/anat/sub-0143_MR_label-body_dseg.nii.gz"
+        },
+        {
+            "IMAGE": "fullbody-totalsegmentator-mri/sub-0523/anat/sub-0523_MR.nii.gz",
+            "LABEL": "fullbody-totalsegmentator-mri/derivatives/labels/sub-0523/anat/sub-0523_MR_label-body_dseg.nii.gz"
+        },
+        {
+            "IMAGE": "fullbody-totalsegmentator-mri/sub-0024/anat/sub-0024_MR.nii.gz",
+            "LABEL": "fullbody-totalsegmentator-mri/derivatives/labels/sub-0024/anat/sub-0024_MR_label-body_dseg.nii.gz"
+        },
+        {
+            "IMAGE": "fullbody-totalsegmentator-mri/sub-0614/anat/sub-0614_MR.nii.gz",
+            "LABEL": "fullbody-totalsegmentator-mri/derivatives/labels/sub-0614/anat/sub-0614_MR_label-body_dseg.nii.gz"
+        },
+        {
+            "IMAGE": "fullbody-totalsegmentator-mri/sub-0385/anat/sub-0385_MR.nii.gz",
+            "LABEL": "fullbody-totalsegmentator-mri/derivatives/labels/sub-0385/anat/sub-0385_MR_label-body_dseg.nii.gz"
+        },
+        {
+            "IMAGE": "fullbody-totalsegmentator-mri/sub-0594/anat/sub-0594_MR.nii.gz",
+            "LABEL": "fullbody-totalsegmentator-mri/derivatives/labels/sub-0594/anat/sub-0594_MR_label-body_dseg.nii.gz"
+        },
+        {
+            "IMAGE": "fullbody-totalsegmentator-mri/sub-0348/anat/sub-0348_MR.nii.gz",
+            "LABEL": "fullbody-totalsegmentator-mri/derivatives/labels/sub-0348/anat/sub-0348_MR_label-body_dseg.nii.gz"
+        },
+        {
+            "IMAGE": "fullbody-totalsegmentator-mri/sub-0105/anat/sub-0105_MR.nii.gz",
+            "LABEL": "fullbody-totalsegmentator-mri/derivatives/labels/sub-0105/anat/sub-0105_MR_label-body_dseg.nii.gz"
+        },
+        {
+            "IMAGE": "fullbody-totalsegmentator-mri/sub-0414/anat/sub-0414_MR.nii.gz",
+            "LABEL": "fullbody-totalsegmentator-mri/derivatives/labels/sub-0414/anat/sub-0414_MR_label-body_dseg.nii.gz"
+        },
+        {
+            "IMAGE": "fullbody-totalsegmentator-mri/sub-0100/anat/sub-0100_MR.nii.gz",
+            "LABEL": "fullbody-totalsegmentator-mri/derivatives/labels/sub-0100/anat/sub-0100_MR_label-body_dseg.nii.gz"
+        },
+        {
+            "IMAGE": "fullbody-totalsegmentator-mri/sub-0015/anat/sub-0015_MR.nii.gz",
+            "LABEL": "fullbody-totalsegmentator-mri/derivatives/labels/sub-0015/anat/sub-0015_MR_label-body_dseg.nii.gz"
+        },
+        {
+            "IMAGE": "fullbody-totalsegmentator-mri/sub-0038/anat/sub-0038_MR.nii.gz",
+            "LABEL": "fullbody-totalsegmentator-mri/derivatives/labels/sub-0038/anat/sub-0038_MR_label-body_dseg.nii.gz"
+        },
+        {
+            "IMAGE": "fullbody-totalsegmentator-mri/sub-0286/anat/sub-0286_MR.nii.gz",
+            "LABEL": "fullbody-totalsegmentator-mri/derivatives/labels/sub-0286/anat/sub-0286_MR_label-body_dseg.nii.gz"
+        },
+        {
+            "IMAGE": "fullbody-totalsegmentator-mri/sub-0293/anat/sub-0293_MR.nii.gz",
+            "LABEL": "fullbody-totalsegmentator-mri/derivatives/labels/sub-0293/anat/sub-0293_MR_label-body_dseg.nii.gz"
+        },
+        {
+            "IMAGE": "fullbody-totalsegmentator-mri/sub-0175/anat/sub-0175_MR.nii.gz",
+            "LABEL": "fullbody-totalsegmentator-mri/derivatives/labels/sub-0175/anat/sub-0175_MR_label-body_dseg.nii.gz"
+        },
+        {
+            "IMAGE": "fullbody-totalsegmentator-mri/sub-0355/anat/sub-0355_MR.nii.gz",
+            "LABEL": "fullbody-totalsegmentator-mri/derivatives/labels/sub-0355/anat/sub-0355_MR_label-body_dseg.nii.gz"
+        },
+        {
+            "IMAGE": "fullbody-totalsegmentator-mri/sub-0142/anat/sub-0142_MR.nii.gz",
+            "LABEL": "fullbody-totalsegmentator-mri/derivatives/labels/sub-0142/anat/sub-0142_MR_label-body_dseg.nii.gz"
+        },
+        {
+            "IMAGE": "fullbody-totalsegmentator-mri/sub-0480/anat/sub-0480_MR.nii.gz",
+            "LABEL": "fullbody-totalsegmentator-mri/derivatives/labels/sub-0480/anat/sub-0480_MR_label-body_dseg.nii.gz"
+        },
+        {
+            "IMAGE": "fullbody-totalsegmentator-mri/sub-0042/anat/sub-0042_MR.nii.gz",
+            "LABEL": "fullbody-totalsegmentator-mri/derivatives/labels/sub-0042/anat/sub-0042_MR_label-body_dseg.nii.gz"
+        },
+        {
+            "IMAGE": "fullbody-totalsegmentator-mri/sub-0525/anat/sub-0525_MR.nii.gz",
+            "LABEL": "fullbody-totalsegmentator-mri/derivatives/labels/sub-0525/anat/sub-0525_MR_label-body_dseg.nii.gz"
+        },
+        {
+            "IMAGE": "fullbody-totalsegmentator-mri/sub-0002/anat/sub-0002_MR.nii.gz",
+            "LABEL": "fullbody-totalsegmentator-mri/derivatives/labels/sub-0002/anat/sub-0002_MR_label-body_dseg.nii.gz"
+        },
+        {
+            "IMAGE": "fullbody-totalsegmentator-mri/sub-0447/anat/sub-0447_MR.nii.gz",
+            "LABEL": "fullbody-totalsegmentator-mri/derivatives/labels/sub-0447/anat/sub-0447_MR_label-body_dseg.nii.gz"
+        },
+        {
+            "IMAGE": "fullbody-totalsegmentator-mri/sub-0367/anat/sub-0367_MR.nii.gz",
+            "LABEL": "fullbody-totalsegmentator-mri/derivatives/labels/sub-0367/anat/sub-0367_MR_label-body_dseg.nii.gz"
+        },
+        {
+            "IMAGE": "fullbody-totalsegmentator-mri/sub-0280/anat/sub-0280_MR.nii.gz",
+            "LABEL": "fullbody-totalsegmentator-mri/derivatives/labels/sub-0280/anat/sub-0280_MR_label-body_dseg.nii.gz"
+        },
+        {
+            "IMAGE": "fullbody-totalsegmentator-mri/sub-0056/anat/sub-0056_MR.nii.gz",
+            "LABEL": "fullbody-totalsegmentator-mri/derivatives/labels/sub-0056/anat/sub-0056_MR_label-body_dseg.nii.gz"
+        },
+        {
+            "IMAGE": "fullbody-totalsegmentator-mri/sub-0615/anat/sub-0615_MR.nii.gz",
+            "LABEL": "fullbody-totalsegmentator-mri/derivatives/labels/sub-0615/anat/sub-0615_MR_label-body_dseg.nii.gz"
+        },
+        {
+            "IMAGE": "fullbody-totalsegmentator-mri/sub-0547/anat/sub-0547_MR.nii.gz",
+            "LABEL": "fullbody-totalsegmentator-mri/derivatives/labels/sub-0547/anat/sub-0547_MR_label-body_dseg.nii.gz"
+        },
+        {
+            "IMAGE": "fullbody-totalsegmentator-mri/sub-0458/anat/sub-0458_MR.nii.gz",
+            "LABEL": "fullbody-totalsegmentator-mri/derivatives/labels/sub-0458/anat/sub-0458_MR_label-body_dseg.nii.gz"
+        },
+        {
+            "IMAGE": "fullbody-totalsegmentator-mri/sub-0150/anat/sub-0150_MR.nii.gz",
+            "LABEL": "fullbody-totalsegmentator-mri/derivatives/labels/sub-0150/anat/sub-0150_MR_label-body_dseg.nii.gz"
+        },
+        {
+            "IMAGE": "fullbody-totalsegmentator-mri/sub-0016/anat/sub-0016_MR.nii.gz",
+            "LABEL": "fullbody-totalsegmentator-mri/derivatives/labels/sub-0016/anat/sub-0016_MR_label-body_dseg.nii.gz"
+        },
+        {
+            "IMAGE": "fullbody-totalsegmentator-mri/sub-0397/anat/sub-0397_MR.nii.gz",
+            "LABEL": "fullbody-totalsegmentator-mri/derivatives/labels/sub-0397/anat/sub-0397_MR_label-body_dseg.nii.gz"
+        },
+        {
+            "IMAGE": "fullbody-totalsegmentator-mri/sub-0398/anat/sub-0398_MR.nii.gz",
+            "LABEL": "fullbody-totalsegmentator-mri/derivatives/labels/sub-0398/anat/sub-0398_MR_label-body_dseg.nii.gz"
+        },
+        {
+            "IMAGE": "fullbody-totalsegmentator-mri/sub-0129/anat/sub-0129_MR.nii.gz",
+            "LABEL": "fullbody-totalsegmentator-mri/derivatives/labels/sub-0129/anat/sub-0129_MR_label-body_dseg.nii.gz"
+        }
+    ]
+}
