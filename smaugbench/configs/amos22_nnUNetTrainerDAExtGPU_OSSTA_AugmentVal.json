@@ -6,6 +6,9 @@
     "inference": true
   },
 
+  "orientation": "RPI",
+  "resolution": "1x1x1",
+
   "data_json": "amos22",
   "dataset_id": 501,
   "dataset_name": "AMOS22",
@@ -19,5 +22,5 @@
   "nnunet_folder_name": "nnUNetTrainerDAExtGPU_OSSTA_AugmentVal",
 
   "inference_do_preprocessing": false,
-  "inference_all_weights": false
+  "inference_all_weights": true
 }
