@@ -86,7 +86,7 @@ NNUNET_FOLDER_NAME=$(jreq  '.nnunet_folder_name' )
 # Inference parameters
 ALL_WEIGHTS=$(jopt '.inference_all_weights' false)
 DO_PREPROCESSING=$(jopt '.inference_do_preprocessing' true)
-SUPPLEMENTARY_KEY=$(jopt '.inference_supplementary_key' '')
+SUPPLEMENTARY_KEY=$(jopt '.inference_supplementary_key' '""')
 
 # Preprocessing parameters
 ORIENTATION=$(jopt '.orientation' '"RPI"')
