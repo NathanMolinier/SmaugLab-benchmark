@@ -242,7 +242,9 @@ def compute_pairwise_metrics(
         unique_labels = unique_labels[unique_labels != 0]  # remove background
     else:
         # Get the unique labels that are present in the reference
-        unique_labels = list(ref_map.keys())
+        ref_labels = list(ref_map.keys())
+        pred_labels = list(pred_map.keys())
+        unique_labels = [l for l in ref_labels if l in pred_labels]
 
     # append entry into the output_list to store the metrics for the current subject
     metrics_dict = {'reference': str(reference_path), 'prediction': str(prediction_path)}
