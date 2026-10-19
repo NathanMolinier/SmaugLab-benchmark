@@ -160,7 +160,7 @@ if [ "$IMAGES_ONLY" != "true" ]; then
     fi
 fi
 
-if [ "$DO_PREPROCESSING" = "true" ] || [ ! -d "$inference_dir" ]; then
+if [ "$DO_PREPROCESSING" = "true" ] || [ ! -d "$inference_dir/"$SRC_DATASET"/images" ]; then
     echo "Preprocess inference data"
 
     # Set the paths to the inference data folder
