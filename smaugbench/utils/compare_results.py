@@ -45,6 +45,11 @@ def main():
         help='nnUNet dataset ID, e.g. 501.',
     )
     parser.add_argument(
+        '-n', '--dataset-name', type=str, default=None,
+        help='Disambiguate when multiple Dataset<ID>_* folders exist. Accepts the full folder '
+             'name (e.g. Dataset501_OSSTA) or just the suffix after the underscore (e.g. OSSTA).',
+    )
+    parser.add_argument(
         '-i', '--inference-dir', type=Path, default=None,
         help='Root inference folder. Defaults to $SMAUGBENCH_DATA/inference.',
     )
@@ -66,10 +71,24 @@ def main():
         raise FileNotFoundError(
             f'No dataset folder matching Dataset{args.dataset_id}_* under {inference_dir}.'
         )
-    if len(dataset_folders) > 1:
-        print(f'Warning: multiple dataset folders match Dataset{args.dataset_id}_*; '
-              f'using {dataset_folders[0].name}.')
-    dataset_dir = dataset_folders[0]
+    if args.dataset_name:
+        full_name = (args.dataset_name if args.dataset_name.startswith(f'Dataset{args.dataset_id}_')
+                     else f'Dataset{args.dataset_id}_{args.dataset_name}')
+        matched = [f for f in dataset_folders if f.name == full_name]
+        if not matched:
+            available = ', '.join(f.name for f in dataset_folders)
+            raise FileNotFoundError(
+                f'No dataset folder named {full_name} under {inference_dir}. Available: {available}.'
+            )
+        dataset_dir = matched[0]
+    else:
+        if len(dataset_folders) > 1:
+            available = ', '.join(f.name for f in dataset_folders)
+            raise ValueError(
+                f'Multiple dataset folders match Dataset{args.dataset_id}_*: {available}. '
+                f'Specify one with -n/--dataset-name.'
+            )
+        dataset_dir = dataset_folders[0]
 
     output_dir = args.output_dir if args.output_dir else dataset_dir / 'comparison'
     output_dir.mkdir(parents=True, exist_ok=True)
