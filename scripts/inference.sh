@@ -149,8 +149,8 @@ fi
 
 SRC_DATASET=Dataset${DATASET_ID}_${DATASET_NAME}
 inference_dir="$SMAUGBENCH_DATA"/inference
-IMAGES_DIR="$inference_dir"/"$SRC_DATASET"/images
-LABELS_DIR="$inference_dir"/"$SRC_DATASET"/labels
+IMAGES_DIR="${inference_dir}/${SRC_DATASET}${SUPPLEMENTARY_KEY}/images"
+LABELS_DIR="${inference_dir}/${SRC_DATASET}${SUPPLEMENTARY_KEY}/labels"
 
 # Auto-enable images-only when the first TESTING entry has no LABEL
 if [ "$IMAGES_ONLY" != "true" ]; then
@@ -161,7 +161,7 @@ if [ "$IMAGES_ONLY" != "true" ]; then
     fi
 fi
 
-if [ "$DO_PREPROCESSING" = "true" ] || [ ! -d "$inference_dir/"$SRC_DATASET"/images" ]; then
+if [ "$DO_PREPROCESSING" = "true" ] || [ ! -d "${inference_dir}/${SRC_DATASET}${SUPPLEMENTARY_KEY}/images" ]; then
     echo "Preprocess inference data"
 
     # Set the paths to the inference data folder
@@ -256,20 +256,20 @@ if [ "$ALL_WEIGHTS" = "true" ]; then
         weight_file=$(basename "$weight")
         weight_name="${weight_file%.pth}"
         echo "Running inference for weight: $weight_file"
-        PRED_DIR="$inference_dir/$SRC_DATASET/prediction_${NNUNET_FOLDER_NAME}${SUPPLEMENTARY_KEY}_${weight_name}"
+        PRED_DIR="${inference_dir}/${SRC_DATASET}${SUPPLEMENTARY_KEY}/prediction_${NNUNET_FOLDER_NAME}${SUPPLEMENTARY_KEY}_${weight_name}"
         nnUNetv2_predict -i "$IMAGES_DIR" -o "$PRED_DIR" -d "$DATASET_ID" -tr "$NNUNET_TRAINER" -p "$NNUNET_PLANS" -c "$CONFIGURATION" -f "$FOLD" -device $DEVICE -chk "$weight_file"
         if [ "$IMAGES_ONLY" != "true" ]; then
-            METRICS_DIR="$inference_dir/$SRC_DATASET/metrics_${NNUNET_FOLDER_NAME}${SUPPLEMENTARY_KEY}_${weight_name}"
+            METRICS_DIR="${inference_dir}/${SRC_DATASET}${SUPPLEMENTARY_KEY}/metrics_${NNUNET_FOLDER_NAME}${SUPPLEMENTARY_KEY}_${weight_name}"
             run_metrics "$PRED_DIR" "$METRICS_DIR"
         fi
     done
 else
     echo "Running inference for the best model in $nnUNet_results"
     weight_name="checkpoint_best.pth"
-    PRED_DIR="$inference_dir/$SRC_DATASET/prediction_${NNUNET_FOLDER_NAME}${SUPPLEMENTARY_KEY}"
+    PRED_DIR="${inference_dir}/${SRC_DATASET}${SUPPLEMENTARY_KEY}/prediction_${NNUNET_FOLDER_NAME}${SUPPLEMENTARY_KEY}"
     nnUNetv2_predict -i "$IMAGES_DIR" -o "$PRED_DIR" -d "$DATASET_ID" -tr "$NNUNET_TRAINER" -p "$NNUNET_PLANS" -c "$CONFIGURATION" -f "$FOLD" -device $DEVICE -chk "$weight_name"
     if [ "$IMAGES_ONLY" != "true" ]; then
-        METRICS_DIR="$inference_dir/$SRC_DATASET/metrics_${NNUNET_FOLDER_NAME}${SUPPLEMENTARY_KEY}"
+        METRICS_DIR="${inference_dir}/${SRC_DATASET}${SUPPLEMENTARY_KEY}/metrics_${NNUNET_FOLDER_NAME}${SUPPLEMENTARY_KEY}"
         run_metrics "$PRED_DIR" "$METRICS_DIR"
     fi
 fi
