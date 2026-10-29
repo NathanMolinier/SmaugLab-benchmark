@@ -6,22 +6,6 @@ Based on https://github.com/ivadomed/MetricsReloaded
 
 
 import os
-
-# Parallelism here is across subjects (one worker per volume pair). Inside each
-# worker, numpy/scipy ops would otherwise fan out across every CPU via BLAS /
-# OpenMP, so running N_workers subjects × N_cpu BLAS threads oversubscribes the
-# box and makes everything slower. Pin BLAS to 1 thread per worker BEFORE numpy
-# is imported so the setting actually takes effect in the thread pools.
-for _var in (
-    "OMP_NUM_THREADS",
-    "OPENBLAS_NUM_THREADS",
-    "MKL_NUM_THREADS",
-    "BLIS_NUM_THREADS",
-    "NUMEXPR_NUM_THREADS",
-    "VECLIB_MAXIMUM_THREADS",
-):
-    os.environ.setdefault(_var, "1")
-
 import argparse, textwrap
 import numpy as np
 import multiprocessing as mp
@@ -94,11 +78,8 @@ def main():
         help='Overwrite existing output files, defaults to false (Do not overwrite).'
     )
     parser.add_argument(
-        '--max-workers', '-w', type=int, default=None,
-        help='Max workers to run in parallel. Defaults to the number of CPUs the '
-             'scheduler has allocated to this process (os.sched_getaffinity when '
-             'available, else multiprocessing.cpu_count()), capped by the number '
-             'of file pairs. Each worker is pinned to 1 BLAS thread.'
+        '--max-workers', '-w', type=int, default=mp.cpu_count(),
+        help='Max worker to run in parallel proccess, defaults to multiprocessing.cpu_count().'
     )
     parser.add_argument(
         '--quiet', '-q', action="store_true", default=False,
@@ -134,7 +115,7 @@ def main():
             pred_map = "{pred_map_path}"
             ref_map = "{ref_map_path}"
             overwrite = {overwrite}
-            max_workers = {max_workers if max_workers is not None else "auto"}
+            max_workers = {max_workers}
             quiet = {quiet}
         '''))
 
@@ -150,15 +131,6 @@ def main():
         quiet=quiet,
     )
 
-def _available_cpus():
-    """Number of CPUs the scheduler has actually given this process."""
-    try:
-        return max(1, len(os.sched_getaffinity(0)))
-    except AttributeError:
-        # os.sched_getaffinity is Linux-only; fall back on other platforms.
-        return max(1, mp.cpu_count())
-
-
 def compute_pairwise_metrics_mp(
         prediction_path,
         reference_path,
@@ -167,7 +139,7 @@ def compute_pairwise_metrics_mp(
         pred_map_path=None,
         ref_map_path=None,
         overwrite=False,
-        max_workers=None,
+        max_workers=mp.cpu_count(),
         quiet=False,
     ):
     '''
@@ -187,6 +159,10 @@ def compute_pairwise_metrics_mp(
         ref_map = None
         pred_map = None
 
+    # Print the metrics to be computed
+    print(f'Computing metrics: {metrics}')
+    print(f'Using {max_workers} CPU cores in parallel ...')
+    
     prediction_path = Path(prediction_path)
     reference_path = Path(reference_path)
     output_path = Path(output_path)
@@ -196,16 +172,6 @@ def compute_pairwise_metrics_mp(
     # Process the NIfTI image and segmentation files
     prediction_path_list = sorted(prediction_path.glob(glob_pattern))
     reference_path_list = sorted(reference_path.glob(glob_pattern))
-
-    # Resolve a sensible worker count. More workers than file pairs just adds
-    # process-start overhead for no gain.
-    if max_workers is None:
-        max_workers = _available_cpus()
-    max_workers = max(1, min(max_workers, len(prediction_path_list) or 1))
-
-    # Print the metrics to be computed
-    print(f'Computing metrics: {metrics}')
-    print(f'Using {max_workers} CPU cores in parallel (BLAS threads per worker = 1) ...')
 
     # Check if every predictions and references have the same names
     if len(prediction_path_list) != len(reference_path_list):
@@ -223,10 +189,6 @@ def compute_pairwise_metrics_mp(
     pairwise_path.mkdir(parents=True, exist_ok=True)
     pairwise_path_list = [pairwise_path / f'{pred.name.replace(".nii.gz", "")}_metrics.json' for pred in prediction_path_list]
 
-    # Hand each worker a small chunk at a time: enough to amortize IPC overhead,
-    # small enough that slow outliers don't idle the pool at the tail.
-    chunksize = max(1, len(prediction_path_list) // (max_workers * 8)) if prediction_path_list else 1
-
     process_map(
         partial(
             compute_pairwise_metrics,
@@ -239,7 +201,7 @@ def compute_pairwise_metrics_mp(
         reference_path_list,
         pairwise_path_list,
         max_workers=max_workers,
-        chunksize=chunksize,
+        chunksize=1,
         disable=quiet,
     )
 
