@@ -269,9 +269,9 @@ fi
 
 # Run model inference (nnUNet_results and FOLD_DIR were set earlier).
 # Metrics computation is memory-heavy per worker (two 3D volumes + distance
-# transforms + connected components). Cap workers at JOBS/2 and budget 16 GB
+# transforms + connected components). Cap workers at JOBS/2 and budget 32 GB
 # per worker so we don't oversubscribe CPU or RAM on larger machines.
-JOBSMEASURE=$(( JOBS / 2 < $((MEMGB / 16)) ? JOBS / 2 : $((MEMGB / 16)) ))
+JOBSMEASURE=$(( JOBS / 2 < $((MEMGB / 32)) ? JOBS / 2 : $((MEMGB / 32)) ))
 JOBSMEASURE=$(( JOBSMEASURE < 1 ? 1 : JOBSMEASURE ))
 
 run_metrics() {
