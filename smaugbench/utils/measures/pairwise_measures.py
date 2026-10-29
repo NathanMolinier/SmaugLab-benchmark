@@ -1175,6 +1175,14 @@ class BinaryPairwiseMeasures(object):
         """
         return self.measured_distance()[2]
 
+    @CacheFunctionOutput
+    def _label_ref(self):
+        return ndimage.label(np.asarray(self.ref, dtype=bool))
+
+    @CacheFunctionOutput
+    def _label_pred(self):
+        return ndimage.label(np.asarray(self.pred, dtype=bool))
+
     def lesion_wise_tp_fp_fn(self, truth, prediction):
         """
         Computes the true positives, false positives, and false negatives two masks. Masks are considered true positives
@@ -1205,26 +1213,41 @@ class BinaryPairwiseMeasures(object):
         fp: 3D connected-component from the prediction image that has no voxel overlapping with the ground-truth image.
         fn: 3d connected-component from the ground-truth image that has no voxel overlapping with the prediction image.
         """
-        tp, fp, fn = 0, 0, 0
+        # Use cached labelings when the caller passes self.ref / self.pred.
+        if truth is self.ref:
+            labeled_ground_truth, num_lesions = self._label_ref()
+        else:
+            labeled_ground_truth, num_lesions = ndimage.label(np.asarray(truth, dtype=bool))
+        if prediction is self.pred:
+            labeled_prediction, num_pred_lesions = self._label_pred()
+        else:
+            labeled_prediction, num_pred_lesions = ndimage.label(np.asarray(prediction, dtype=bool))
 
-        # For each true lesion, check if there is at least one overlapping voxel. This determines true positives and
-        # false negatives (unpredicted lesions)
-        labeled_ground_truth, num_lesions = ndimage.label(truth.astype(bool))
-        for idx_lesion in range(1, num_lesions+1):
-            lesion = labeled_ground_truth == idx_lesion
-            lesion_pred_sum = lesion + prediction
-            if(np.max(lesion_pred_sum) > 1):
-                tp += 1
-            else:
-                fn += 1
+        prediction_bool = np.asarray(prediction, dtype=bool)
+        truth_bool = np.asarray(truth, dtype=bool)
 
-        # For each predicted lesion, check if there is at least one overlapping voxel in the ground truth.
-        labaled_prediction, num_pred_lesions = ndimage.label(prediction.astype(bool))
-        for idx_lesion in range(1, num_pred_lesions+1):
-            lesion = labaled_prediction == idx_lesion
-            lesion_pred_sum = lesion + truth
-            if(np.max(lesion_pred_sum) <= 1):  # No overlap
-                fp += 1
+        # For each true lesion, check overlap with prediction. One C-level pass
+        # over the labeled array per side, instead of one Python loop per lesion.
+        if num_lesions > 0:
+            gt_overlap = ndimage.maximum(
+                prediction_bool,
+                labels=labeled_ground_truth,
+                index=np.arange(1, num_lesions + 1),
+            )
+            tp = int(np.count_nonzero(gt_overlap))
+            fn = num_lesions - tp
+        else:
+            tp, fn = 0, 0
+
+        if num_pred_lesions > 0:
+            pred_overlap = ndimage.maximum(
+                truth_bool,
+                labels=labeled_prediction,
+                index=np.arange(1, num_pred_lesions + 1),
+            )
+            fp = int(np.count_nonzero(pred_overlap == 0))
+        else:
+            fp = 0
 
         return tp, fp, fn
 
@@ -1324,16 +1347,14 @@ class BinaryPairwiseMeasures(object):
         """
         Returns the number of lesions in the reference mask
         """
-        ref_lesion, num_ref_lesions = ndimage.label(self.ref)
-
+        _, num_ref_lesions = self._label_ref()
         return num_ref_lesions
 
     def pred_lesions_count(self):
         """
         Returns the number of lesions in the prediction mask
         """
-        pred_lesion, num_pred_lesions = ndimage.label(self.pred)
-
+        _, num_pred_lesions = self._label_pred()
         return num_pred_lesions
 
     def lesion_count_weighted_by_assignment(self):
@@ -1352,38 +1373,36 @@ class BinaryPairwiseMeasures(object):
         -------
         float : Lesion Count by Weighted Assignment (LCWA) score
         """
-        # reshape to add batch dimension
-        prediction = np.reshape(self.pred, (1, *self.pred.shape))
-        truth = np.reshape(self.ref, (1, *self.ref.shape))
+        # Reuse cached labelings shared with the other lesion metrics.
+        pred_lesion, num_pred_lesions = self._label_pred()
+        truth_lesion, num_truth_lesions = self._label_ref()
 
-        # "Lesion Count by Weighted Assignment"
-        lcwa = []
-        for idx_sample in range(truth.shape[0]):
-            # Identify unique regions
-            pred_lesion, num_pred_lesions = ndimage.label(prediction[idx_sample, ...])
-            truth_lesion, num_truth_lesions = ndimage.label(truth[idx_sample, ...])
+        if num_truth_lesions == 0:
+            # Preserve prior behaviour (division by zero → nan) rather than silently returning 0.
+            return np.nan
+        if num_pred_lesions == 0:
+            return 0.0
 
-            # pre-allocate cost matrix
-            cost_matrix = np.zeros((num_pred_lesions, num_truth_lesions))
+        # Build the full (num_pred+1) x (num_truth+1) overlap-count table in one
+        # pass using a flat bincount over (pred_id, truth_id) pairs. This replaces
+        # the O(num_pred * num_truth) nested loop and the per-cell precision_score
+        # call (which was flattening the full volume each time).
+        n_cols = num_truth_lesions + 1
+        pair_ids = pred_lesion.ravel().astype(np.int64) * n_cols + truth_lesion.ravel().astype(np.int64)
+        counts = np.bincount(pair_ids, minlength=(num_pred_lesions + 1) * n_cols)
+        overlap = counts.reshape(num_pred_lesions + 1, n_cols)
+        # Drop the background row/column; we only match real lesions.
+        inter = overlap[1:, 1:].astype(np.float64)
+        pred_sizes = overlap[1:, :].sum(axis=1).astype(np.float64)
+        # precision_score(y_true=truth_j, y_pred=pred_i) == inter[i-1, j-1] / pred_sizes[i-1]
+        cost_matrix = np.divide(
+            inter, pred_sizes[:, None],
+            out=np.zeros_like(inter), where=pred_sizes[:, None] > 0,
+        )
 
-            # compute cost matrix
-            # NOTE: 0 is the background class so we start from 1
-            for idx_pred in range(1, num_pred_lesions+1):
-                pred = (pred_lesion == idx_pred).reshape(-1)
-
-                for idx_truth in range(1, num_truth_lesions+1):
-                    truth = (truth_lesion == idx_truth).reshape(-1)
-
-                    # compute precision scores to use as edge weights in the bipartite graph
-                    # NOTE: sklearn's precision requires 1D arrays as input
-                    cost_matrix[idx_pred-1, idx_truth-1] = precision_score(y_true=truth, y_pred=pred)
-
-            # compute the optimal assignment
-            row_ind, col_ind = optimize.linear_sum_assignment(cost_matrix=cost_matrix, maximize=True)
-            total_precision = cost_matrix[row_ind, col_ind].sum()
-            lcwa.append(total_precision / num_truth_lesions)
-
-        return lcwa[0]
+        row_ind, col_ind = optimize.linear_sum_assignment(cost_matrix=cost_matrix, maximize=True)
+        total_precision = cost_matrix[row_ind, col_ind].sum()
+        return total_precision / num_truth_lesions
 
 
     # NOTE: it's best to keep this function at the end as it does not explicitly compute any metric
