@@ -230,7 +230,11 @@ fi
 # Run model inference
 export nnUNet_results="$SMAUGBENCH_DATA"/nnUNet/results/"$NNUNET_FOLDER_NAME"
 FOLD_DIR="$nnUNet_results/Dataset${DATASET_ID}_${DATASET_NAME}/${NNUNET_TRAINER}__${NNUNET_PLANS}__${CONFIGURATION}/fold_0"
-JOBSMEASURE=$(( JOBS < $((MEMGB / 8)) ? JOBS : $((MEMGB / 8)) ))
+# Metrics computation is memory-heavy per worker (two 3D volumes + distance
+# transforms + connected components). Cap workers at JOBS/2 and budget 16 GB
+# per worker so we don't oversubscribe CPU or RAM on larger machines.
+JOBSMEASURE=$(( JOBS / 2 < $((MEMGB / 16)) ? JOBS / 2 : $((MEMGB / 16)) ))
+JOBSMEASURE=$(( JOBSMEASURE < 1 ? 1 : JOBSMEASURE ))
 
 run_metrics() {
     local pred_dir="$1"
