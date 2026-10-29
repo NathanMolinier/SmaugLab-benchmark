@@ -161,7 +161,47 @@ if [ "$IMAGES_ONLY" != "true" ]; then
     fi
 fi
 
-if [ "$DO_PREPROCESSING" = "true" ] || [ ! -d "${inference_dir}/${SRC_DATASET}${SUPPLEMENTARY_KEY}/images" ]; then
+# Pre-compute the nnUNet paths so we can tell up-front whether predictions
+# already exist and skip both data preparation and model inference accordingly.
+export nnUNet_results="$SMAUGBENCH_DATA"/nnUNet/results/"$NNUNET_FOLDER_NAME"
+FOLD_DIR="$nnUNet_results/Dataset${DATASET_ID}_${DATASET_NAME}/${NNUNET_TRAINER}__${NNUNET_PLANS}__${CONFIGURATION}/fold_0"
+
+has_predictions() {
+    local dir="$1"
+    [ -d "$dir" ] && compgen -G "$dir/*.nii.gz" > /dev/null
+}
+
+# Build the list of prediction directories we would need, and record which ones
+# are still missing their nnUNet outputs.
+PRED_DIRS=()
+MISSING_PRED_DIRS=()
+if [ "$ALL_WEIGHTS" = "true" ]; then
+    weight_folder="$nnUNet_results/$SRC_DATASET/${NNUNET_TRAINER}__${NNUNET_PLANS}__${CONFIGURATION}/fold_${FOLD}"
+    shopt -s nullglob
+    weights=("$weight_folder"/*.pth)
+    shopt -u nullglob
+    for weight in "${weights[@]}"; do
+        weight_file=$(basename "$weight")
+        weight_name="${weight_file%.pth}"
+        d="${inference_dir}/${SRC_DATASET}${SUPPLEMENTARY_KEY}/prediction_${NNUNET_FOLDER_NAME}${SUPPLEMENTARY_KEY}_${weight_name}"
+        PRED_DIRS+=("$d")
+        if ! has_predictions "$d"; then
+            MISSING_PRED_DIRS+=("$d")
+        fi
+    done
+else
+    d="${inference_dir}/${SRC_DATASET}${SUPPLEMENTARY_KEY}/prediction_${NNUNET_FOLDER_NAME}${SUPPLEMENTARY_KEY}"
+    PRED_DIRS+=("$d")
+    if ! has_predictions "$d"; then
+        MISSING_PRED_DIRS+=("$d")
+    fi
+fi
+
+if [ ${#PRED_DIRS[@]} -gt 0 ] && [ ${#MISSING_PRED_DIRS[@]} -eq 0 ]; then
+    echo "Predictions already exist for every target in ${inference_dir}/${SRC_DATASET}${SUPPLEMENTARY_KEY} — skipping data preparation and model inference."
+fi
+
+if [ ${#MISSING_PRED_DIRS[@]} -gt 0 ] && { [ "$DO_PREPROCESSING" = "true" ] || [ ! -d "${inference_dir}/${SRC_DATASET}${SUPPLEMENTARY_KEY}/images" ]; }; then
     echo "Preprocess inference data"
 
     # Set the paths to the inference data folder
@@ -227,9 +267,7 @@ if [ "$DO_PREPROCESSING" = "true" ] || [ ! -d "${inference_dir}/${SRC_DATASET}${
     cd "$CURR_DIR"
 fi
 
-# Run model inference
-export nnUNet_results="$SMAUGBENCH_DATA"/nnUNet/results/"$NNUNET_FOLDER_NAME"
-FOLD_DIR="$nnUNet_results/Dataset${DATASET_ID}_${DATASET_NAME}/${NNUNET_TRAINER}__${NNUNET_PLANS}__${CONFIGURATION}/fold_0"
+# Run model inference (nnUNet_results and FOLD_DIR were set earlier).
 # Metrics computation is memory-heavy per worker (two 3D volumes + distance
 # transforms + connected components). Cap workers at JOBS/2 and budget 16 GB
 # per worker so we don't oversubscribe CPU or RAM on larger machines.
@@ -259,19 +297,27 @@ if [ "$ALL_WEIGHTS" = "true" ]; then
     for weight in "${weights[@]}"; do
         weight_file=$(basename "$weight")
         weight_name="${weight_file%.pth}"
-        echo "Running inference for weight: $weight_file"
         PRED_DIR="${inference_dir}/${SRC_DATASET}${SUPPLEMENTARY_KEY}/prediction_${NNUNET_FOLDER_NAME}${SUPPLEMENTARY_KEY}_${weight_name}"
-        nnUNetv2_predict -i "$IMAGES_DIR" -o "$PRED_DIR" -d "$DATASET_ID" -tr "$NNUNET_TRAINER" -p "$NNUNET_PLANS" -c "$CONFIGURATION" -f "$FOLD" -device $DEVICE -chk "$weight_file"
+        if has_predictions "$PRED_DIR"; then
+            echo "Predictions already exist in $PRED_DIR — skipping nnUNetv2_predict for weight: $weight_file"
+        else
+            echo "Running inference for weight: $weight_file"
+            nnUNetv2_predict -i "$IMAGES_DIR" -o "$PRED_DIR" -d "$DATASET_ID" -tr "$NNUNET_TRAINER" -p "$NNUNET_PLANS" -c "$CONFIGURATION" -f "$FOLD" -device $DEVICE -chk "$weight_file"
+        fi
         if [ "$IMAGES_ONLY" != "true" ]; then
             METRICS_DIR="${inference_dir}/${SRC_DATASET}${SUPPLEMENTARY_KEY}/metrics_${NNUNET_FOLDER_NAME}${SUPPLEMENTARY_KEY}_${weight_name}"
             run_metrics "$PRED_DIR" "$METRICS_DIR"
         fi
     done
 else
-    echo "Running inference for the best model in $nnUNet_results"
     weight_name="checkpoint_best.pth"
     PRED_DIR="${inference_dir}/${SRC_DATASET}${SUPPLEMENTARY_KEY}/prediction_${NNUNET_FOLDER_NAME}${SUPPLEMENTARY_KEY}"
-    nnUNetv2_predict -i "$IMAGES_DIR" -o "$PRED_DIR" -d "$DATASET_ID" -tr "$NNUNET_TRAINER" -p "$NNUNET_PLANS" -c "$CONFIGURATION" -f "$FOLD" -device $DEVICE -chk "$weight_name"
+    if has_predictions "$PRED_DIR"; then
+        echo "Predictions already exist in $PRED_DIR — skipping nnUNetv2_predict"
+    else
+        echo "Running inference for the best model in $nnUNet_results"
+        nnUNetv2_predict -i "$IMAGES_DIR" -o "$PRED_DIR" -d "$DATASET_ID" -tr "$NNUNET_TRAINER" -p "$NNUNET_PLANS" -c "$CONFIGURATION" -f "$FOLD" -device $DEVICE -chk "$weight_name"
+    fi
     if [ "$IMAGES_ONLY" != "true" ]; then
         METRICS_DIR="${inference_dir}/${SRC_DATASET}${SUPPLEMENTARY_KEY}/metrics_${NNUNET_FOLDER_NAME}${SUPPLEMENTARY_KEY}"
         run_metrics "$PRED_DIR" "$METRICS_DIR"
