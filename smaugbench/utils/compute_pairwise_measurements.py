@@ -106,9 +106,9 @@ def main():
         '''.split())
     )
     parser.add_argument(
-        '--crop', action="store_true", default=False,
+        '--no-crop', action="store_true", default=False,
         help=' '.join('''
-            Do crop the images around each label before computing the metrics, i.e. compute them on the
+            Do not crop the images around each label before computing the metrics, i.e. compute them on the
             whole image. Slower and uses more memory, defaults to false (crop when all the metrics allow it).
         '''.split())
     )
@@ -129,7 +129,7 @@ def main():
     ref_map_path = args.ref_map
     overwrite = args.overwrite
     max_workers = args.max_workers
-    crop = args.crop
+    crop = not args.no_crop
     quiet = args.quiet
 
     # Check if both -pred-map and -ref-map are referenced if at least one is specified
