@@ -106,6 +106,13 @@ def main():
         '''.split())
     )
     parser.add_argument(
+        '--crop', action="store_true", default=False,
+        help=' '.join('''
+            Do crop the images around each label before computing the metrics, i.e. compute them on the
+            whole image. Slower and uses more memory, defaults to false (crop when all the metrics allow it).
+        '''.split())
+    )
+    parser.add_argument(
         '--quiet', '-q', action="store_true", default=False,
         help='Do not display inputs and progress bar, defaults to false (display).'
     )
@@ -122,6 +129,7 @@ def main():
     ref_map_path = args.ref_map
     overwrite = args.overwrite
     max_workers = args.max_workers
+    crop = args.no_crop
     quiet = args.quiet
 
     # Check if both -pred-map and -ref-map are referenced if at least one is specified
@@ -140,6 +148,7 @@ def main():
             ref_map = "{ref_map_path}"
             overwrite = {overwrite}
             max_workers = {max_workers}
+            crop = {crop}
             quiet = {quiet}
         '''))
 
@@ -152,6 +161,7 @@ def main():
         ref_map_path=ref_map_path,
         overwrite=overwrite,
         max_workers=max_workers,
+        crop=crop,
         quiet=quiet,
     )
 
@@ -164,6 +174,7 @@ def compute_pairwise_metrics_mp(
         ref_map_path=None,
         overwrite=False,
         max_workers=None,
+        crop=True,
         quiet=False,
     ):
     '''
@@ -223,6 +234,7 @@ def compute_pairwise_metrics_mp(
             ref_map=ref_map,
             pred_map=pred_map,
             overwrite=overwrite,
+            crop=crop,
         ),
         prediction_path_list,
         reference_path_list,
@@ -291,7 +303,8 @@ def compute_pairwise_metrics(
         metrics,
         ref_map,
         pred_map,
-        overwrite
+        overwrite,
+        crop=True,
     ):
     """
     Compute the pairwise metrics between prediction and reference
@@ -321,9 +334,10 @@ def compute_pairwise_metrics(
         pred_labels = list(pred_map.keys())
         unique_labels = [l for l in ref_labels if l in pred_labels]
 
-    # Get the bounding box of each label to crop the images around each structure, if all the metrics allow it
+    # Get the bounding box of each label to crop the images around each structure, if enabled and if all the
+    # metrics allow it
     pred_bboxes = ref_bboxes = None
-    if set(metrics) <= CROP_SAFE_METRICS:
+    if crop and set(metrics) <= CROP_SAFE_METRICS:
         pred_bboxes = get_label_bboxes(prediction_data)
         ref_bboxes = get_label_bboxes(reference_data)
 
@@ -339,16 +353,16 @@ def compute_pairwise_metrics(
         else:
             pred_value, ref_value = pred_map[label], ref_map[label]
         # crop the images around the label (the whole image is used if cropping is not possible)
-        crop = (slice(None),) * reference_data.ndim
+        crop_slices = (slice(None),) * reference_data.ndim
         if pred_bboxes is not None and ref_bboxes is not None:
             ref_bbox = ref_bboxes.get(int(ref_value))
             if ref_bbox is None:
                 # If reference is empty for this label, skip computing metrics
                 continue
-            crop = get_crop(pred_bboxes.get(int(pred_value)), ref_bbox, reference_data.shape)
+            crop_slices = get_crop(pred_bboxes.get(int(pred_value)), ref_bbox, reference_data.shape)
         # create binary masks for the current label
-        prediction_data_label = (prediction_data[crop] == pred_value).astype(np.uint8)
-        reference_data_label = (reference_data[crop] == ref_value).astype(np.uint8)
+        prediction_data_label = (prediction_data[crop_slices] == pred_value).astype(np.uint8)
+        reference_data_label = (reference_data[crop_slices] == ref_value).astype(np.uint8)
         if not np.any(reference_data_label):
             # If reference is empty for this label, skip computing metrics
             continue
