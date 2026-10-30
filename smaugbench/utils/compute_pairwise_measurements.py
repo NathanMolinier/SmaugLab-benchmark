@@ -129,7 +129,7 @@ def main():
     ref_map_path = args.ref_map
     overwrite = args.overwrite
     max_workers = args.max_workers
-    crop = args.no_crop
+    crop = args.crop
     quiet = args.quiet
 
     # Check if both -pred-map and -ref-map are referenced if at least one is specified
