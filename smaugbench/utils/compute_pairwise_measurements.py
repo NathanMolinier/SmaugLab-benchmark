@@ -8,13 +8,15 @@ Based on https://github.com/ivadomed/MetricsReloaded
 import os
 import argparse, textwrap
 import numpy as np
-import multiprocessing as mp
 import pandas as pd
 from tqdm.contrib.concurrent import process_map
 from functools import partial
 from pathlib import Path
 import json
+import nibabel as nib
+from scipy import ndimage
 from smaugbench.utils.image import Image
+from smaugbench.utils.resources import available_cpus, available_memory
 
 from smaugbench.utils.measures.pairwise_measures import BinaryPairwiseMeasures as BPM
 
@@ -33,6 +35,24 @@ METRICS_TO_NAME = {
     'pred_count': 'PredLesionsCount',
     'lcwa': 'LesionCountWeightedByAssignment'
 }
+
+# Metrics that only depend on the voxels around the structure. For these metrics, the images can be cropped
+# around the reference and prediction of each label before computing them, which is much faster and uses much
+# less memory (e.g. distance transforms are computed on the cropped region only). Metrics that depend on the
+# number of background voxels (e.g. accuracy, specificity) are not listed here.
+CROP_SAFE_METRICS = {
+    'numb_ref', 'numb_pred', 'numb_tp', 'numb_fp', 'numb_fn',
+    'iou', 'fbeta', 'dsc', 'boundary_iou',
+    'assd', 'hd', 'hd_perc', 'masd', 'nsd',
+    'ref_count', 'pred_count', 'lesion_ppv', 'lesion_sensitivity', 'lesion_f1_score', 'lcwa',
+    'vol_diff', 'rel_vol_error',
+}
+
+# Conservative estimate of the memory used by one worker, used to limit the number of parallel workers so that
+# they fit in the available memory: fixed overhead + bytes per voxel of the largest image (both images loaded
+# and reoriented, plus the working arrays of a label covering the whole image).
+WORKER_MEMORY_BASE = 500 * 1024 ** 2
+WORKER_MEMORY_PER_VOXEL = 160
 
 def main():
     # Description and arguments
@@ -78,8 +98,12 @@ def main():
         help='Overwrite existing output files, defaults to false (Do not overwrite).'
     )
     parser.add_argument(
-        '--max-workers', '-w', type=int, default=mp.cpu_count(),
-        help='Max worker to run in parallel proccess, defaults to multiprocessing.cpu_count().'
+        '--max-workers', '-w', type=int, default=None,
+        help=' '.join('''
+            Max worker to run in parallel proccess, defaults to the number of CPUs available to this process
+            (cgroup/systemd slice limits are taken into account). The number of workers is also reduced
+            if needed so that all workers fit in the available memory.
+        '''.split())
     )
     parser.add_argument(
         '--quiet', '-q', action="store_true", default=False,
@@ -139,7 +163,7 @@ def compute_pairwise_metrics_mp(
         pred_map_path=None,
         ref_map_path=None,
         overwrite=False,
-        max_workers=mp.cpu_count(),
+        max_workers=None,
         quiet=False,
     ):
     '''
@@ -159,10 +183,6 @@ def compute_pairwise_metrics_mp(
         ref_map = None
         pred_map = None
 
-    # Print the metrics to be computed
-    print(f'Computing metrics: {metrics}')
-    print(f'Using {max_workers} CPU cores in parallel ...')
-    
     prediction_path = Path(prediction_path)
     reference_path = Path(reference_path)
     output_path = Path(output_path)
@@ -180,6 +200,13 @@ def compute_pairwise_metrics_mp(
     check_names = np.array([pred.name == ref.name for pred, ref in zip(prediction_path_list, reference_path_list)])
     if not check_names.all():
         raise ValueError('Predictions and references must be named the same way in the two folders.')
+
+    # Choose the number of workers according to the CPUs and the memory available
+    max_workers = get_max_workers(prediction_path_list, reference_path_list, max_workers)
+
+    # Print the metrics to be computed
+    print(f'Computing metrics: {metrics}')
+    print(f'Using {max_workers} CPU cores in parallel ...')
 
     # Create output folder
     output_path.parent.mkdir(parents=True, exist_ok=True)
@@ -207,6 +234,54 @@ def compute_pairwise_metrics_mp(
 
     # Save all metrics into a single CSV
     save_metrics(pairwise_path_list, output_path)
+
+
+def get_max_workers(prediction_path_list, reference_path_list, max_workers=None):
+    """
+    Number of parallel workers to use: limited by the CPUs available, the memory available and the number of
+    images. On partitioned machines (e.g. systemd slices), using more workers than the slot can hold makes the
+    processes swap and be throttled, which is much slower than running fewer workers.
+    """
+    cpus = available_cpus()
+    if max_workers is None:
+        max_workers = cpus
+
+    # Memory needed by one worker, estimated from the largest image
+    max_voxels = max((int(np.prod(nib.load(str(path)).shape)) for path in prediction_path_list + reference_path_list), default=0)
+    worker_memory = WORKER_MEMORY_BASE + WORKER_MEMORY_PER_VOXEL * max_voxels
+    memory = available_memory()
+    memory_workers = int(0.8 * memory // worker_memory)
+    print(f'Available resources: {cpus} CPUs, {memory / 1024 ** 3:.1f} GB of memory '
+          f'(~{worker_memory / 1024 ** 3:.1f} GB per worker).')
+
+    if memory_workers < max_workers:
+        print(f'Limiting the number of workers from {max_workers} to {max(1, memory_workers)} to fit in memory.')
+    return max(1, min(max_workers, memory_workers, len(prediction_path_list)))
+
+
+def get_label_bboxes(data):
+    """
+    Bounding box (tuple of slices) of each label of a segmentation, as a dict {label_value: bbox}.
+    Returns None if the segmentation is not made of non-negative integer labels.
+    """
+    int_data = np.asarray(data).astype(np.int32)
+    if not np.issubdtype(data.dtype, np.integer) and not np.array_equal(int_data, data):
+        return None
+    if int_data.size == 0 or int_data.min() < 0:
+        return None
+    return {value: bbox for value, bbox in enumerate(ndimage.find_objects(int_data), start=1) if bbox is not None}
+
+
+def get_crop(pred_bbox, ref_bbox, shape, margin=1):
+    """
+    Union of the prediction and reference bounding boxes, with a margin so that structures touching the box
+    border are processed exactly as in the full image (erosion, distance transform, connected components).
+    """
+    bboxes = [bbox for bbox in (pred_bbox, ref_bbox) if bbox is not None]
+    return tuple(
+        slice(max(0, min(b[i].start for b in bboxes) - margin), min(shape[i], max(b[i].stop for b in bboxes) + margin))
+        for i in range(len(shape))
+    )
 
 
 def compute_pairwise_metrics(
@@ -246,19 +321,34 @@ def compute_pairwise_metrics(
         pred_labels = list(pred_map.keys())
         unique_labels = [l for l in ref_labels if l in pred_labels]
 
+    # Get the bounding box of each label to crop the images around each structure, if all the metrics allow it
+    pred_bboxes = ref_bboxes = None
+    if set(metrics) <= CROP_SAFE_METRICS:
+        pred_bboxes = get_label_bboxes(prediction_data)
+        ref_bboxes = get_label_bboxes(reference_data)
+
     # append entry into the output_list to store the metrics for the current subject
     metrics_dict = {'reference': str(reference_path), 'prediction': str(prediction_path)}
 
     # loop over all unique labels, e.g., voxels with values 1, 2, ...
     # by doing this, we can compute metrics for each label separately, e.g., separately for spinal cord and lesions
     for label in unique_labels:
-        # create binary masks for the current label
+        # get the value of the label in each image
         if not isinstance(label, str):
-            prediction_data_label = (prediction_data == label).astype(np.uint8)
-            reference_data_label = (reference_data == label).astype(np.uint8)
+            pred_value = ref_value = label
         else:
-            prediction_data_label = (prediction_data == pred_map[label]).astype(np.uint8)
-            reference_data_label = (reference_data == ref_map[label]).astype(np.uint8)
+            pred_value, ref_value = pred_map[label], ref_map[label]
+        # crop the images around the label (the whole image is used if cropping is not possible)
+        crop = (slice(None),) * reference_data.ndim
+        if pred_bboxes is not None and ref_bboxes is not None:
+            ref_bbox = ref_bboxes.get(int(ref_value))
+            if ref_bbox is None:
+                # If reference is empty for this label, skip computing metrics
+                continue
+            crop = get_crop(pred_bboxes.get(int(pred_value)), ref_bbox, reference_data.shape)
+        # create binary masks for the current label
+        prediction_data_label = (prediction_data[crop] == pred_value).astype(np.uint8)
+        reference_data_label = (reference_data[crop] == ref_value).astype(np.uint8)
         if not np.any(reference_data_label):
             # If reference is empty for this label, skip computing metrics
             continue

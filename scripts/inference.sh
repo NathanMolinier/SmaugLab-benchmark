@@ -92,19 +92,10 @@ SUPPLEMENTARY_KEY=$(jopt '.inference_supplementary_key' '""')
 ORIENTATION=$(jopt '.orientation' '"RPI"')
 RESOLUTION=$(jopt  '.resolution'  '"1x1x1"')
 
-# Get memory in GB and number of CPUs
-if [[ "$OSTYPE" == "linux-gnu"* ]]; then
-    # Linux: /proc/meminfo
-    MEMGB=$(awk '/MemTotal/ {print int($2/1024/1024)}' /proc/meminfo)
-    CORES=$(lscpu -p | egrep -v '^#' | wc -l)
-elif [[ "$OSTYPE" == "darwin"* ]]; then
-    # MacOS: sysctl -n hw.memsize
-    MEMGB=$(sysctl -n hw.memsize | awk '{print int($1/1024/1024/1024)}')
-    CORES=$(sysctl -n hw.ncpu)
-else
-    echo "Error: Unsupported OS type: $OSTYPE"
-    exit 1
-fi
+# Get memory in GB and number of CPUs available to this process. On partitioned machines (e.g. systemd
+# slices), only the resources of the slot are counted, not the whole machine.
+# Can be forced with SMAUGBENCH_MAX_CPUS and SMAUGBENCH_MAX_MEMORY (e.g. 120G).
+read CORES MEMGB < <(python3 -m smaugbench.utils.resources)
 
 # Set the number of jobs
 JOBS=${SMAUGBENCH_JOBS:-$CORES}
@@ -269,10 +260,9 @@ fi
 
 # Run model inference (nnUNet_results and FOLD_DIR were set earlier).
 # Metrics computation is memory-heavy per worker (two 3D volumes + distance
-# transforms + connected components). Cap workers at JOBS/2 and budget 32 GB
-# per worker so we don't oversubscribe CPU or RAM on larger machines.
-JOBSMEASURE=$(( JOBS / 2 < $((MEMGB / 32)) ? JOBS / 2 : $((MEMGB / 32)) ))
-JOBSMEASURE=$(( JOBSMEASURE < 1 ? 1 : JOBSMEASURE ))
+# transforms + connected components). smaugbench_compute_pairwise_measurements
+# reduces this number if needed, based on the image sizes and the available memory.
+JOBSMEASURE=${SMAUGBENCH_JOBSMEASURE:-$JOBS}
 
 run_metrics() {
     local pred_dir="$1"
