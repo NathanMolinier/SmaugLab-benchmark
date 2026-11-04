@@ -19,7 +19,7 @@
 
   "nnunet_trainer": "nnUNetTrainerDAExtGPU",
   "nnunet_trainer_config": "/home/ge.polymtl.ca/p118739/code/SmaugLab-benchmark/smaugbench/smauglab_configs/transform_params_one-sequence-to-segment-them-all_noFlip.json",
-  "nnunet_folder_name": "nnUNetTrainerDAExtGPU_OSSTA",
+  "nnunet_folder_name": "nnUNetTrainerDAExtGPU_OSSTA_noFlip",
 
   "inference_do_preprocessing": false,
   "inference_all_weights": false
