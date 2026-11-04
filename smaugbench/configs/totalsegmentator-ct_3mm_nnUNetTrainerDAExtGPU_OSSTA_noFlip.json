@@ -2,7 +2,7 @@
   "steps": {
     "download": false,
     "prepare": false,
-    "train": false,
+    "train": true,
     "inference": true
   },
 
