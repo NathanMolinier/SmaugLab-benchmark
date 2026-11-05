@@ -56,6 +56,7 @@ smaugbench_dataset_json_nnunet = "smaugbench.utils.create_dataset_json_nnunet:ma
 smaugbench_compute_pairwise_measurements = "smaugbench.utils.compute_pairwise_measurements:main"
 smaugbench_compare_results = "smaugbench.utils.compare_results:main"
 smaugbench_available_resources = "smaugbench.utils.resources:main"
+smaugbench_compare_intensities = "smaugbench.utils.compare_intensities:main"
 
 [build-system]
 requires = ["poetry-core>=1.0.0", "poetry-dynamic-versioning>=1.0.0,<2.0.0"]
