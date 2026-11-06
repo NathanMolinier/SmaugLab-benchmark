@@ -51,6 +51,8 @@ from tqdm import tqdm
 SMAUGBENCH_ROOT = Path(__file__).resolve().parents[1]
 MODALITIES = ('MR', 'CT')
 PERCENTILES = (1, 5, 25, 50, 75, 95, 99)
+# Voxels kept around the labelled structures when cropping (context for blur/convolution-like augmentations)
+CROP_MARGIN = 16
 
 
 def main():
@@ -79,6 +81,12 @@ def main():
                              '"none" keeps raw intensities (default: nnunet).')
     parser.add_argument('--plans', type=str, default=None,
                         help='Path to the plans.json used by --norm nnunet (default: the one in the nnUNet results folder).')
+    parser.add_argument('--patch-size', type=int, nargs=3, default=None,
+                        help='Size of the tiles augmented on the GPU (default: patch_size of the plans.json, else 128 128 128). '
+                             'Each volume is cropped around its labels and split into tiles of this size, as the '
+                             'trainer only ever augments patches; augmenting whole volumes does not fit in GPU memory.')
+    parser.add_argument('--batch-size', type=int, default=2,
+                        help='Number of tiles augmented together; lower it if the GPU runs out of memory (default: 2).')
     parser.add_argument('--samples', type=int, default=500,
                         help='Voxels randomly kept per (image, draw, structure) to compute the distribution distances (default: 500).')
     parser.add_argument('--device', type=str, default=os.environ.get('SMAUGBENCH_DEVICE', 'cuda' if torch.cuda.is_available() else 'cpu'),
@@ -121,8 +129,8 @@ def load_pipeline_config(config_path):
 # --- normalization ------------------------------------------------------------------
 
 
-def _load_plans_normalization(plans_path, configuration):
-    """(scheme, use_mask_for_norm, intensity properties) of channel 0 from a nnUNet plans.json."""
+def _load_plans_configuration(plans_path, configuration):
+    """(plans, configuration dict with inheritance resolved) from a nnUNet plans.json."""
     with open(plans_path) as f:
         plans = json.load(f)
     configs = plans['configurations']
@@ -132,6 +140,21 @@ def _load_plans_normalization(plans_path, configuration):
         parent = dict(configs[conf.pop('inherits_from')])
         parent.update(conf)
         conf = parent
+    return plans, conf
+
+
+def load_plans_patch_size(plans_path, configuration):
+    """patch_size of the configuration, or None if the plans cannot be read."""
+    if plans_path is None or not Path(plans_path).is_file():
+        return None
+    _, conf = _load_plans_configuration(plans_path, configuration)
+    patch_size = conf.get('patch_size')
+    return [int(p) for p in patch_size] if patch_size and len(patch_size) == 3 else None
+
+
+def _load_plans_normalization(plans_path, configuration):
+    """(scheme, use_mask_for_norm, intensity properties) of channel 0 from a nnUNet plans.json."""
+    plans, conf = _load_plans_configuration(plans_path, configuration)
     scheme = conf['normalization_schemes'][0]
     use_mask = bool(conf.get('use_mask_for_norm', [False])[0])
     props = plans.get('foreground_intensity_properties_per_channel', {}).get('0')
@@ -203,20 +226,64 @@ def build_augmenter(trainer_config_path, device):
     ).to(device)
 
 
+def crop_to_labels(image, label, margin):
+    """Crop image and label to the bounding box of the labelled voxels, plus `margin` voxels."""
+    coords = np.argwhere(label > 0)
+    if coords.size == 0:
+        return image, label
+    lo = np.maximum(coords.min(axis=0) - margin, 0)
+    hi = np.minimum(coords.max(axis=0) + margin + 1, label.shape)
+    box = tuple(slice(a, b) for a, b in zip(lo, hi))
+    return image[box], label[box]
+
+
+def _tile_starts(size, patch):
+    """Start indices of non-overlapping tiles covering `size` (the volume is padded to a multiple of `patch`)."""
+    return list(range(0, max(size, 1), patch))
+
+
 @torch.no_grad()
-def augment(augmenter, image, label, device):
-    """Augment one normalized image [D,H,W] with its label map as mask, like train_step does."""
-    data = torch.from_numpy(np.ascontiguousarray(image, dtype=np.float32))[None, None].to(device)
-    target = torch.from_numpy(np.ascontiguousarray(label, dtype=np.float32))[None, None].to(device)
+def augment(augmenter, image, label, device, patch_size, batch_size):
+    """Augment one normalized image [D,H,W] with its label map as mask, like train_step does.
+
+    The trainer never augments a whole volume, only patches of `patch_size` (batched by
+    the dataloader), and a whole volume does not fit in GPU memory anyway. The volume is
+    therefore zero-padded to a multiple of `patch_size`, split into non-overlapping tiles
+    that are augmented independently (each tile draws its own random parameters, like
+    each sample of a training batch), and reassembled.
+    """
+    patch = [min(p, s) for p, s in zip(patch_size, image.shape)]
+    padded_shape = [int(np.ceil(s / p)) * p for s, p in zip(image.shape, patch)]
+    pad = [(0, ps - s) for ps, s in zip(padded_shape, image.shape)]
+    image_p = np.pad(image.astype(np.float32), pad, mode='constant', constant_values=0)
+    label_p = np.pad(label.astype(np.float32), pad, mode='constant', constant_values=0)
+
+    out_image = np.empty_like(image_p)
+    out_label = np.empty(label_p.shape, dtype=np.int32)
+    boxes = [tuple(slice(a, a + p) for a, p in zip(starts, patch))
+             for starts in itertools.product(*(_tile_starts(s, p) for s, p in zip(padded_shape, patch)))]
+
     device_type = torch.device(device).type
-    if device_type == 'cuda':
-        with torch.autocast(device_type, enabled=True):
+    for i in range(0, len(boxes), batch_size):
+        batch = boxes[i:i + batch_size]
+        data = torch.from_numpy(np.ascontiguousarray(np.stack([image_p[b] for b in batch])))[:, None].to(device)
+        target = torch.from_numpy(np.ascontiguousarray(np.stack([label_p[b] for b in batch])))[:, None].to(device)
+        if device_type == 'cuda':
+            with torch.autocast(device_type, enabled=True):
+                data, target = augmenter(data, target)
+        else:
             data, target = augmenter(data, target)
-    else:
-        data, target = augmenter(data, target)
-    if torch.isnan(data).any():
+        data = data[:, 0].float().cpu().numpy()
+        target = torch.round(target[:, 0].float()).cpu().numpy().astype(np.int32)
+        for j, b in enumerate(batch):
+            out_image[b] = data[j]
+            out_label[b] = target[j]
+        del data, target
+
+    if np.isnan(out_image).any():
         warnings.warn('NaNs in an augmented image: they are ignored')
-    return data[0, 0].float().cpu().numpy(), torch.round(target[0, 0].float()).cpu().numpy().astype(np.int32)
+    crop = tuple(slice(0, s) for s in image.shape)
+    return out_image[crop], out_label[crop]
 
 
 # --- extraction ---------------------------------------------------------------------
@@ -257,7 +324,7 @@ def coverage(target, reference):
 
 
 def compare_intensities(config, output=None, n_aug=5, aug_source=('CT',), trainer_config=None, norm='nnunet',
-                        plans=None, samples=500, device='cpu', seed=42, max_images=None):
+                        plans=None, patch_size=None, batch_size=2, samples=500, device='cpu', seed=42, max_images=None):
     data_root = os.environ.get('SMAUGBENCH_DATA')
     if not data_root:
         raise EnvironmentError('Please set the SMAUGBENCH_DATA environment variable.')
@@ -283,6 +350,8 @@ def compare_intensities(config, output=None, n_aug=5, aug_source=('CT',), traine
         plans = (Path(data_root) / 'nnUNet' / 'results' / cfg['nnunet_folder_name'] / src_dataset /
                  f"{cfg['nnunet_trainer']}__{cfg['nnunet_plans']}__{cfg['configuration']}" / 'plans.json')
     norm_desc, normalize = build_normalizer(norm, plans, cfg['configuration'])
+    if patch_size is None:
+        patch_size = load_plans_patch_size(plans, cfg['configuration']) or [128, 128, 128]
 
     # Image/label pairs
     pairs = []
@@ -327,7 +396,7 @@ def compare_intensities(config, output=None, n_aug=5, aug_source=('CT',), traine
     print(f'Dataset JSON: {data_json} ({len(structures)} structures)')
     print(f'Images: {len(pairs)} ({", ".join(f"{m}: {sum(p[1] == m for p in pairs)}" for m in present)})')
     print(f'Normalization: {norm_desc}')
-    print(f'Augmentation: {f"{n_aug} draws of {aug_source} with {trainer_config} on {device}" if augmenter else "none"}')
+    print(f'Augmentation: {f"{n_aug} draws of {aug_source} with {trainer_config} on {device}, tiles {patch_size} x {batch_size}" if augmenter else "none"}')
     print(f'Output: {output}')
 
     rng = np.random.default_rng(seed)
@@ -342,18 +411,21 @@ def compare_intensities(config, output=None, n_aug=5, aug_source=('CT',), traine
             samples_store.setdefault((source, value), []).append(keep.astype(np.float32))
 
     for stem, modality, img_path, lab_path in tqdm(pairs, desc='Extracting intensities'):
-        image = np.asanyarray(nib.load(img_path).dataobj).astype(np.float32)
-        label = np.round(np.asanyarray(nib.load(lab_path).dataobj)).astype(np.int32)
+        image = np.ascontiguousarray(nib.load(img_path).dataobj, dtype=np.float32)
+        label = np.ascontiguousarray(np.round(np.asanyarray(nib.load(lab_path).dataobj)), dtype=np.int32)
         if image.shape != label.shape:
             warnings.warn(f'Skipping {stem}: image shape {image.shape} != label shape {label.shape}')
             continue
-        image = normalize(image)
+        # Normalize on the whole image, then drop what is far from any structure
+        image, label = crop_to_labels(normalize(image), label, margin=CROP_MARGIN)
         collect(stem, modality, 0, image, label)
 
         if augmenter is not None and modality in aug_source:
             for draw in range(1, n_aug + 1):
-                aug_image, aug_label = augment(augmenter, image, label, device)
+                aug_image, aug_label = augment(augmenter, image, label, device, patch_size, batch_size)
                 collect(stem, f'{modality}_aug', draw, aug_image, aug_label)
+        if torch.cuda.is_available():
+            torch.cuda.empty_cache()
 
     if not rows:
         raise RuntimeError('No intensity extracted: check that the labels contain values listed in the dataset JSON.')
