@@ -6,6 +6,17 @@ and on images augmented exactly like during training, and correlates these measu
 with the scores of the model (`metrics.csv`). Everything is done separately for the MR
 and the CT images.
 
+The setting it is built for: the model is **trained on CT only, with augmentation, and
+tested on CT and MR**. Only the CT images are therefore augmented, and the central
+question is whether the difference between what the model was trained on (augmented CT)
+and what it is tested on (raw MR, or raw CT) explains the scores:
+
+| Comparison | Feature columns | Correlated with |
+| --- | --- | --- |
+| augmented CT − raw MR | `augdelta_*`, `augabsdelta_*`, `wasserstein_to_CT_aug`, … of the MR rows | MR scores, and MR − CT score difference |
+| augmented CT − raw CT | same columns, CT rows | CT scores |
+| raw CT − raw MR | `rawdelta_*` | MR − CT score difference |
+
 - [Usage](#usage)
 - [Inputs](#inputs)
 - [Vocabulary](#vocabulary)
@@ -57,11 +68,11 @@ ${SMAUGBENCH_DATA}/inference/Dataset<dataset_id>_<dataset_name><inference_supple
 | Term | Meaning |
 | --- | --- |
 | modality | `MR` or `CT`, from the file name. |
-| source | Where intensities come from: `MR`, `CT` (raw images) or `MR_aug`, `CT_aug` (augmented images). |
+| source | Where intensities come from: `MR`, `CT` (raw images) or `CT_aug` (augmented CT images; `MR_aug` only if `--aug-source MR` is asked). |
 | draw | `0` for the raw image, `1..n` for the augmented versions of that image. |
 | instance | One structure in one image (one row of `metrics.csv`). |
 
-## What the code does, step by step
+## The code
 
 ### 1. Read the configuration
 
@@ -87,8 +98,9 @@ cropped to the bounding box of its labels plus a 16-voxel margin.
 ### 3. Augment the images
 
 `build_augmenter` builds the GPU pipeline exactly like `nnUNetTrainerDAExtGPU`, and
-`augment` applies it `--n-aug` times to each image of the modalities given by
-`--aug-source` (both by default). As during training:
+`augment` applies it `--n-aug` times to each image of the training modality
+(`--aug-source`, CT by default). MR images are not augmented: the model never sees
+augmented MR. As during training:
 
 - the label map is passed as the mask, so the in-segmentation transforms behave the same;
 - the volume is split into tiles of the training patch size, each tile drawing its own
@@ -138,7 +150,8 @@ Each (image, source, draw, structure) is one row of `intensity_stats.csv`.
 ### 6. Compare the sources
 
 Still in `add_pca_features`, each raw instance is compared with the distribution of the
-**same structure in every other source** (for an MR image: `CT`, `MR_aug` and `CT_aug`):
+**same structure in every other source** (for an MR image: `CT` and `CT_aug`; for a CT
+image: `MR` and `CT_aug`):
 
 - `wasserstein_to_<source>`: 1-Wasserstein distance between the intensities of the
   instance and the pooled intensities of the other source;
@@ -146,8 +159,9 @@ Still in `add_pca_features`, each raw instance is compared with the distribution
   percentile range of the other source;
 - `pc_dist_to_<source>`: distance in the PCA space to the centroid of the other source.
 
-For a model trained on augmented CT, `wasserstein_to_CT_aug` / `coverage_by_CT_aug` of
-an MR structure answer "did the augmentation show the model intensities like these?".
+`wasserstein_to_CT_aug` / `coverage_by_CT_aug` of an MR structure answer "did the
+augmentation show the model intensities like these?". The same columns on the CT rows
+compare raw CT with augmented CT.
 
 The pooled version of these distances (per structure and pair of sources) is written to
 `intensity_distances.csv`, and pooled statistics to `intensity_summary.csv`.
@@ -157,10 +171,15 @@ The pooled version of these distances (per structure and pair of sources) is wri
 - `build_instance_table` → `instance_features.csv`, one row per **(image, structure)**:
   - size features;
   - `raw_<feature>`: measured on the raw image;
-  - `aug_<feature>`: mean over the augmented draws of that image;
-  - `augdelta_<feature>`: `aug − raw`, what the augmentation changes on average;
-  - `aug_to_raw_wasserstein`, `aug_to_raw_pc_dist`: how far a draw moves the structure
-    away from the raw image (strength of the augmentation on that structure);
+  - `aug_<feature>`: the feature on augmented CT. For a CT image it is the mean over
+    the augmented draws of that same image; for an MR image (not augmented) it is the
+    mean of the structure over all the augmented CT images;
+  - `augdelta_<feature>`: `aug − raw`, i.e. **augmented CT − raw CT** on the CT rows and
+    **augmented CT − raw MR** on the MR rows;
+  - `augabsdelta_<feature>`: its absolute value (size of the mismatch, whatever its
+    direction);
+  - `aug_to_raw_wasserstein`, `aug_to_raw_pc_dist` (CT rows only): how far a draw moves
+    the structure away from the raw image (strength of the augmentation);
   - the cross-source features of step 6.
 - `build_structure_table` → `structure_features.csv`, one row per **(modality,
   structure)**: mean of the instance features over the images, plus
@@ -169,6 +188,11 @@ The pooled version of these distances (per structure and pair of sources) is wri
   - **separability**: `raw_pc_nearest_structure_dist` (distance to the closest other
     structure in the PCA space) and `raw_pc_separability` (that distance divided by the
     spread of the structure). Same with the `aug_` prefix on augmented images.
+- `build_gap_table` → `structure_features_gap.csv`, one row per **structure**, for the
+  difference of performance between the test and the training modality:
+  - the metric columns contain **MR score − CT score** (mean per structure);
+  - the features are those of the MR row (among which `augdelta_*` = augmented CT − raw
+    MR), plus `rawdelta_<feature>` = raw CT − raw MR.
 
 ### 8. Join the scores
 
@@ -182,11 +206,13 @@ treated as a metric.
 ### 9. Correlate features and scores
 
 `correlate` computes the **Spearman** rank correlation between every feature and every
-metric, separately for MR and CT, at two levels:
+metric, separately for MR and CT, at two levels. At the structure level it is also
+computed for the MR − CT score difference (`modality = MR_minus_CT`, from the gap table):
 
 | File | One point is | Question |
 | --- | --- | --- |
-| `correlations_structure_level.csv` | a structure (mean feature, mean score) | Which properties make a *structure* well or badly segmented? |
+| `correlations_structure_level.csv`, `modality = MR` or `CT` | a structure (mean feature, mean score) | Which properties make a *structure* well or badly segmented? |
+| `correlations_structure_level.csv`, `modality = MR_minus_CT` | a structure (mean feature, MR score − CT score) | Which properties explain how much is lost (or gained) from CT to MR? |
 | `correlations_instance_level.csv`, `structure = all` | an (image, structure) pair | Same, using every image (dominated by the differences between structures). |
 | `correlations_instance_level.csv`, `structure = <name>` | an image, for that structure only | For a given structure, which *images* are well or badly segmented? |
 | `correlations_instance_level.csv`, `structure = mean_within` | — | Mean of the per-structure coefficients: the effect of a feature once the differences between structures are removed. |
@@ -195,20 +221,21 @@ A correlation needs at least 5 points with a non-constant feature and score. `p_
 is the Spearman p-value and `q_value` its Benjamini–Hochberg correction over all the
 features tested for the same modality, metric and structure. `group` is the family of
 the feature (`radiomics`, `histogram_pca`, `surroundings`, `size`, `frequency`,
-`cross_source`, `augmentation_shift`).
+`cross_source`, `augmentation_shift`); the prefix of the feature tells which images it
+compares (`raw_`, `aug_`, `augdelta_`, `augabsdelta_`, `rawdelta_`).
 
 ### 10. Figures
 
 - `intensity_boxplot_<i>.png`: median intensity of each structure, per source.
 - `histogram_pca.png`: PC1/PC2, one panel per source, with the structure centroids.
 - `correlation_heatmap_<modality>.png`: the 30 features most correlated with the scores
-  at the structure level (`*`: q < 0.05).
+  at the structure level (`*`: q < 0.05). `<modality>` is `MR`, `CT` or `MR_minus_CT`.
 - `correlation_scatter_<modality>_<metric>.png`: the 6 most correlated features, one dot
   per structure.
 
 ## Features
 
-### First-order radiomics (prefix `raw_`, `aug_`, `augdelta_`)
+### First-order radiomics (prefix `raw_`, `aug_`, `augdelta_`, `augabsdelta_`, `rawdelta_`)
 
 | Column | Definition |
 | --- | --- |
@@ -226,7 +253,7 @@ the feature (`radiomics`, `histogram_pca`, `surroundings`, `size`, `frequency`,
 `energy` and `total_energy` grow with the number of voxels: they mostly measure the
 size of the structure, read them as such.
 
-### Surroundings (prefix `raw_`, `aug_`, `augdelta_`)
+### Surroundings (same prefixes)
 
 | Column | Definition |
 | --- | --- |
@@ -248,7 +275,7 @@ size of the structure, read them as such.
 
 ### Histogram PCA
 
-`raw_pc1…`, `aug_pc1…`, `augdelta_pc1…`, `*_pc_centroid_dist`,
+`raw_pc1…`, `aug_pc1…`, `augdelta_pc1…`, `augabsdelta_pc1…`, `rawdelta_pc1…`, `*_pc_centroid_dist`,
 `*_pc_nearest_structure_dist`, `*_pc_separability` (steps 5 and 7).
 
 ### Frequency, cross-source and augmentation shift
@@ -270,6 +297,7 @@ Written to `<inference folder>/intensities_<nnunet_folder_name><key>/` (or `-o`)
 | `histogram_pca_variance.csv` | Explained variance ratio of each component |
 | `instance_features.csv` | One row per (image, structure): features and scores |
 | `structure_features.csv` | One row per (modality, structure): mean features, frequency and mean scores (`<metric>_n` = number of scored images) |
+| `structure_features_gap.csv` | One row per structure: MR features, `rawdelta_*` and MR score − CT score |
 | `correlations_structure_level.csv` | Step 9, across structures |
 | `correlations_instance_level.csv` | Step 9, across and inside structures |
 | `*.png` | Figures of step 10 |
@@ -277,13 +305,20 @@ Written to `<inference folder>/intensities_<nnunet_folder_name><key>/` (or `-o`)
 
 ## How to read the results
 
+- **Deltas.** `augdelta_*` is signed (augmented CT − raw): use it to see a direction
+  ("MR is brighter than anything the augmentation produced"). `augabsdelta_*` is the size
+  of the mismatch: if the augmentation gap explains the performance, it should correlate
+  negatively with Dice/NSD (and with the MR − CT difference), positively with HD95.
+- **Score difference.** In the `MR_minus_CT` rows, a negative Dice difference means the
+  structure is worse on MR than on CT. The difference compares the means of two
+  different sets of images (the MR and the CT test images are not the same subjects).
 - **Sign.** A positive coefficient means "the larger the feature, the larger the
   metric". Dice and NSD are better when high, HD95 is better when low: a feature that
   helps has a positive correlation with Dice and a negative one with HD95.
 - **Sample size.** The structure-level analysis has one point per structure (15 for
   AMOS22): only strong correlations are detectable and a single structure can drive a
   coefficient. Look at the scatter plots before trusting a number.
-- **Many features are tested** (around 140) and many are redundant (percentiles,
+- **Many features are tested** (around 170) and many are redundant (percentiles,
   `energy` vs. volume, …). Use `q_value`, not `p_value`, and treat the results as
   hypotheses to check, not as proofs.
 - **Confounding by size.** Small structures have a lower Dice for geometric reasons
@@ -303,7 +338,7 @@ Written to `<inference folder>/intensities_<nnunet_folder_name><key>/` (or `-o`)
 | `-o`, `--output` | `<inference folder>/intensities_<name><key>` | Output folder |
 | `--metrics` | `<inference folder>/metrics_<name><key>` | `metrics.csv` or the folder containing it |
 | `--n-aug` | 5 | Augmented draws per image (0: no augmentation) |
-| `--aug-source` | `MR CT` | Modalities that are augmented |
+| `--aug-source` | `CT` | Training modality: its images are augmented and the others are compared with them |
 | `--trainer-config` | `nnunet_trainer_config` of the config | SmaugLab augmentation config |
 | `--norm` | `nnunet` | `nnunet`, `zscore` or `none` |
 | `--plans` | from the nnUNet results folder | `plans.json` used by `--norm nnunet` |

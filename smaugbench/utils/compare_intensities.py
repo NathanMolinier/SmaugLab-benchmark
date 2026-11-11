@@ -15,7 +15,8 @@ For every image/label pair, each structure listed in the `LABELS` field of the d
 JSON (`data_json`) is measured on:
 
     - the image itself (source `MR` or `CT`, from the filename suffix)
-    - `--n-aug` augmented versions of the image (source `MR_aug` / `CT_aug`), generated
+    - `--n-aug` augmented versions of the images of the training modality (`--aug-source`,
+      CT by default: source `CT_aug`), generated
       with the GPU section of `nnunet_trainer_config`, built exactly like
       `nnUNetTrainerDAExtGPU` builds it, and with the label map passed as the mask so
       that the in-segmentation transforms behave as during training.
@@ -23,6 +24,9 @@ JSON (`data_json`) is measured on:
 The measurements are first-order radiomics, a PCA of the intensity histograms, the
 contrast with the surroundings, the size and the frequency of the structure. They are
 then correlated (Spearman) with the scores of metrics.csv, separately for MR and CT.
+The differences "augmented CT - raw MR" and "augmented CT - raw CT" of every measurement
+are part of the features, and are also correlated with the difference of score between
+MR and CT.
 
 Images are normalized before the measurements (and before augmentation, as in training).
 By default the normalization stored in the trained model's plans.json is used
@@ -38,6 +42,7 @@ Outputs (in `<inference folder>/intensities_<nnunet_folder_name><supplementary_k
     histogram_pca*.csv               PCA scores, loadings and explained variance
     instance_features.csv            one row per (image, structure): features + scores
     structure_features.csv           one row per (modality, structure): mean features + mean scores
+    structure_features_gap.csv       one row per structure: features + (MR score - CT score)
     correlations_structure_level.csv Spearman correlation feature/score across structures
     correlations_instance_level.csv  same across (image, structure) pairs and inside each structure
     *.png                            boxplots, PCA scatter, correlation heatmaps and scatter plots
@@ -85,6 +90,7 @@ METRICS_META = ('reference', 'prediction', 'label', 'EmptyRef', 'EmptyPred')
 # Figure colours: one hue per modality, its lighter step for the augmented images
 SOURCE_COLORS = {'MR': '#2a78d6', 'MR_aug': '#9ec5f4', 'CT': '#eb6834', 'CT_aug': '#f5b59a'}
 DIVERGING = ('#1c5cab', '#c23a3a')
+GAP_COLOR = '#6250d6'
 SURFACE, INK, INK_MUTED, GRID = '#fcfcfb', '#0b0b0b', '#52514e', '#e4e3df'
 
 
@@ -94,7 +100,7 @@ def main():
         epilog=textwrap.dedent('''
             Examples:
             smaugbench_compare_intensities smaugbench/configs/amos22_nnUNetTrainerDAExtGPU_OSSTA.json
-            smaugbench_compare_intensities config.json --n-aug 10 --aug-source CT --device cuda:0
+            smaugbench_compare_intensities config.json --n-aug 10 --device cuda:0
             smaugbench_compare_intensities config.json --metrics /path/to/metrics.csv -o /path/to/output
         '''),
         formatter_class=argparse.RawTextHelpFormatter,
@@ -106,8 +112,9 @@ def main():
                         help='metrics.csv (or the folder containing it) of the model to relate the features to '
                              '(default: <inference folder>/metrics_<nnunet_folder_name><supplementary_key>).')
     parser.add_argument('--n-aug', type=int, default=5, help='Number of augmented draws per image (default: 5). 0 disables augmentation.')
-    parser.add_argument('--aug-source', nargs='+', choices=MODALITIES, default=list(MODALITIES),
-                        help='Modalities of the images that are augmented (default: MR CT). '
+    parser.add_argument('--aug-source', nargs='+', choices=MODALITIES, default=['CT'],
+                        help='Modalities of the images that are augmented, i.e. the training modality (default: CT). '
+                             'Images of the other modalities are compared with these augmented images. '
                              'Falls back to the available modalities if none of them is present.')
     parser.add_argument('--trainer-config', type=str, default=None,
                         help='Override the SmaugLab config (default: nnunet_trainer_config of the input config).')
@@ -542,7 +549,7 @@ def feature_group(name):
         return 'size'
     if '_to_' in name or name.startswith('coverage_by_'):
         return 'augmentation_shift' if name.startswith('aug_') else 'cross_source'
-    base = name.split('_', 1)[1] if name.split('_', 1)[0] in ('raw', 'aug', 'augdelta') else name
+    base = name.split('_', 1)[1] if name.split('_', 1)[0] in ('raw', 'aug', 'augdelta', 'augabsdelta', 'rawdelta') else name
     if base in SURROUND_FEATURES:
         return 'surroundings'
     if base.startswith('pc'):
@@ -652,7 +659,13 @@ def add_pca_features(stats, quantiles, sources, n_bins, n_components, output):
 
 
 def build_instance_table(stats, quantiles, pcs, sources):
-    """One row per (image, structure): size, raw_*, aug_* (mean over the draws), augdelta_* and cross-source features."""
+    """One row per (image, structure): size, raw_*, aug_*, augdelta_*, augabsdelta_* and cross-source features.
+
+    aug_* is the mean over the augmented draws of the image itself if it was augmented
+    (training modality); otherwise it is the mean of the structure over all the augmented
+    images (e.g. augmented CT for an MR image). augdelta_* = aug_* - raw_* is therefore
+    "augmented training images minus this raw image" for every modality.
+    """
     keys = ['subject', 'modality', 'label', 'structure']
     intensity = [c for c in INTENSITY_FEATURES if c in stats.columns] + pcs + ['pc_centroid_dist']
     cross = [c for c in stats.columns if any(c == f'{kind}_{s}' for s in sources for kind in ('wasserstein_to', 'coverage_by', 'pc_dist_to'))]
@@ -672,7 +685,15 @@ def build_instance_table(stats, quantiles, pcs, sources):
         aug['to_raw_pc_dist'] = np.linalg.norm(aug[pcs].to_numpy() - stats.loc[match, pcs].to_numpy(), axis=1)
         mean_aug = aug.groupby(['subject', 'label'])[intensity + ['to_raw_wasserstein', 'to_raw_pc_dist']].mean()
         mean_aug = mean_aug.reindex(pd.MultiIndex.from_frame(raw[['subject', 'label']])).set_axis(raw.index)
-        parts += [mean_aug.add_prefix('aug_'), (mean_aug[intensity] - raw[intensity]).add_prefix('augdelta_')]
+        # Images that were not augmented are compared with the augmented images of the training modality
+        aug_sources = [s for s in sources if s in set(aug['source'])]
+        pooled = aug.groupby(['source', 'label'])[intensity].mean()
+        reference = raw['modality'].map(lambda m: f'{m}_aug' if f'{m}_aug' in aug_sources else aug_sources[0])
+        pooled = pooled.reindex(pd.MultiIndex.from_arrays([reference, raw['label']])).set_axis(raw.index)
+        own = raw['modality'].map(lambda m: f'{m}_aug' in aug_sources).to_numpy()
+        mean_aug.loc[~own, intensity] = pooled.loc[~own, intensity]
+        delta = mean_aug[intensity] - raw[intensity]
+        parts += [mean_aug.add_prefix('aug_'), delta.add_prefix('augdelta_'), delta.abs().add_prefix('augabsdelta_')]
     return pd.concat(parts, axis=1).reset_index(drop=True)
 
 
@@ -710,10 +731,31 @@ def build_structure_table(instances, stats, pcs, n_images, metrics):
     return table
 
 
+def build_gap_table(structure_table, train, metrics):
+    """One row per (test modality, structure): score of the test modality minus score of the training modality.
+
+    The features are those of the test modality (among which augdelta_* = augmented
+    training images - raw test images), plus rawdelta_* = raw training images - raw test
+    images.
+    """
+    reference = structure_table[structure_table['modality'] == train].set_index('label')
+    raw_cols = [c for c in structure_table.columns if c.startswith('raw_')]
+    tables = []
+    for modality, sub in structure_table[structure_table['modality'] != train].groupby('modality'):
+        ref = reference.reindex(sub['label'])
+        delta = pd.DataFrame(ref[raw_cols].to_numpy() - sub[raw_cols].to_numpy(), index=sub.index,
+                             columns=[f'rawdelta_{c[len("raw_"):]}' for c in raw_cols])
+        sub = pd.concat([sub.drop(columns=[f'{m}_n' for m in metrics]), delta], axis=1)
+        sub[metrics] = sub[metrics].to_numpy() - ref[metrics].to_numpy()
+        sub['modality'] = f'{modality}_minus_{train}'
+        tables.append(sub)
+    return pd.concat(tables, ignore_index=True) if tables else None
+
+
 # --- main ---------------------------------------------------------------------------
 
 
-def compare_intensities(config, output=None, metrics=None, n_aug=5, aug_source=MODALITIES, trainer_config=None, norm='nnunet',
+def compare_intensities(config, output=None, metrics=None, n_aug=5, aug_source=('CT',), trainer_config=None, norm='nnunet',
                         plans=None, patch_size=None, batch_size=2, samples=512, shell_mm=5.0, bin_width=None, hist_bins=64,
                         pca_components=5, device='cpu', seed=42, max_images=None):
     data_root = os.environ.get('SMAUGBENCH_DATA')
@@ -890,6 +932,11 @@ def compare_intensities(config, output=None, metrics=None, n_aug=5, aug_source=M
     # 5. Correlations between the features and the performance metrics
     structure_corr = instance_corr = None
     if metric_names:
+        # Difference of performance between each test modality and the training modality
+        gap_table = build_gap_table(structure_table, aug_source[0], metric_names)
+        if gap_table is not None:
+            gap_table.to_csv(output / 'structure_features_gap.csv', index=False)
+            structure_table = pd.concat([structure_table, gap_table], ignore_index=True)
         not_features = {'subject', 'modality', 'label', 'structure', 'n_images', *metric_names, *(f'{m}_n' for m in metric_names)}
         structure_corr = correlate(structure_table, [c for c in structure_table.columns if c not in not_features],
                                    metric_names, per_structure=False)
@@ -898,7 +945,7 @@ def compare_intensities(config, output=None, metrics=None, n_aug=5, aug_source=M
         structure_corr.to_csv(output / 'correlations_structure_level.csv', index=False)
         instance_corr.to_csv(output / 'correlations_instance_level.csv', index=False)
         for modality, sub in structure_corr.groupby('modality'):
-            print(f'\nStrongest structure-level correlations, {modality} images (Spearman):')
+            print(f'\nStrongest structure-level correlations, {_scope(modality)} (Spearman):')
             top = sub.reindex(sub['spearman_r'].abs().sort_values(ascending=False).index).groupby('metric').head(5)
             print(top.sort_values('metric', kind='stable')[['metric', 'feature', 'n', 'spearman_r', 'p_value', 'q_value']].round(3).to_string(index=False))
 
@@ -911,6 +958,14 @@ def compare_intensities(config, output=None, metrics=None, n_aug=5, aug_source=M
 
 
 # --- figures ------------------------------------------------------------------------
+
+
+def _scope(modality):
+    """Readable name of a `modality` value of the correlation tables."""
+    if '_minus_' in modality:
+        test, train = modality.split('_minus_')
+        return f'{test} - {train} score difference'
+    return f'{modality} images'
 
 
 def _pyplot():
@@ -1019,7 +1074,7 @@ def plot_correlations(corr, structure_table, metrics, output, n_features=30, n_s
         ax.tick_params(length=0)
         for spine in ax.spines.values():
             spine.set_visible(False)
-        ax.set_title(f'{modality} images: Spearman correlation between structure features and mean scores\n'
+        ax.set_title(f'{_scope(modality)}: Spearman correlation between structure features and mean scores\n'
                      f'(up to {n} structures, {len(r)} strongest features, * q < 0.05)', fontsize=9, loc='left')
         fig.colorbar(im, ax=ax, fraction=0.05, pad=0.03).outline.set_visible(False)
         fig.tight_layout()
@@ -1037,16 +1092,16 @@ def plot_correlations(corr, structure_table, metrics, output, n_features=30, n_s
             for ax in axes.ravel()[len(top):]:
                 ax.set_visible(False)
             for ax, (_, row) in zip(axes.ravel(), top.iterrows()):
-                ax.scatter(table[row['feature']], table[metric], s=30, color=SOURCE_COLORS[modality],
+                ax.scatter(table[row['feature']], table[metric], s=30, color=SOURCE_COLORS.get(modality, GAP_COLOR),
                            edgecolors=SURFACE, linewidths=1, zorder=3)
                 for name, x, y in zip(table['structure'], table[row['feature']], table[metric]):
                     if np.isfinite(x) and np.isfinite(y):
                         ax.annotate(name, (x, y), xytext=(4, 3), textcoords='offset points', fontsize=6.5, color=INK_MUTED)
                 ax.set_xlabel(row['feature'], fontsize=8)
-                ax.set_ylabel(f'Mean {metric}', fontsize=8)
+                ax.set_ylabel(f'Mean {metric}' + (' (difference)' if '_minus_' in modality else ''), fontsize=8)
                 ax.set_title(f'r = {row["spearman_r"]:.2f}, ' + ('p < 0.001' if row['p_value'] < 0.001 else f'p = {row["p_value"]:.3f}') + f', n = {row["n"]}', fontsize=9, loc='left')
                 ax.grid(linewidth=0.5)
-            fig.suptitle(f'{modality} images: structure features most correlated with {metric} (one dot per structure)',
+            fig.suptitle(f'{_scope(modality)}: structure features most correlated with {metric} (one dot per structure)',
                          fontsize=10, x=0.01, ha='left')
             fig.tight_layout()
             fig.savefig(output / f'correlation_scatter_{modality}_{metric}.png', dpi=150)
