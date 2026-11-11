@@ -54,6 +54,7 @@ Console scripts installed with the package:
 - `smaugbench_create_splits_nnunet` — generate nnU-Net's `splits_final.json` from a dataset JSON
 - `smaugbench_compute_pairwise_measurements` — pairwise reference/prediction metrics (Dice, NSD, HD, …)
 - `smaugbench_compare_results` — aggregate every `metrics*/metrics.csv` under `Dataset<ID>_*` into comparison tables
+- `smaugbench_compare_intensities` — relate the intensity (first-order radiomics, histogram PCA), size, contrast and frequency of each structure, on raw and augmented MR/CT images, to the scores of a model (see [`smaugbench/utils/README_compare_intensities.md`](smaugbench/utils/README_compare_intensities.md))
 
 ## Environment variables
 
