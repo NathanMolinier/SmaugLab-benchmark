@@ -9,6 +9,7 @@ script produces:
   * comparison_<metric>.csv                -- pivot rows=model, columns=label
   * comparison_summary_by_modality.csv     -- mean / std / count per (model, modality, label, metric)
   * comparison_<metric>_by_modality.csv    -- pivot rows=model, columns=modality (aggregated over labels)
+  * metrics_<model>.csv                    -- raw copy of each model's metrics.csv
 
 Modality is parsed from the reference filename token between the last `_` and
 `.nii.gz`, e.g. `sub-amos0021_CT.nii.gz` -> `CT`.
@@ -16,6 +17,7 @@ Modality is parsed from the reference filename token between the last `_` and
 
 import argparse
 import os
+import shutil
 import textwrap
 from pathlib import Path
 
@@ -93,7 +95,7 @@ def main():
     output_dir = args.output_dir if args.output_dir else dataset_dir / 'comparison'
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    long_df = _load_all_metrics(dataset_dir)
+    long_df = _load_all_metrics(dataset_dir, output_dir)
     long_df.insert(1, 'modality', long_df['reference'].map(_extract_modality))
     metric_cols = _select_metric_columns(long_df, args.metrics)
 
@@ -139,7 +141,7 @@ def _resolve_inference_dir(inference_dir_arg):
     return Path(data_root) / 'inference'
 
 
-def _load_all_metrics(dataset_dir):
+def _load_all_metrics(dataset_dir, output_dir):
     frames = []
     prefix = 'metrics_'
     for folder in sorted(p for p in dataset_dir.glob('metrics*') if p.is_dir()):
@@ -148,6 +150,9 @@ def _load_all_metrics(dataset_dir):
             print(f'Skipping {folder.name}: no metrics.csv')
             continue
         model_name = folder.name[len(prefix):] if folder.name.startswith(prefix) else folder.name
+        copy_out = output_dir / f'metrics_{model_name}.csv'
+        shutil.copy2(csv_path, copy_out)
+        print(f'Copied {csv_path} -> {copy_out}')
         df = pd.read_csv(csv_path)
         df.insert(0, 'model', model_name)
         frames.append(df)
