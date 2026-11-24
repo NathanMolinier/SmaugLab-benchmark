@@ -48,7 +48,7 @@ Outputs (in `<inference folder>/intensities_<nnunet_folder_name><supplementary_k
     *.png                            boxplots, PCA scatter, correlation heatmaps and scatter plots
     config.json                      copy of the input config
 
-Every step is described in smaugbench/utils/README_compare_intensities.md.
+Every feature is described, with examples, in smaugbench/utils/README_compare_intensities.md.
 """
 
 import argparse
