@@ -34,6 +34,10 @@ smaugbench_compare_intensities config.json --metrics /path/to/metrics.csv --n-au
 
 # Quick test on CPU
 smaugbench_compare_intensities config.json --max-images 4 --n-aug 2 --device cpu
+
+# CT and MR test sets in two inference folders (e.g. TotalSegmentator)
+smaugbench_compare_intensities smaugbench/configs/totalsegmentator-ct_3mm_nnUNetTrainerDAExtGPU_OSSTA.json \
+    --extra-config smaugbench/configs/totalsegmentator-ct_3mm_nnUNetTrainerDAExtGPU_OSSTA_testMRI.json
 ```
 
 It reads the folder prepared by `scripts/inference.sh`:
@@ -44,6 +48,17 @@ ${SMAUGBENCH_DATA}/inference/Dataset<id>_<name><key>/
 ├── labels/<stem>.nii.gz
 └── metrics_<nnunet_folder_name><key>/metrics.csv    # scores per (image, structure)
 ```
+
+**Two inference folders.** When the MR test set is run with its own config (own
+`data_json` and `inference_supplementary_key`, e.g. `Dataset301_TOTALSEGMENTATOR-CT-3mm`
+and `Dataset301_TOTALSEGMENTATOR-CT-3mm_MRIDATA`), pass the MR config with
+`--extra-config`. Its images, labels and `metrics.csv` are added to those of the main
+config. Structures are matched **by name**, so the two dataset JSONs can use different
+label values (`autochthon_left` is 5 in `totalsegmentator-ct` and 4 in
+`totalsegmentator-mri`) and different subsets: the 50 MR structures are compared with
+the same structures among the 117 CT ones, and MR-only structures (`lung_left`,
+`vertebrae`, …) are added with no CT counterpart. Model, normalization, augmentation and
+output folder always come from the main config.
 
 Structure names come from `LABELS` in the dataset JSON, augmentations from the `GPU`
 section of `nnunet_trainer_config`, and normalization from the `plans.json` of the
@@ -249,6 +264,7 @@ Figures:
 
 | Option | Default | Purpose |
 | --- | --- | --- |
+| `--extra-config` | none | Configs of other inference folders analysed with the main one (structures matched by name) |
 | `-o`, `--output` | `<inference folder>/intensities_<name><key>` | Output folder |
 | `--metrics` | `<inference folder>/metrics_<name><key>` | `metrics.csv` or its folder |
 | `--n-aug` | 5 | Augmented draws per image (0: none) |
@@ -265,4 +281,4 @@ Figures:
 | `--pca-components` | 5 | Principal components kept |
 | `--device` | `$SMAUGBENCH_DEVICE`, else cuda/cpu | Device of the augmentations |
 | `--seed` | 42 | Random seed |
-| `--max-images` | all | Only process the first N images |
+| `--max-images` | all | Only process the first N images of each inference folder |

@@ -28,6 +28,11 @@ The differences "augmented CT - raw MR" and "augmented CT - raw CT" of every mea
 are part of the features, and are also correlated with the difference of score between
 MR and CT.
 
+Images of other inference folders can be added with `--extra-config` (e.g. a model trained
+on CT whose MR test set is run with its own config and `inference_supplementary_key`).
+Their structures are matched by name with those of the main config, so the two dataset
+JSONs can use different label values and different subsets of structures.
+
 Images are normalized before the measurements (and before augmentation, as in training).
 By default the normalization stored in the trained model's plans.json is used
 (CTNormalization or ZScoreNormalization), i.e. the intensities the network actually
@@ -48,7 +53,7 @@ Outputs (in `<inference folder>/intensities_<nnunet_folder_name><supplementary_k
     *.png                            boxplots, PCA scatter, correlation heatmaps and scatter plots
     config.json                      copy of the input config
 
-Every feature is described, with examples, in smaugbench/utils/README_compare_intensities.md.
+Every feature is described, with examples, in README_compare_intensities.md (repository root).
 """
 
 import argparse
@@ -102,10 +107,17 @@ def main():
             smaugbench_compare_intensities smaugbench/configs/amos22_nnUNetTrainerDAExtGPU_OSSTA.json
             smaugbench_compare_intensities config.json --n-aug 10 --device cuda:0
             smaugbench_compare_intensities config.json --metrics /path/to/metrics.csv -o /path/to/output
+            smaugbench_compare_intensities config_ct.json --extra-config config_mr.json
         '''),
         formatter_class=argparse.RawTextHelpFormatter,
     )
     parser.add_argument('config', type=str, help='Pipeline config JSON (same as the one given to run_pipeline.sh / inference.sh).')
+    parser.add_argument('--extra-config', type=str, nargs='+', default=[],
+                        help='Pipeline configs of other inference folders analysed together with the main one (e.g. the '
+                             'MR test set of a model trained on CT, run with its own data_json and '
+                             'inference_supplementary_key). Only their data_json, dataset and supplementary key are '
+                             'used: model, normalization, augmentation and output come from the main config. Structures '
+                             'are matched by name; structures absent from the main data_json are added.')
     parser.add_argument('-o', '--output', type=str, default=None,
                         help='Output folder (default: <inference folder>/intensities_<nnunet_folder_name><supplementary_key>).')
     parser.add_argument('--metrics', type=str, default=None,
@@ -144,7 +156,7 @@ def main():
     parser.add_argument('--device', type=str, default=os.environ.get('SMAUGBENCH_DEVICE', 'cuda' if torch.cuda.is_available() else 'cpu'),
                         help='Device used for the GPU augmentations (default: $SMAUGBENCH_DEVICE, else cuda if available, else cpu).')
     parser.add_argument('--seed', type=int, default=42, help='Random seed (default: 42).')
-    parser.add_argument('--max-images', type=int, default=None, help='Only process the first N images (for quick tests).')
+    parser.add_argument('--max-images', type=int, default=None, help='Only process the first N images of each inference folder (for quick tests).')
     args = parser.parse_args()
 
     compare_intensities(**vars(args))
@@ -755,7 +767,7 @@ def build_gap_table(structure_table, train, metrics):
 # --- main ---------------------------------------------------------------------------
 
 
-def compare_intensities(config, output=None, metrics=None, n_aug=5, aug_source=('CT',), trainer_config=None, norm='nnunet',
+def compare_intensities(config, extra_config=(), output=None, metrics=None, n_aug=5, aug_source=('CT',), trainer_config=None, norm='nnunet',
                         plans=None, patch_size=None, batch_size=2, samples=512, shell_mm=5.0, bin_width=None, hist_bins=64,
                         pca_components=5, device='cpu', seed=42, max_images=None):
     data_root = os.environ.get('SMAUGBENCH_DATA')
@@ -767,15 +779,31 @@ def compare_intensities(config, output=None, metrics=None, n_aug=5, aug_source=(
     key = cfg['inference_supplementary_key']
     src_dataset = f"Dataset{cfg['dataset_id']}_{cfg['dataset_name']}"
     inference_dir = Path(data_root) / 'inference' / f'{src_dataset}{key}'
-    images_dir, labels_dir = inference_dir / 'images', inference_dir / 'labels'
-    for d in (images_dir, labels_dir):
-        if not d.is_dir():
-            raise FileNotFoundError(f'{d} does not exist: run scripts/inference.sh with this config first.')
 
-    # Structures of the dataset
-    data_json = _resolve_json(cfg['data_json'], SMAUGBENCH_ROOT / 'datasets')
-    with open(data_json) as f:
-        structures = {int(k): v for k, v in json.load(f)['LABELS'].items() if int(k) != 0}
+    # Inference folders: the main one and those of --extra-config. Each folder has its own
+    # dataset JSON; label values are mapped by structure name onto those of the main one.
+    structures, folders = {}, []
+    for i, path in enumerate([config_path] + [Path(c).resolve() for c in extra_config]):
+        folder_cfg = cfg if i == 0 else load_pipeline_config(path)
+        folder_key = folder_cfg['inference_supplementary_key']
+        folder_dir = Path(data_root) / 'inference' / f"Dataset{folder_cfg['dataset_id']}_{folder_cfg['dataset_name']}{folder_key}"
+        for d in (folder_dir / 'images', folder_dir / 'labels'):
+            if not d.is_dir():
+                raise FileNotFoundError(f'{d} does not exist: run scripts/inference.sh with {path} first.')
+        data_json = _resolve_json(folder_cfg['data_json'], SMAUGBENCH_ROOT / 'datasets')
+        with open(data_json) as f:
+            folder_labels = {int(k): v for k, v in json.load(f)['LABELS'].items() if int(k) != 0}
+        ids = {name: value for value, name in structures.items()}
+        lut = np.zeros(max(folder_labels) + 1, dtype=np.int32)
+        for value, name in sorted(folder_labels.items()):
+            if name not in ids:
+                ids[name] = value if i == 0 else max(structures) + 1
+                structures[ids[name]] = name
+            lut[value] = ids[name]
+        # Metrics of the model on this folder (--metrics only overrides those of the main folder)
+        folder_metrics = Path(metrics) if (metrics and i == 0) else folder_dir / f"metrics_{folder_cfg['nnunet_folder_name']}{folder_key}"
+        folders.append({'dir': folder_dir, 'data_json': data_json, 'n_labels': len(folder_labels),
+                        'lut': None if i == 0 else lut, 'metrics': folder_metrics})
     label_values = np.array(sorted(structures))
 
     # Normalization (from the trained model's plans by default)
@@ -789,25 +817,28 @@ def compare_intensities(config, output=None, metrics=None, n_aug=5, aug_source=(
         # Normalized intensities are in standard deviations; raw ones use the pyradiomics default
         bin_width = 25.0 if norm_desc == 'none' else 0.1
 
-    # Image/label pairs
+    # Image/label pairs (with the label value mapping of their folder)
     pairs = []
-    for img in sorted(images_dir.glob('*_0000.nii.gz')):
-        stem = img.name[:-len('_0000.nii.gz')]
-        modality = stem.rsplit('_', 1)[-1]
-        lab = labels_dir / f'{stem}.nii.gz'
-        if modality not in MODALITIES:
-            warnings.warn(f'Skipping {img.name}: name does not end with _MR or _CT')
-            continue
-        if not lab.is_file():
-            warnings.warn(f'Skipping {img.name}: missing label {lab}')
-            continue
-        pairs.append((stem, modality, img, lab))
-    if max_images is not None:
-        pairs = pairs[:max_images]
+    for folder in folders:
+        folder_pairs = []
+        for img in sorted((folder['dir'] / 'images').glob('*_0000.nii.gz')):
+            stem = img.name[:-len('_0000.nii.gz')]
+            modality = stem.rsplit('_', 1)[-1]
+            lab = folder['dir'] / 'labels' / f'{stem}.nii.gz'
+            if modality not in MODALITIES:
+                warnings.warn(f'Skipping {img.name}: name does not end with _MR or _CT')
+                continue
+            if not lab.is_file():
+                warnings.warn(f'Skipping {img.name}: missing label {lab}')
+                continue
+            folder_pairs.append((stem, modality, img, lab, folder['lut']))
+        pairs += folder_pairs[:max_images] if max_images is not None else folder_pairs
     if not pairs:
-        raise FileNotFoundError(f'No <stem>_MR/_CT image/label pairs found in {inference_dir}')
+        raise FileNotFoundError(f'No <stem>_MR/_CT image/label pairs found in {[str(f["dir"]) for f in folders]}')
+    if len({p[0] for p in pairs}) < len(pairs):
+        raise ValueError('The same image name appears in several inference folders')
 
-    present = sorted({m for _, m, _, _ in pairs})
+    present = sorted({m for _, m, _, _, _ in pairs})
     aug_source = [m for m in aug_source if m in present]
     if not aug_source:
         aug_source = present
@@ -825,21 +856,30 @@ def compare_intensities(config, output=None, metrics=None, n_aug=5, aug_source=(
             augmenter = build_augmenter(trainer_config, device)
 
     # Performance metrics of the model described by the config
-    metrics_path = Path(metrics) if metrics else inference_dir / f"metrics_{cfg['nnunet_folder_name']}{key}"
-    scores, metric_names = load_metrics(metrics_path)
+    scores, metric_names = [], []
+    for folder in folders:
+        folder_scores, folder_metric_names = load_metrics(folder['metrics'])
+        if folder_scores is None:
+            warnings.warn(f'No metrics.csv found in {folder["metrics"]}: these images have no score')
+            continue
+        scores.append(folder_scores)
+        metric_names += [m for m in folder_metric_names if m not in metric_names]
+    scores = pd.concat(scores, ignore_index=True) if scores else None
     if scores is None:
-        warnings.warn(f'No metrics.csv found in {metrics_path}: the correlations with the performance are skipped')
+        warnings.warn('No metrics.csv found: the correlations with the performance are skipped')
 
     output = Path(output) if output else inference_dir / f"intensities_{cfg['nnunet_folder_name']}{key}"
     output.mkdir(parents=True, exist_ok=True)
     shutil.copy(config_path, output / 'config.json')
 
-    print(f'Inference folder: {inference_dir}')
-    print(f'Dataset JSON: {data_json} ({len(structures)} structures)')
+    for folder in folders:
+        print(f'Inference folder: {folder["dir"]} (dataset JSON: {folder["data_json"]}, {folder["n_labels"]} structures)')
+    print(f'Structures: {len(structures)}')
     print(f'Images: {len(pairs)} ({", ".join(f"{m}: {sum(p[1] == m for p in pairs)}" for m in present)})')
     print(f'Normalization: {norm_desc}')
     print(f'Augmentation: {f"{n_aug} draws of {aug_source} with {trainer_config} on {device}, tiles {patch_size} x {batch_size}" if augmenter else "none"}')
-    print(f'Metrics: {f"{metrics_path} ({len(metric_names)} metrics)" if scores is not None else "none"}')
+    metrics_desc = ', '.join(str(f['metrics']) for f in folders)
+    print(f'Metrics: {f"{metrics_desc} ({len(metric_names)} metrics)" if scores is not None else "none"}')
     print(f'Output: {output}')
 
     # 1. Measure every structure of every raw and augmented image
@@ -853,10 +893,13 @@ def compare_intensities(config, output=None, metrics=None, n_aug=5, aug_source=(
                          'structure': structures[value], **features})
             quantiles.append(q)
 
-    for stem, modality, img_path, lab_path in tqdm(pairs, desc='Measuring structures'):
+    for stem, modality, img_path, lab_path, lut in tqdm(pairs, desc='Measuring structures'):
         nii = nib.load(img_path)
         image = np.ascontiguousarray(nii.dataobj, dtype=np.float32)
         label = np.ascontiguousarray(np.round(np.asanyarray(nib.load(lab_path).dataobj)), dtype=np.int32)
+        if lut is not None:
+            # Label values of an --extra-config folder -> values of the main dataset JSON (unknown values -> 0)
+            label = np.where((label >= 0) & (label < lut.size), lut[np.clip(label, 0, lut.size - 1)], 0).astype(np.int32)
         if image.shape != label.shape:
             warnings.warn(f'Skipping {stem}: image shape {image.shape} != label shape {label.shape}')
             continue
